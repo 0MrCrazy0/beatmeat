@@ -385,7 +385,7 @@ function fightTick(){F.tick++;const[a,b]=F.p;
  if(F.hitstop>0){F.hitstop--;F.p.forEach((f,i)=>{if(!f.cpu){f.pend=f.pend||{};for(const k in PAD[i].p)if(PAD[i].p[k])f.pend[k]=1}});return}
  F.p.forEach((f,i)=>{if(F.training&&i===1&&F.training.dummy!=='cpu')f.inp=dummyInput(f,other(f));else if(f.cpu)f.inp=aiInput(f,other(f));else{const I={h:PAD[i].h,p:Object.assign({},PAD[i].p)};if(f.pend){for(const k in f.pend)I.p[k]=1;f.pend=null}f.inp=I}});
  if(F.phase!=='fatal'){for(const f of F.p)control(f,other(f),f.inp);for(const f of F.p)physics(f,other(f));resolveHits();separate()}else finTick()
- camera();updParts();for(const f of F.p){const pn=f.st==='fin'&&f.fp?f.fp:poseOf(f);f.pn=pn;const k=f.st==='atk'||f.st==='hit'||f.st==='special'||f.st==='throw'?.62:f.st==='air'||f.st==='down'||f.st==='thrown'?.45:.34;f.pc=lerpPose(f.pc,POSE[pn]||POSE.idle0,f.pc?k:1)}
+ camera();updParts();for(const f of F.p){const pn=f.st==='fin'&&f.fp?f.fp:poseOf(f);f.pn=pn;const k=f.st==='atk'||f.st==='hit'||f.st==='special'||f.st==='throw'?.62:f.st==='air'||f.st==='down'||f.st==='thrown'?.45:.34;f.pc=lerpPose(f.pc,POSE[pn]||POSE.idle0,f.pc&&!f.snap9?k:1)}
  if(F.training)trainingTick();for(const f of F.p){f.dhp+=(f.hp-f.dhp)*.06;if(f.dhp<f.hp)f.dhp=f.hp}
  if(typeof Music.intensity==='function')Music.intensity(Math.min(a.hp,b.hp)<30||F.phase==='finish'?2:F.p.some(f=>f.cc>=3)?1:0);
  F.pt++;

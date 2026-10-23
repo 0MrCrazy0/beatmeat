@@ -102,7 +102,7 @@ const _tabs=setTabs;
 setTabs=function(){const T=_tabs(),f=n=>T.find(t=>t[0]===n)[1];
  f('VIDEO').push(['FPS CAP',()=>(OPT.fpscap||60)+' FPS',d=>OPT.fpscap=cyc([60,30],OPT.fpscap||60,d)],['SCREEN BLOOD',()=>OPT.scrSplat?'ON':'OFF',()=>OPT.scrSplat^=1],['COLOUR-BLIND MODE',()=>['OFF','DEUTERAN/PROTAN','TRITAN'][OPT.cb|0],d=>{OPT.cb=((OPT.cb|0)+d+3)%3;applyCB()}],['TEXT SIZE',()=>Math.round((OPT.tsz||1)*100)+'%',d=>OPT.tsz=cyc([1,1.15,1.3],OPT.tsz||1,d)]);
  f('AUDIO').push(['VOICES',()=>OPT.voice?'ON':'OFF',()=>{OPT.voice^=1;applyVol()}],['VOICE VOLUME',()=>Math.round(OPT.vvol*100)+'%',d=>{OPT.vvol=cl(Math.round((OPT.vvol+d*.1)*10)/10,0,1);applyVol();Voice.grunt(null,1)}],['ANNOUNCER',()=>OPT.announcer?'ON':'OFF',()=>{OPT.announcer^=1;if(OPT.announcer)Voice.announce('Fight')}]);
- f('VIDEO').push(['KO REPLAY',()=>OPT.replay===0?'OFF':'ON',()=>{OPT.replay=OPT.replay===0?1:0}]);
+ f('VIDEO').push(['KILL-CAM REPLAY',()=>OPT.replay===0?'OFF':'ON',()=>{OPT.replay=OPT.replay===0?1:0}]);
  f('GAMEPLAY').push(['SIMPLE INPUTS',()=>OPT.simple?'ON':'OFF',()=>OPT.simple^=1]);
  const C=f('CONTROLS');C.splice(C.length-1,1,['KEYBOARD BINDINGS',()=>'\u203a',()=>go('keymap',{back:SC})],['CONTROLLER MAPPING',()=>'\u203a',()=>go('padmap',{back:SC})],['STICK DEADZONE',()=>Math.round((OPT.dz||.25)*100)+'%',d=>OPT.dz=cl(Math.round(((OPT.dz||.25)+d*.05)*100)/100,.1,.6)],['SINGLE PAD PLAYS AS',()=>OPT.padSwap?'PLAYER 2':'PLAYER 1',()=>OPT.padSwap^=1]);
  const D=f('DATA');D.splice(1,0,['ACHIEVEMENTS & GALLERY',()=>'\u203a',()=>go('extras',{back:SC})],['EXPORT SAVE FILE',()=>'\u203a',()=>exportSave()],['IMPORT SAVE FILE',()=>'\u203a',()=>importSave()]);return T};

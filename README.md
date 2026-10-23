@@ -26,7 +26,7 @@ It runs in your browser on PC, TV, tablet and phone, and works with an Xbox-styl
 | **Versus** | 1P vs 2P or vs CPU, with stage select. |
 | **Story** | Side-scrolling street brawler for 1 or 2 players in co-op. Player 2 can join at any time by pressing START. |
 | **Survival** | How many fighters can you beat on one health bar? |
-| **Training** | Practise freely with dummy settings, hitboxes, input display and meter fill. |
+| **Training** | Practise freely with dummy settings, hitboxes and meter fill. The input display shows every direction and button you press with frame counts, and if a special doesn't come out it tells you why and what to try. In the Training pause menu, **COMBO TRIAL** gives each fighter 5 trials and **DEMO** performs any special for you so you can watch the input. |
 | **Tutorial** | Step-by-step lessons on the basics. **How to Play** shows every control. |
 | **Extras** | Gallery, achievements, stats, leaderboards and unlockables. |
 
@@ -103,7 +103,10 @@ Move and resize any button in **Settings > Edit Touch Layout**. There is also a 
 - **Parry:** tap forward just before an attack lands (tap down for low attacks) to deflect it.
 - **Combos:** chain normals into each other and cancel them into specials. Each fighter has target combos, listed in the **Move List**.
 - **Finishers:** when **END THEM!** appears, enter one of your fighter's finisher inputs (see the Move List) to finish your opponent in style. Some arenas also have a stage kill.
-- **Kill-cam:** the deciding blow is replayed in slow motion. Press any button to skip it, or turn it off in **Settings > Video > KO REPLAY**.
+- **Inputs feel like the arcade classics:** diagonals count, small slips in a motion are forgiven, you can press the button slightly after the motion, and buttons pressed during hit-freeze are kept. Cancel a normal into a special as it connects.
+- **High and low:** standing jabs, straights, hooks, uppercuts and roundhouses hit high or mid. Crouching jabs, shin kicks and sweeps hit low and look low. Block low attacks crouching and overheads standing.
+- **Kill-cam:** the deciding hit of every round (in Versus, Arcade and Survival), every finisher, X-Ray and stage kill, every story boss kill and the hit that ends a story level is replayed in slow motion. Press any button or tap the screen to skip it, or turn it off in **Settings > Video > KILL-CAM REPLAY**.
+- **Battle damage:** fighters get cuts, bruises, black eyes, bloody noses and torn clothes as a fight goes on. The damage also shows on their HUD portraits. Brutal KOs and finishers spill guts and bone. Turn **Gore** off in Settings for a bloodless game.
 
 ### Story moves
 - **Weapons:** walk over a pipe, bat, knife or chain and press **LP** to pick it up. Attack to swing it. Weapons break after enough hits, and you drop them when you are knocked down.
