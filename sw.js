@@ -1,0 +1,4 @@
+const C='splatter-v4',A=['./','index.html','style.css','js/core.js','js/data.js','js/art.js','js/stages.js','js/fight.js','js/moves.js','js/input.js','js/main.js','js/story.js','js/extras.js','js/feel.js','js/campaign.js','icon.svg','icon-192.png','icon-512.png','manifest.json'];
+self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(A)))});
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const nav=e.request.mode==='navigate';e.respondWith(caches.match(nav?'index.html':e.request,{ignoreSearch:true}).then(r=>{const f=fetch(e.request).then(n=>{if(n&&n.ok&&new URL(e.request.url).origin===location.origin&&!nav){const cp=n.clone();caches.open(C).then(c=>c.put(e.request,cp))}return n}).catch(()=>r);return r||f}))});
