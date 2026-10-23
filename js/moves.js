@@ -85,7 +85,8 @@ glitch:{style:'FRAME-PERFECT',arch:'10-HIT STRINGS',desc:'Kickboxing built from 
      {n:'LAG SPIKE',m:'DB',b:'hk',t:'tele',dmg:10},
      {n:'FIREWALL',m:'BF',b:'lk',t:'dash',spd:6,dmg:9},
      {n:'BUFFER PARRY',m:'DD',b:'lp',t:'counter',dmg:12},
-     {n:'PACKET STORM',m:'DU',b:'hp',t:'rise',dmg:11,inv:6}],
+     {n:'PACKET STORM',m:'DU',b:'hp',t:'rise',dmg:11,inv:6},
+     {n:'INFINITE LOOP',m:'BF',b:'hk',t:'bike',dmg:14}],
  sup:{n:'BLUE SCREEN',t:'rush',col:'#40ff90'},xr:{n:'HARD RESET'},
  fin:[{n:'DELETE',m:'FDB',b:'lk',type:'shock'},{n:'SYSTEM CRASH',m:'UUD',b:'hp',type:'split'},{n:'CTRL+X',m:'BBF',b:'hk',type:'halve'}]},
 goliath:{style:'RIOT ARMOR',arch:'JUGGERNAUT \u2022 ARMOR',desc:'Heavy attacks absorb one hit. Massive health, very slow.',hp:140,walk:.7,dmg:1.15,spd:1.2,armor:1,
@@ -116,5 +117,5 @@ function buildMoves(){for(const ch of ROSTER){const S=STYLE[ch.id];if(!S)continu
   const A={};for(const k in ATK){const b=ATK[k],a=Object.assign({},b);a.s=Math.max(2,Math.round(b.s*S.spd));a.r=Math.max(0,Math.round(b.r*S.spd));a.dmg=b.dmg*S.dmg;if(S.armor&&b.heavy)a.armor=1;a.key=k;A[k]=a}
   for(const k in S.cmd||{}){A[k]=Object.assign({key:k},S.cmd[k]);A[k].dmg*=S.dmg}ch.atk=A;ch.hpMul=S.hp/100;ch.walk=S.walk}}
 function frameData(a){const adv=Math.round((a.stun||16)*.6)-(a.a-1+a.r);return a.s+'/'+a.a+'/'+a.r+'  '+(a.kd?'KD':(adv>=0?'+':'')+adv)}
-function motionTxt3(m,b){let s='',ch=0;if(m[0]==='c'){ch=1;m=m.slice(1)}s=(ch?'[':'')+m.split('').map((c,i)=>ARROW[c]+(ch&&i===0?' hold]':'')).join(' ');return s+' +'+(BTNN[b]||b.toUpperCase())}
+function motionTxt3(m,b){let ch=0;if(m[0]==='c'){ch=1;m=m.slice(1)}const d=m.split('');return(ch?'HOLD '+d[0]+' 1s, '+d.slice(1).join(','):d.join(','))+'+'+(BTNN[b]||b.toUpperCase())}
 buildMoves();

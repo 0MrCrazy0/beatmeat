@@ -7,16 +7,16 @@ html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden;oversc
 #touch{position:fixed;inset:0;z-index:5;display:none;touch-action:none;--op:.5;--ts:1}
 #touch.show{display:block}
 #touch.edit{pointer-events:none;background:transparent}
-#touch.edit .tb{pointer-events:auto;outline:2px dashed #ffd23a;outline-offset:3px;cursor:move}
-.tb{position:absolute;transform:translate(-50%,-50%);width:calc(min(15vh,72px)*var(--ts));height:calc(min(15vh,72px)*var(--ts));border-radius:50%;display:flex;align-items:center;justify-content:center;
- font:calc(min(3.6vh,17px)*var(--ts)) Impact,"Arial Black",sans-serif;letter-spacing:.5px;color:#fff;opacity:var(--op);
+#touch.edit{pointer-events:auto}#touch.edit .tb,#touch.edit .stick{outline:2px dashed #ffd23a;outline-offset:3px;cursor:move;opacity:.85}#touch.edit.locked .tb,#touch.edit.locked .stick{outline:2px solid #6c6;cursor:default}#touch.edit .sel{outline:3px solid #fff!important;filter:brightness(1.4)}
+.tb{position:absolute;transform:translate(-50%,-50%);--bs:1;width:calc(min(20vh,96px)*var(--ts)*var(--bs));height:calc(min(20vh,96px)*var(--ts)*var(--bs));border-radius:50%;display:flex;align-items:center;justify-content:center;
+ font:calc(min(4.4vh,21px)*var(--ts)*var(--bs)) Impact,"Arial Black",sans-serif;letter-spacing:.5px;color:#fff;opacity:var(--op);
  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.35),rgba(255,255,255,.06) 55%,rgba(0,0,0,.25));border:2px solid rgba(255,255,255,.55);box-shadow:0 2px 10px rgba(0,0,0,.5),inset 0 0 12px rgba(255,255,255,.15);text-shadow:0 1px 2px #000;transition:transform .05s}
 .tb.on{transform:translate(-50%,-50%) scale(.9);opacity:calc(var(--op) + .35);filter:brightness(1.6)}
 .tb-lp,.tb-hp{border-color:#ff6a6a;background:radial-gradient(circle at 35% 30%,rgba(255,150,150,.55),rgba(200,30,40,.35) 60%,rgba(60,0,0,.4))}
 .tb-lk,.tb-hk{border-color:#6ab0ff;background:radial-gradient(circle at 35% 30%,rgba(160,200,255,.55),rgba(30,90,200,.35) 60%,rgba(0,20,60,.4))}
-.tb-bl,.tb-rn{width:calc(min(12vh,58px)*var(--ts));height:calc(min(12vh,58px)*var(--ts));font-size:calc(min(2.7vh,13px)*var(--ts));border-color:#ccc}
+.tb-bl,.tb-rn{width:calc(min(16vh,78px)*var(--ts)*var(--bs));height:calc(min(16vh,78px)*var(--ts)*var(--bs));font-size:calc(min(3.3vh,16px)*var(--ts)*var(--bs));border-color:#ccc}
 .tb-sp{border-color:#ffd23a;background:radial-gradient(circle at 35% 30%,rgba(255,240,150,.6),rgba(220,150,0,.35) 60%,rgba(60,30,0,.4))}
-.stick{position:absolute;width:calc(130px*var(--ts));height:calc(130px*var(--ts));transform:translate(-50%,-50%);left:18%;top:72%;pointer-events:none;opacity:calc(var(--op)*.6);transition:opacity .15s}
+.stick{position:absolute;--bs:1;width:calc(min(42vh,170px)*var(--ts)*var(--bs));height:calc(min(42vh,170px)*var(--ts)*var(--bs));transform:translate(-50%,-50%);left:17%;top:72%;pointer-events:none;opacity:calc(var(--op)*.6);transition:opacity .15s}
 .stick.act{opacity:calc(var(--op) + .2)}
 .stick .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:radial-gradient(circle,rgba(255,255,255,.04),rgba(255,255,255,.14))}
 .stick .knob{position:absolute;left:50%;top:50%;width:46%;height:46%;margin:-23% 0 0 -23%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#aab 60%,#556);box-shadow:0 2px 8px rgba(0,0,0,.6)}
@@ -37,10 +37,28 @@ body.infight #hudbtns button{width:34px;height:28px;font-size:13px}
 body.isportrait.touchui:not(.portrait) #rotate{display:flex}
 body.portrait #game{bottom:auto;height:calc(100vw * 200 / 320);top:env(safe-area-inset-top)}
 body.portrait #touch{top:calc(env(safe-area-inset-top) + 100vw * 200 / 320)}
-body.portrait .tb{width:calc(min(19vw,86px)*var(--ts));height:calc(min(19vw,86px)*var(--ts));font-size:calc(min(4.4vw,20px)*var(--ts))}
-body.portrait .tb-bl,body.portrait .tb-rn{width:calc(min(15vw,68px)*var(--ts));height:calc(min(15vw,68px)*var(--ts));font-size:calc(min(3.4vw,15px)*var(--ts))}
+body.portrait .tb{width:calc(min(21vw,96px)*var(--ts)*var(--bs));height:calc(min(21vw,96px)*var(--ts)*var(--bs));font-size:calc(min(4.8vw,22px)*var(--ts)*var(--bs))}body.portrait .stick{width:calc(min(40vw,170px)*var(--ts)*var(--bs));height:calc(min(40vw,170px)*var(--ts)*var(--bs))}
+body.portrait .tb-bl,body.portrait .tb-rn{width:calc(min(17vw,78px)*var(--ts)*var(--bs));height:calc(min(17vw,78px)*var(--ts)*var(--bs));font-size:calc(min(3.8vw,17px)*var(--ts)*var(--bs))}
 body.portrait #touch.show{background:linear-gradient(#0b0b12,#000)}
 body.portrait.infight #hudbtns{top:calc(env(safe-area-inset-top) + 100vw * 200 / 320 + 8px)}
-body.portrait .stick{left:24%;top:55%}
+
 
 body.cb1 #c{filter:url(#cbD)}body.cb2 #c{filter:url(#cbT)}
+
+.stick{touch-action:none}.stick.act{transition:none}
+.stick{border-radius:50%}
+
+/* v5 fighting-game button theme: punches red, kicks blue, block steel, special gold; icon + big label + small caption */
+.tb{flex-direction:column;gap:0;line-height:1}
+.tb svg{width:34%;height:34%;opacity:.9;filter:drop-shadow(0 1px 1px #000)}
+.tb b{font-weight:normal;font-size:1em;letter-spacing:1px}
+.tb i{font-style:normal;font-family:Arial,sans-serif;font-weight:bold;font-size:.36em;opacity:.8;letter-spacing:.2px;margin-top:1px}
+.tb-bl,.tb-rn{font-size:calc(min(2.9vh,14px)*var(--ts)*var(--bs))}
+.tb-hp,.tb-hk{border-width:3px}
+.tb-bl{background:radial-gradient(circle at 35% 30%,rgba(220,230,240,.5),rgba(90,100,120,.35) 60%,rgba(20,20,30,.45))}
+.tb-rn{background:radial-gradient(circle at 35% 30%,rgba(180,255,180,.4),rgba(40,120,60,.3) 60%,rgba(0,30,10,.45));border-color:#7d7}
+/* v5: keep every touch control inside the device safe area (notches, rounded corners, home bar) */
+#touch{inset:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+/* v5 scaling: on short/narrow landscape phones cap buttons by width too so neighbours never overlap */
+body:not(.portrait) .tb{width:calc(min(20vh,10vw,96px)*var(--ts)*var(--bs));height:calc(min(20vh,10vw,96px)*var(--ts)*var(--bs));font-size:calc(min(4.2vh,2.1vw,20px)*var(--ts)*var(--bs))}
+body:not(.portrait) .tb-bl,body:not(.portrait) .tb-rn{width:calc(min(16vh,9.4vw,78px)*var(--ts)*var(--bs));height:calc(min(16vh,9.4vw,78px)*var(--ts)*var(--bs));font-size:calc(min(2.9vh,1.6vw,14px)*var(--ts)*var(--bs))}

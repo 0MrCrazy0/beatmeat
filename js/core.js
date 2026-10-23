@@ -25,7 +25,7 @@ function resize(){const gb=document.getElementById('game'),gr=gb?gb.getBoundingC
  const cap=[420,720,1080][OPT.quality]??1080,dpr=Math.min(window.devicePixelRatio||1,3);const ph=Math.max(200,Math.min(ch*dpr,cap));
  const oldS=S;S=ph/200;CSS_S=ch/200;cv.width=Math.round(W*S);cv.height=Math.round(ph);cv.style.width=cw+'px';cv.style.height=ch+'px';
  const pr=document.getElementById('safeprobe');if(pr){const c=getComputedStyle(pr);SAFE={l:parseFloat(c.paddingLeft)||0,r:parseFloat(c.paddingRight)||0,t:parseFloat(c.paddingTop)||0,b:parseFloat(c.paddingBottom)||0};
-  const r=cv.getBoundingClientRect();SAFE.l=Math.max(0,SAFE.l-r.left)/CSS_S;SAFE.r=Math.max(0,SAFE.r-(innerWidth-r.right))/CSS_S;SAFE.t=Math.max(0,SAFE.t-r.top)/CSS_S}
+  const r=cv.getBoundingClientRect();SAFE.l=Math.max(0,SAFE.l-r.left)/CSS_S;SAFE.r=Math.max(0,SAFE.r-(innerWidth-r.right))/CSS_S;SAFE.t=Math.max(0,SAFE.t-r.top)/CSS_S;SAFE.b=Math.max(0,SAFE.b-(innerHeight-r.bottom))/CSS_S}
  X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';RESIZE_HOOKS.forEach(f=>f(oldS!==S))}
 addEventListener('resize',()=>resize());addEventListener('orientationchange',()=>setTimeout(resize,200));
 function QL(){return OPT.quality}

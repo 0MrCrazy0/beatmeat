@@ -220,17 +220,23 @@ SCN.settings={enter(s){s.tab=s.tab||0;s.i=0},leave(s){persist();if(s.from==='pau
   if(s.i>=0){const r=rows[s.i],d=anyP('r')?1:anyP('l')?-1:(anyP('lp')||anyP('st'))?1:0;if(d){SFX.move();r[2](d);persist()}}},
  draw(s){if(s.from==='pause'&&F)drawFight();X.fillStyle=s.from==='pause'?'rgba(0,0,0,.82)':'#000';if(s.from!=='pause')bgPattern(s.t,'#06061a','#101030');else X.fillRect(0,0,W,H);backBtn(()=>{SFX.back();SCN.settings.leave(s)});
   txt('SETTINGS',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,grad:['#fff','#f44'],lw:1.4,it:1});const T=setTabs(),tw=Math.min(62,(W-SAFE.l-SAFE.r-20)/T.length),tx=W/2-tw*T.length/2;
-  T.forEach((t,i)=>{const on=i===s.tab,x=tx+i*tw;X.fillStyle=on?'rgba(255,40,70,.75)':'rgba(255,255,255,.07)';rrect(X,x+1,22,tw-2,13,3);X.fill();if(s.i<0&&on){X.strokeStyle='#fff';X.lineWidth=.6;X.stroke()}txt(t[0],x+tw/2,28.5,{sz:5.6,big:1,c:on?'#fff':'#bbb',lw:1});hitR(x,20,tw,16,()=>{s.tab=i;s.i=0;SFX.move()})});
+  T.forEach((t,i)=>{const on=i===s.tab,x=tx+i*tw;X.fillStyle=on?'rgba(255,40,70,.75)':'rgba(255,255,255,.07)';rrect(X,x+1,22,tw-2,13,3);X.fill();if(s.i<0&&on){X.strokeStyle='#fff';X.lineWidth=.6;X.stroke()}txt(t[0],x+tw/2,28.5,{sz:5.6,big:1,c:on?'#fff':'#bbb',lw:1});hitR(x,20,tw,16,()=>{s.tab=i;s.i=0;SFX.move()},on?'cur':null)});
   const rows=T[s.tab][1],x0=Math.max(SAFE.l+14,W/2-130),x1=Math.min(W-SAFE.r-14,W/2+130);rows.forEach((r,i)=>{const y=48+(i-(window.__SOFF|0))*17,on=i===s.i;if(y<40||y>H-24)return;X.fillStyle=on?'rgba(255,40,70,.35)':'rgba(255,255,255,.04)';rrect(X,x0,y-7,x1-x0,14,3);X.fill();
    txt(r[0],x0+6,y,{sz:6.4,big:1,al:'left',c:on?'#fff':'#cab',lw:1});const v=r[1]();txt(v.length>1&&v!=='\u203a'&&v!=='PRESS AGAIN'?'\u25c0  '+v+'  \u25b6':v,x1-6,y,{sz:6,big:1,al:'right',c:'#ffd23a',lw:1});
    hitR(x0,y-8,(x1-x0)*.6,16,()=>{s.i=i;r[2](-1);persist()});hitR(x0+(x1-x0)*.6,y-8,(x1-x0)*.4,16,()=>{s.i=i;r[2](1);persist()})});
   hint(TCH.isTouch?'TAP A ROW TO CHANGE  \u2022  LEFT SIDE = DOWN, RIGHT SIDE = UP':'\u2191\u2193 SELECT  \u2022  \u2190\u2192 CHANGE  \u2022  BLOCK/RUN (LB/RB) SWITCH TAB')}};
 // --- touch layout editor ---
-SCN.touchedit={enter(){TCH.edit=1;TCH.el.classList.add('edit')},leave(s){TCH.edit=0;TCH.el.classList.remove('edit');persist();SC=s.back;HITS=[]},update(s){if(anyP('se')||anyP('st'))SCN.touchedit.leave(s)},
+SCN.touchedit={enter(){TCH.edit=1;OPT.tlock=1;TCH.el.classList.add('edit','locked');touchSelect(null)},leave(s){TCH.edit=0;OPT.tlock=1;touchSelect(null);TCH.el.classList.remove('edit','locked');persist();SC=s.back;HITS=[]},
+ update(s){if(anyP('lp')){OPT.tlock=OPT.tlock?0:1;SFX.sel()}TCH.el.classList.toggle('locked',!!OPT.tlock);if(anyP('se')||anyP('st')||anyP('lk'))SCN.touchedit.leave(s)},
  draw(s){grad(X,0,0,W,H,['#101828','#05070c']);X.strokeStyle='rgba(255,255,255,.05)';X.lineWidth=.5;for(let x=0;x<W;x+=10){X.beginPath();X.moveTo(x,0);X.lineTo(x,H);X.stroke()}for(let y=0;y<H;y+=10){X.beginPath();X.moveTo(0,y);X.lineTo(W,y);X.stroke()}
-  txt('EDIT TOUCH LAYOUT',W/2,22,{sz:11,big:1,c:'#ffd23a',lw:1.4});txt('DRAG BUTTONS TO MOVE THEM. THE JOYSTICK APPEARS WHEREVER',W/2,36,{sz:5,c:'#ccd',lw:1});txt('YOU TOUCH ON THE LEFT HALF OF THE SCREEN.',W/2,43,{sz:5,c:'#ccd',lw:1});
-  X.setLineDash([3,3]);X.strokeStyle='rgba(255,255,255,.25)';X.beginPath();X.moveTo(W/2,52);X.lineTo(W/2,H);X.stroke();X.setLineDash([]);txt('JOYSTICK ZONE',W/4,H/2+20,{sz:7,big:1,c:'rgba(255,255,255,.3)',ol:0});
-  btnRow([['DONE',()=>SCN.touchedit.leave(s),1],['RESET',()=>{delete SAVE.touchPos[tKey()];persist();buildTouch();TCH.el.classList.add('edit')}]],52,{w:50})}};
+  txt('EDIT TOUCH LAYOUT',W/2,14,{sz:10,big:1,c:'#ffd23a',lw:1.4});
+  txt(OPT.tlock?'LAYOUT LOCKED \u2022 TAP UNLOCK TO MOVE OR RESIZE':'UNLOCKED \u2022 DRAG BUTTONS / STICK \u2022 TAP ONE THEN BIGGER/SMALLER',W/2,25,{sz:5,c:OPT.tlock?'#9f9':'#ffd23a',lw:1});
+  X.setLineDash([3,3]);X.strokeStyle='rgba(255,255,255,.2)';X.beginPath();X.moveTo(W*.48,60);X.lineTo(W*.48,H);X.stroke();X.setLineDash([]);
+  txt(OPT.stickMode==='fixed'?'STICK ZONE (FIXED STICK)':'STICK ZONE (FLOATS TO TOUCH-DOWN)',W*.24,64,{sz:5,c:'rgba(255,255,255,.35)',ol:0});
+  const sel=TCH.sel?(TCH.sel.dataset.k||'').toUpperCase():'NONE';
+  btnRow([[OPT.tlock?'UNLOCK':'LOCK',()=>{OPT.tlock=OPT.tlock?0:1;SFX.sel();persist()},!OPT.tlock],['BIGGER',()=>{if(TCH.sel&&!OPT.tlock){touchResize(.1);SFX.move()}else{SFX.back();toast(OPT.tlock?'UNLOCK FIRST':'TAP A BUTTON TO SELECT IT')}}],['SMALLER',()=>{if(TCH.sel&&!OPT.tlock){touchResize(-.1);SFX.move()}else{SFX.back();toast(OPT.tlock?'UNLOCK FIRST':'TAP A BUTTON TO SELECT IT')}}],['STICK: '+(OPT.stickMode==='fixed'?'FIXED':'FLOAT'),()=>{OPT.stickMode=OPT.stickMode==='fixed'?'float':'fixed';SFX.sel();persist()}]],31,{w:48});
+  btnRow([['DONE + LOCK',()=>SCN.touchedit.leave(s),1],['RESET',()=>{delete SAVE.touchPos[tKey()];delete SAVE.touchSize[tKey()];persist();buildTouch();touchSelect(null);SFX.sel();toast('LAYOUT RESET TO DEFAULT')}]],46,{w:56});
+  txt('SELECTED: '+sel,W/2,63,{sz:4.6,c:'#ccd',lw:1})}};
 // --- gamepad mapping ---
 const PADN={lp:'LOW PUNCH',hp:'HIGH PUNCH',lk:'LOW KICK',hk:'HIGH KICK',bl:'BLOCK',rn:'RUN',sp:'SPECIAL',st:'START / PAUSE',se:'BACK'};
 SCN.padmap={enter(s){s.i=0;s.wait=0},update(s){const n=PAD_ACTS.length+2;if(s.wait){if(anyP('se')&&!GP_ON[0]){s.wait=0;window.PADCAP=null}return}
@@ -245,19 +251,27 @@ SCN.padmap={enter(s){s.i=0;s.wait=0},update(s){const n=PAD_ACTS.length+2;if(s.wa
    txt(s.wait&&on?'PRESS A BUTTON\u2026':r[1],x1-6,y,{sz:5.6,big:1,al:'right',c:s.wait&&on?(s.t%30<15?'#fff':'#f66'):'#ffd23a',lw:1});hitR(x0,y-6,x1-x0,12,()=>{s.i=i;SCN.padmap.act(s,i)})});
   hint('D-PAD / LEFT STICK ALWAYS MOVE. CONTROLLER 1 = P1, CONTROLLER 2 = P2.')}};
 // --- how to play ---
-SCN.controls={update(s){if(anyP('st')||anyP('se')||anyP('lp')||anyP('lk')){SFX.back();go('menu')}},draw(s){bgPattern(s.t,'#06061a','#101030');backBtn(()=>{SFX.back();go('menu')});txt('HOW TO PLAY',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,c:'#ffd23a',lw:1.4});
- const c=[W/2-110,W/2-10,W/2+50,W/2+110];
- const rows=[['','KEYBOARD P1','KEYBOARD P2','CONTROLLER'],['MOVE','W A S D','ARROWS','D-PAD / STICK'],['LOW PUNCH','J','NUM4 / ;','X / \u25a1'],['HIGH PUNCH','U','NUM7 / [','Y / \u25b3'],['LOW KICK','K','NUM5 / \'','A / \u2715'],['HIGH KICK','I','NUM8 / ]','B / \u25cb'],['BLOCK','L','NUM6 / /','LB'],['RUN','O','NUM9 / .','RB'],['SPECIAL (easy)','E','NUM0 / ,','RT'],['PAUSE','ENTER','NUM ENTER','START'],['FULLSCREEN','F','','']];
- rows.forEach((r,i)=>{const y=24+i*9.5;r.forEach((v,j)=>txt(v,c[j],y,{sz:i?5.2:5.6,big:!i||!j?1:0,al:j?'center':'left',c:i===0?'#ffd23a':j===0?'#f99':j===3?'#9f9':'#fff',lw:1}))});
- ['TOUCH: drag anywhere on the LEFT half for a floating joystick; buttons on the right. Tap II to pause.','SP+dir = specials. Hold RUN on a special = EX. SP+RUN = SUPER (2 bars). SP+BLOCK = X-RAY (3 bars). SP+RUN when hit = BREAKER.','Motion inputs (e.g. \u2193\u2192+LP) work everywhere. Tap \u2192 just before a hit to PARRY. FINISH HIM: SP+\u2193/\u2191/\u2192 or the motions in PAUSE.'].forEach((l,i)=>txt(l,W/2,134+i*9,{sz:4.8,c:'#ccc',lw:1,b:0}));
- hitR(0,0,W,H,()=>{})}};
+// v5: the HOW TO PLAY table is generated from the live key + pad bindings, so it can never disagree with the game
+function keyLabel(code){if(!code)return'';const M={Space:'SPACE',Enter:'ENTER',Escape:'ESC',Backspace:'BKSP',BracketLeft:'[',BracketRight:']',Semicolon:';',Quote:"'",Slash:'/',Period:'.',Comma:',',Backslash:'\\',NumpadEnter:'NUM ENT',NumpadAdd:'NUM +',ShiftLeft:'L-SHIFT',ShiftRight:'R-SHIFT',ArrowUp:'\u2191',ArrowDown:'\u2193',ArrowLeft:'\u2190',ArrowRight:'\u2192'};
+ return M[code]||code.replace(/^Key/,'').replace(/^Digit/,'').replace(/^Numpad/,'NUM')}
+function keysFor(p,a){return Object.keys(KEYMAP).filter(k=>KEYMAP[k][0]===p&&KEYMAP[k][1]===a).slice(0,2).map(keyLabel).join(' / ')}
+function ctlRows(){const M=padMap(0),g=t=>a=>M[a]!=null?GLY[t][M[a]]:'-';const X1=g('xb'),P1=g('ps'),S1=g('sw');
+ const A=[['LIGHT PUNCH','lp','#ff8a8a'],['HEAVY PUNCH','hp','#ff8a8a'],['LIGHT KICK','lk','#8ac4ff'],['HEAVY KICK','hk','#8ac4ff'],['BLOCK','bl','#ddd'],['RUN','rn','#9f9'],['SPECIAL (easy)','sp','#ffd23a'],['PAUSE','st','#ddd']];
+ return [['','KEYBOARD P1','KEYBOARD P2','XBOX','PLAYSTATION','SWITCH'],['MOVE',[keysFor(0,'u'),keysFor(0,'l'),keysFor(0,'d'),keysFor(0,'r')].join(' '),'ARROWS','D-PAD/LS','D-PAD/LS','D-PAD/LS']]
+  .concat(A.map(([n,a,col])=>[n,keysFor(0,a),keysFor(1,a),X1(a),P1(a),S1(a),col]))}
+function ctlBack(s){SFX.back();if(s.back){SC=s.back;HITS=[]}else go('menu')}
+SCN.controls={update(s){if(anyP('st')||anyP('se')||anyP('lp')||anyP('lk'))ctlBack(s)},draw(s){bgPattern(s.t,'#06061a','#101030');backBtn(()=>ctlBack(s));txt('HOW TO PLAY',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,c:'#ffd23a',lw:1.4});
+ const c=[W/2-150,W/2-62,W/2-6,W/2+46,W/2+94,W/2+140].map(v=>Math.max(SAFE.l+4,v));const rows=ctlRows();
+ rows.forEach((r,i)=>{const y=24+i*9.2;if(i&&i%2===0){X.fillStyle='rgba(255,255,255,.04)';X.fillRect(c[0]-4,y-4.5,c[5]-c[0]+40,9.2)}r.forEach((v,j)=>txt(v,c[j],y,{sz:i?5:5.4,big:!i||!j?1:0,al:j?'center':'left',c:i===0?'#ffd23a':j===0?(r[6]||'#f99'):j>=3?'#9f9':'#fff',lw:1}))});
+ ['TOUCH: the joystick sits bottom-left and never moves (touch anywhere on the left half). Settings > Edit Touch Layout: unlock, move/resize, lock. Tap II to pause.','SP+dir = specials. Hold RUN on a special = EX. SP+RUN = SUPER (2 bars). SP+BLOCK = X-RAY (3 bars). SP+RUN when hit = BREAKER.','Motion inputs (e.g. D,F+LP or B,F+HP) work everywhere. Tap F just before a hit to PARRY. FINISH HIM: SP+D/U/F or the motions in PAUSE.'].forEach((l,i)=>txt(l,W/2,134+i*9,{sz:4.8,c:'#ccc',lw:1,b:0}));
+ }};
 // --- credits / unlocks ---
 SCN.credits={update(s){if(anyP('st')||anyP('se')||anyP('lp')||anyP('lk')){SFX.back();if(s.back){SC=s.back;HITS=[]}else go('menu')}},draw(s){bgPattern(s.t,'#100010','#200020');backBtn(()=>{SFX.back();if(s.back){SC=s.back;HITS=[]}else go('menu')});
  if(s.unl){txt('UNLOCKABLES',W/2,20,{sz:11,big:1,c:'#ffd23a',lw:1.4});const total=Object.values(SAVE.stats.clears).reduce((a,b)=>a+b,0);
   [['GOLIATH-9 & THE WARDEN','Clear Arcade once',SAVE.unlock.bosses],['ALT COSTUMES','Clear Arcade twice or Survival 5 wins  ('+total+' clears, best '+SAVE.stats.survBest+')',SAVE.unlock.alts],['BIG HEAD MODE','25 executions or Survival 10 wins  ('+SAVE.stats.execs+' execs)',SAVE.unlock.bighead]].forEach((u,i)=>{const y=48+i*30;X.fillStyle='rgba(255,255,255,.06)';rrect(X,W/2-120,y-10,240,24,4);X.fill();
    txt(u[2]?'\u2713':'\ud83d\udd12',W/2-108,y+2,{sz:10,c:u[2]?'#9f9':'#888',lw:1});txt(u[0],W/2-96,y-2,{sz:7,big:1,al:'left',c:u[2]?'#fff':'#999',lw:1});txt(u[1],W/2-96,y+7,{sz:4.6,al:'left',c:'#bbb',lw:1})});return}
  const L=['SPLATTER CIRCUIT','POCKET CARNAGE  v2','','A MRCRAZY PRODUCTION','','DESIGN, CODE, ART, MUSIC','MrCrazy','','FIGHTERS','Razor \u2022 Kira \u2022 Tusk \u2022 Sol Reyes \u2022 and friends','Goliath-9 \u2022 The Warden','','ENGINE','HTML5 Canvas \u2022 Web Audio \u2022 Gamepad API \u2022 Vibration API','','All characters, names and moves are original.','No real blood was spilled.','','THANKS FOR PLAYING'];
- const y0=H-(s.t*.35)%(L.length*12+H);L.forEach((l,i)=>txt(l,W/2,y0+i*12,{sz:i===0?14:l===l.toUpperCase()?7:6,big:l===l.toUpperCase()?1:0,c:i<2?'#ffd23a':l===l.toUpperCase()?'#f88':'#ddd',lw:1}));hitR(0,0,W,H,()=>{})}};
+ const y0=H-(s.t*.35)%(L.length*12+H);L.forEach((l,i)=>txt(l,W/2,y0+i*12,{sz:i===0?14:l===l.toUpperCase()?7:6,big:l===l.toUpperCase()?1:0,c:i<2?'#ffd23a':l===l.toUpperCase()?'#f88':'#ddd',lw:1}));}};
 // ---- modes ----
 function checkUnlocks(){const U=SAVE.unlock,st=SAVE.stats,total=Object.values(st.clears).reduce((a,b)=>a+b,0),n=[];
  if(!U.bosses&&total>=1){U.bosses=1;n.push('BOSSES')}if(!U.alts&&(total>=2||st.survBest>=5)){U.alts=1;n.push('ALT COSTUMES')}if(!U.bighead&&(st.execs>=25||st.survBest>=10)){U.bighead=1;n.push('BIG HEAD MODE')}
@@ -275,20 +289,20 @@ function startSurvival(ch){SURV={ch,streak:0,hp:100};survFight()}
 function survFight(){const o=pick(ROSTER.filter(c=>c.id!==ch_id()&&(!c.boss||SURV.streak>=6))),dif=Math.min(4,Math.floor(SURV.streak/2)),st=ri(0,STAGES.length-1);
  go('vs',{a:SURV.ch,b:o,stage:st,next:()=>{newFight(SURV.ch,o,{mode:'survival',stage:st,cpu2:1,dif2:dif,need:1,hp:[SURV.hp,100],onEnd:(w,f)=>{if(w===0){SURV.streak++;SURV.hp=Math.min(100,Math.round(f.hp)+25);if(SURV.streak>SAVE.stats.survBest){SAVE.stats.survBest=SURV.streak}checkUnlocks();persist();survFight()}else{SAVE.stats.survBest=Math.max(SAVE.stats.survBest,SURV.streak);checkUnlocks();persist();go('survres')}}});go('fight')}})}
 const ch_id=()=>SURV.ch.id;
-SCN.survres={enter(){Music.stop();SFX.ko()},update(s){if(s.t>60&&(anyP('st')||anyP('lp')))go('menu')},draw(s){grad(X,0,0,W,H,['#000','#200']);txt('SURVIVAL OVER',W/2,50,{sz:20,big:1,grad:['#fff','#f44'],lw:2});
- txt(SURV.streak+' WINS',W/2,92,{sz:26,big:1,c:'#ffd23a',lw:2});txt('BEST: '+SAVE.stats.survBest,W/2,120,{sz:8,big:1,c:'#fff',lw:1});if(s.t%60<40)txt(TCH.isTouch?'TAP TO CONTINUE':'PRESS START',W/2,160,{sz:8,big:1});hitR(0,0,W,H,()=>{if(s.t>60)go('menu')})}};
-SCN.ladder={enter(){Music.play('select')},update(s){if(s.t>150||(s.t>20&&(anyP('st')||anyP('lp'))))arcadeFight()},draw(s){bgPattern(s.t,'#0a0010','#2a0020');txt('THE CIRCUIT',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,c:'#ffd23a',lw:1.4});
+SCN.survres={enter(){Music.stop();SFX.ko()},update(s){if(s.t>30&&(anyP('st')||anyP('lp')||anyP('se')||anyP('lk')))go('menu')},draw(s){grad(X,0,0,W,H,['#000','#200']);txt('SURVIVAL OVER',W/2,50,{sz:20,big:1,grad:['#fff','#f44'],lw:2});
+ txt(SURV.streak+' WINS',W/2,92,{sz:26,big:1,c:'#ffd23a',lw:2});txt('BEST: '+SAVE.stats.survBest,W/2,120,{sz:8,big:1,c:'#fff',lw:1});if(s.t%60<40)txt(TCH.isTouch?'TAP TO CONTINUE':'PRESS START',W/2,160,{sz:8,big:1});hitR(0,0,W,H,()=>{if(s.t>30)go('menu')})}};
+SCN.ladder={enter(){Music.play('select')},update(s){if(s.t>20&&(anyP('se')||anyP('lk'))){SFX.back();go('select',{mode:'arcade'});return}if(s.t>150||(s.t>20&&(anyP('st')||anyP('lp'))))arcadeFight()},draw(s){bgPattern(s.t,'#0a0010','#2a0020');txt('THE CIRCUIT',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,c:'#ffd23a',lw:1.4});
  const n=AR.opp.length,lx=W*.6;AR.opp.forEach((o,i)=>{const y=180-i*21,cur=i===AR.rung;X.fillStyle=cur?'#ff2a6d':i<AR.rung?'#333':'#1a0a2a';rrect(X,lx-1,y-11,50,21,3);X.fill();X.save();rrect(X,lx,y-10,48,19,2);X.clip();drawPort(o,lx,y-10,48,19,{zoom:.75,cy:.5});X.restore();
   if(i<AR.rung){X.strokeStyle='#f22';X.lineWidth=1.5;X.beginPath();X.moveTo(lx,y-10);X.lineTo(lx+48,y+9);X.moveTo(lx+48,y-10);X.lineTo(lx,y+9);X.stroke()}
   txt(o.boss===2?'BOSS':o.boss?'SUB-BOSS':''+(i+1),lx+56,y,{sz:6,big:1,al:'left',c:cur?'#fff':'#866',lw:1})});
  X.save();X.translate(W*.22,H+2);X.scale(1.4,1.4);drawFighterV(X,AR.ch,POSE[IDLEP(s.t)],{expr:'angry',rim:'#ff4060',t:s.t});X.restore();txt('BATTLE '+(AR.rung+1)+'/'+n,W*.22,28,{sz:10,big:1,c:'#fff',lw:1.4});txt('VS '+AR.opp[AR.rung].name,W*.22,42,{sz:8,big:1,c:'#f99',lw:1.2});hitR(0,0,W,H,()=>{if(s.t>20)arcadeFight()})}};
-SCN.continue={enter(){Music.stop();SFX.ko()},update(s){if(s.t>60&&(anyP('st')||anyP('lp'))){AR.cont++;SFX.sel();arcadeFight()}if(s.t>600||(anyP('se'))){go('gameover')}},draw(s){grad(X,0,0,W,H,['#000','#200']);
+SCN.continue={enter(){Music.stop();SFX.ko()},update(s){if(s.t>30&&(anyP('st')||anyP('lp'))){AR.cont++;SFX.sel();arcadeFight()}if(s.t>600||(anyP('se'))){go('gameover')}},draw(s){grad(X,0,0,W,H,['#000','#200']);
  drawPort(AR.ch,W/2-40,20,80,60,{expr:'pain',zoom:.5});txt('CONTINUE?',W/2,96,{sz:22,big:1,grad:['#fff','#f44'],lw:2});txt(''+Math.max(0,9-Math.floor(s.t/66)),W/2,134,{sz:34,big:1,c:'#ffd23a',lw:2});
  if(s.t>60)btnRow([['YES',()=>{AR.cont++;arcadeFight()},1],['NO',()=>go('gameover')]],162,{w:50})}};
-SCN.gameover={update(s){if(s.t>200||anyP('st'))go('title')},draw(s){grad(X,0,0,W,H,['#000','#100']);txt('GAME OVER',W/2,96,{sz:30,big:1,grad:['#f66','#600'],lw:2});hitR(0,0,W,H,()=>{if(s.t>40)go('title')})}};
-SCN.ending={enter(){Music.play('end');SAVE.stats.clears[AR.ch.id]=(SAVE.stats.clears[AR.ch.id]||0)+1;checkUnlocks();persist()},update(s){if(s.t>90&&(anyP('st')||anyP('lp')))go('credits')},
+SCN.gameover={update(s){if(s.t>240||s.t>30&&(anyP('st')||anyP('lp')||anyP('se')||anyP('lk')))go('title')},draw(s){grad(X,0,0,W,H,['#000','#100']);txt('GAME OVER',W/2,96,{sz:30,big:1,grad:['#f66','#600'],lw:2});hitR(0,0,W,H,()=>{if(s.t>30)go('title')})}};
+SCN.ending={enter(){Music.play('end');SAVE.stats.clears[AR.ch.id]=(SAVE.stats.clears[AR.ch.id]||0)+1;checkUnlocks();persist()},update(s){if(s.t>40&&(anyP('st')||anyP('lp')||anyP('se')||anyP('lk')))go('credits')},
  draw(s){bgPattern(s.t,'#1a1000','#3a1a00');X.save();X.translate(W*.22,H+4);X.scale(1.6,1.6);drawFighterV(X,AR.ch,POSE['win'+Math.floor(s.t/30)%2],{expr:'grin',rim:'#ffc040',t:s.t});X.restore();const x=W*.64;txt(AR.ch.name,x,22,{sz:14,big:1,c:'#ffd23a',lw:1.4});txt('CHAMPION OF THE CIRCUIT',x,36,{sz:6,big:1,c:'#fff',lw:1});
-  wrap(AR.ch.ending,40).forEach((l,i)=>txt(l,x,56+i*9,{sz:5.4,c:'#eee',lw:1,b:0}));txt('UNLOCKED: GOLIATH-9 & THE WARDEN',x,160,{sz:5,c:'#9f9',lw:1});if(s.t%60<40)txt(TCH.isTouch?'TAP TO CONTINUE':'PRESS START',x,180,{sz:8,big:1});hitR(0,0,W,H,()=>{if(s.t>90)go('credits')})}};
+  wrap(AR.ch.ending,40).forEach((l,i)=>txt(l,x,56+i*9,{sz:5.4,c:'#eee',lw:1,b:0}));txt('UNLOCKED: GOLIATH-9 & THE WARDEN',x,160,{sz:5,c:'#9f9',lw:1});if(s.t%60<40)txt(TCH.isTouch?'TAP TO CONTINUE':'PRESS START',x,180,{sz:8,big:1});hitR(0,0,W,H,()=>{if(s.t>40)go('credits')})}};
 SCN.boot={update(s){if(QS.has('demo')){TEST.demo=1;startCPU()}else if(QS.has('train')){startTraining(BYID[QS.get('p1')||'razor'],BYID[QS.get('p2')||'kira'],+(QS.get('stage')||0))}else go('title')},draw(){}};
 // ---- loop ----
 const G={get scene(){return SC.id},get F(){return F},freeze:false,matches:0,frames:0,fps:0,errors:[],go,menuPick};window.G=G;

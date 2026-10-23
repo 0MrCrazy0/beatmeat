@@ -33,49 +33,82 @@ addEventListener('keydown',e=>{if(e.code==='KeyF'&&!e.repeat){toggleFS()}});
 document.addEventListener('fullscreenchange',()=>setTimeout(resize,60));
 // ---- canvas tap regions (menus are touch/mouse friendly) ----
 let HITS=[];function hitR(x,y,w,h,fn,id){HITS.push({x,y,w,h,fn,id})}
-let HOVER=null;
+let HOVER=null,MOUSEP=null,MOUSET=0;
 function canvasPt(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}}
-cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch')LAST_DEV[0]='touch';const p=canvasPt(e);for(let i=HITS.length-1;i>=0;i--){const h=HITS[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h){e.preventDefault();buzz('ui');h.fn(p);return}}});
-cv.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const p=canvasPt(e);let o=null;for(const h of HITS)if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h)o=h;cv.style.cursor=o?'pointer':'default';HOVER=o&&o.id!=null?o.id:null});
-// ---- touch overlay ----
-const TL={classic:[['lp','LP',.70,.80],['hp','HP',.70,.62],['lk','LK',.82,.86],['hk','HK',.82,.68],['bl','BLOCK',.93,.66],['rn','RUN',.93,.86],['sp','SP',.585,.86]],
- simple:[['hp','PUNCH',.74,.80],['hk','KICK',.86,.70],['bl','BLOCK',.92,.88],['sp','SPECIAL',.62,.86]]};
-const TLP={classic:[['hp','HP',.60,.30],['hk','HK',.84,.27],['lp','LP',.60,.52],['lk','LK',.84,.49],['sp','SP',.58,.74],['bl','BLK',.86,.71],['rn','RUN',.72,.90]],simple:[['hp','PUNCH',.60,.40],['hk','KICK',.85,.36],['sp','SP',.60,.66],['bl','BLOCK',.85,.64]]};
-const TCH={el:null,ptr:{},stick:null,edit:0,isTouch:matchMedia('(pointer:coarse)').matches||'ontouchstart' in window};
+cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch')LAST_DEV[0]='touch';const p=canvasPt(e);const h=hitAt(p);if(h){e.preventDefault();buzz('ui');h.fn(p)}});
+// v5: the smallest region under the pointer wins, so full-screen 'tap to continue' areas never swallow BACK or other buttons
+// v5: mouse hover highlight on every clickable region
+function drawHover(){if(!MOUSEP||performance.now()-MOUSET>4000||TCH.isTouch&&LAST_DEV[0]==='touch')return;const h=hitAt(MOUSEP);if(!h||h.w*h.h>W*H*.4)return;X.save();X.setTransform(S,0,0,S,0,0);X.strokeStyle='rgba(255,210,58,.9)';X.lineWidth=1;X.shadowColor='#ffd23a';X.shadowBlur=6;rrect(X,h.x+.5,h.y+.5,h.w-1,h.h-1,3);X.stroke();X.fillStyle='rgba(255,210,58,.08)';X.fill();X.restore()}
+function hitAt(p){let best=null,ba=1e9;for(let i=HITS.length-1;i>=0;i--){const h=HITS[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h){const a=h.w*h.h;if(a<ba){ba=a;best=h}}}return best}
+cv.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const p=canvasPt(e);const o=hitAt(p);MOUSEP=p;MOUSET=performance.now();cv.style.cursor=o?'pointer':'default';HOVER=o&&o.id!=null?o.id:null});
+// ---- touch overlay (v5): anchored stick, lockable editable layout, multitouch ----
+// positions are fractions of the overlay; sizes are multipliers (1 = default size)
+const TL={classic:[['lp','LP',.700,.58],['hp','HP',.820,.46],['lk','LK',.735,.84],['hk','HK',.860,.72],['bl','BLOCK',.950,.50],['rn','RUN',.955,.88],['sp','SP',.590,.84]],
+ simple:[['hp','PUNCH',.74,.78],['hk','KICK',.87,.64],['bl','BLOCK',.94,.88],['sp','SPECIAL',.60,.84]]};
+const TLP={classic:[['hp','HP',.62,.26],['hk','HK',.86,.22],['lp','LP',.62,.52],['lk','LK',.86,.48],['sp','SP',.60,.80],['bl','BLK',.87,.76],['rn','RUN',.80,.95]],simple:[['hp','PUNCH',.60,.36],['hk','KICK',.86,.32],['sp','SP',.60,.66],['bl','BLOCK',.86,.64]]};
+const TSUB={lp:'LIGHT PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',hk:'HEAVY KICK',bl:'',rn:'',sp:'SPECIAL'};
+const _sv=p=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>';
+const FIST=_sv('<path d="M6 9.5V7a1.5 1.5 0 0 1 3 0V6a1.5 1.5 0 0 1 3 0v.5a1.5 1.5 0 0 1 3 0V8a1.5 1.5 0 0 1 3 0v5.5c0 3.6-2.6 6.5-6.2 6.5H11c-2.8 0-5-2.3-5-5.1z" fill="currentColor"/>'),
+ BOOT=_sv('<path d="M8 3h5v8.5l5.2 2.1c1.7.7 2.8 2.3 2.8 4.1V20H4.5c-.8 0-1.5-.7-1.5-1.5V17c0-1.4.9-2.4 2-2.9L8 13z" fill="currentColor"/>'),
+ SHIELD=_sv('<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z" fill="currentColor"/>'),
+ BOLT=_sv('<path d="M13 2L4 14h6l-1 8 9-12h-6z" fill="currentColor"/>'),
+ RUNI=_sv('<path d="M3 6l7 6-7 6zM12 6l7 6-7 6z" fill="currentColor"/>');
+const TICON={lp:FIST,hp:FIST,lk:BOOT,hk:BOOT,bl:SHIELD,sp:BOLT,rn:RUNI};
+const STICK_DEF=[.17,.72],STICK_DEFP=[.24,.56];
+const TCH={el:null,ptr:{},stick:null,edit:0,sel:null,isTouch:matchMedia('(pointer:coarse)').matches||'ontouchstart' in window};
+if(OPT.stickMode===undefined)OPT.stickMode='fixed';if(OPT.tlock===undefined)OPT.tlock=1;SAVE.touchSize=SAVE.touchSize||{};
 function portraitMode(){return document.body.classList.contains('portrait')}
 function tKey(){return OPT.tlayout+(portraitMode()?'P':'')}
+function stickHome(){const p=(SAVE.touchPos[tKey()]||{}).stick;return p||(portraitMode()?STICK_DEFP:STICK_DEF)}
 function buildTouch(){const T=document.getElementById('touch');TCH.el=T;T.querySelectorAll('.tb').forEach(b=>b.remove());
- const def=(portraitMode()?TLP:TL)[OPT.tlayout]||TL.classic,pos=SAVE.touchPos[tKey()]||{};
- def.forEach(([k,l,x,y])=>{const b=document.createElement('div');b.className='tb tb-'+k;b.dataset.k=k;b.textContent=l;const P=pos[k]||[x,y];b.style.left=(P[0]*100)+'%';b.style.top=(P[1]*100)+'%';T.appendChild(b)});applyTouchStyle()}
+ const def=(portraitMode()?TLP:TL)[OPT.tlayout]||TL.classic,pos=SAVE.touchPos[tKey()]||{},sz=SAVE.touchSize[tKey()]||{};
+ def.forEach(([k,l,x,y])=>{const b=document.createElement('div');b.className='tb tb-'+k;b.dataset.k=k;b.innerHTML=TICON[k]+'<b>'+l+'</b><i>'+(l.length>3?'':TSUB[k]||'')+'</i>';const P=pos[k]||[x,y];b.style.left=(P[0]*100)+'%';b.style.top=(P[1]*100)+'%';b.style.setProperty('--bs',sz[k]||1);T.appendChild(b)});
+ const st=T.querySelector('.stick');const h=stickHome();st.style.left=h[0]*100+'%';st.style.top=h[1]*100+'%';st.style.setProperty('--bs',sz.stick||1);st.dataset.k='stick';
+ applyTouchStyle()}
 function applyTouchStyle(){const T=TCH.el;if(!T)return;T.style.setProperty('--op',OPT.top);T.style.setProperty('--ts',OPT.tsize)}
-function showTouch(on){if(!TCH.el)return;const want=OPT.touch==='on'||(OPT.touch==='auto'&&TCH.isTouch);document.body.classList.toggle('touchui',want);TCH.el.classList.toggle('show',!!on&&want);if(!on){TCH.ptr={};touchRecompute()}}
-function stickDirs(dx,dy){const o={},d=Math.hypot(dx,dy),dz=14*OPT.tsize;if(d<dz)return o;const a=Math.atan2(dy,dx)*180/Math.PI;
+function showTouch(on){if(!TCH.el)return;const ed=typeof SC!=='undefined'&&SC&&SC.id==='touchedit',want=OPT.touch==='on'||(OPT.touch==='auto'&&TCH.isTouch)||ed;document.body.classList.toggle('touchui',want);TCH.el.classList.toggle('show',!!on&&want);if(!on){TCH.ptr={};touchRecompute();stickShow(null)}}
+function stickRad(){const st=TCH.el.querySelector('.stick');return st.getBoundingClientRect().width/2||60}
+function stickDirs(dx,dy){const o={},d=Math.hypot(dx,dy),dz=stickRad()*.24;if(d<dz)return o;const a=Math.atan2(dy,dx)*180/Math.PI;
  if(a>-60&&a<60)o.r=1;if(a>120||a<-120)o.l=1;if(a>30&&a<150)o.d=1;if(a<-30&&a>-150)o.u=1;return o}
 function touchRecompute(){const h={};for(const id in TCH.ptr)Object.assign(h,TCH.ptr[id].k);
  for(const k of BKEYS){if(h[k]&&!TOUCH[k]){TAP[0][k]=1;if(['lp','hp','lk','hk','sp'].includes(k))buzz('ui')}TOUCH[k]=!!h[k]}
  if(TCH.el)TCH.el.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',!!h[b.dataset.k]))}
-function btnAt(x,y){const el=document.elementFromPoint(x,y);return el&&el.closest?el.closest('.tb'):null}
-function stickShow(s){const st=TCH.el.querySelector('.stick'),kn=st.querySelector('.knob');if(!s){st.classList.remove('act');return}st.classList.add('act');st.style.left=s.ox+'px';st.style.top=s.oy+'px';
- const m=46*OPT.tsize,dx=s.x-s.ox,dy=s.y-s.oy,d=Math.hypot(dx,dy),k=d>m?m/d:1;kn.style.transform='translate('+(dx*k)+'px,'+(dy*k)+'px)'}
+function btnAt(x,y){let best=null,bd=1e9;TCH.el.querySelectorAll('.tb').forEach(b=>{const r=b.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,d=Math.hypot(x-cx,y-cy);if(d<r.width*.62&&d<bd){bd=d;best=b}});return best}
+// the stick ring never moves during a drag: fixed mode = saved anchor; floating mode = where the finger first landed
+function stickShow(s){if(!TCH.el)return;const st=TCH.el.querySelector('.stick'),kn=st.querySelector('.knob');if(!s){st.classList.remove('act');const h=stickHome();st.style.left=h[0]*100+'%';st.style.top=h[1]*100+'%';kn.style.transform='';return}
+ st.classList.add('act');const r=TCH.el.getBoundingClientRect();st.style.left=((s.ox-r.left)/r.width*100)+'%';st.style.top=((s.oy-r.top)/r.height*100)+'%';
+ const m=stickRad()*.62,dx=s.x-s.ox,dy=s.y-s.oy,d=Math.hypot(dx,dy),k=d>m?m/d:1;kn.style.transform='translate('+(dx*k)+'px,'+(dy*k)+'px)'}
+function stickZone(x,y){const r=TCH.el.getBoundingClientRect();return x-r.left<r.width*(portraitMode()?.46:.48)}
+function editSave(el,x,y){const k=tKey();SAVE.touchPos[k]=SAVE.touchPos[k]||{};SAVE.touchPos[k][el.dataset.k]=[x,y]}
+function touchResize(d){const el=TCH.sel;if(!el)return;const k=tKey();SAVE.touchSize[k]=SAVE.touchSize[k]||{};const v=cl((SAVE.touchSize[k][el.dataset.k]||1)+d,.6,1.8);SAVE.touchSize[k][el.dataset.k]=+v.toFixed(2);el.style.setProperty('--bs',v);persist()}
+function touchSelect(el){if(TCH.sel)TCH.sel.classList.remove('sel');TCH.sel=el;if(el)el.classList.add('sel')}
 function initTouch(){buildTouch();const T=TCH.el;
  T.addEventListener('pointerdown',e=>{ac();LAST_DEV[0]='touch';TCH.isTouch=TCH.isTouch||e.pointerType==='touch';e.preventDefault();if(typeof ST!=='undefined'&&ST&&ST.talk&&SC.id==='story')ST.talk.tap=1;try{T.setPointerCapture(e.pointerId)}catch(_){}
+  if(TCH.edit){const st=T.querySelector('.stick'),sr=st.getBoundingClientRect();let el=btnAt(e.clientX,e.clientY);if(!el&&Math.hypot(e.clientX-(sr.left+sr.width/2),e.clientY-(sr.top+sr.height/2))<sr.width/2)el=st;
+   if(!el){cv.dispatchEvent(new PointerEvent('pointerdown',{clientX:e.clientX,clientY:e.clientY,pointerType:e.pointerType,bubbles:true,cancelable:true}));return}
+   if(el){touchSelect(el);if(!OPT.tlock){const r=el.getBoundingClientRect();TCH.ptr[e.pointerId]={drag:el,ox:e.clientX-(r.left+r.width/2),oy:e.clientY-(r.top+r.height/2),k:{}}}}return}
   const b=btnAt(e.clientX,e.clientY);
-  if(TCH.edit){if(b){const r=b.getBoundingClientRect();TCH.ptr[e.pointerId]={drag:b,ox:e.clientX-(r.left+r.width/2),oy:e.clientY-(r.top+r.height/2),k:{}}}return}
   if(b&&b.dataset.k){TCH.ptr[e.pointerId]={k:{[b.dataset.k]:1},btn:1}}
-  else if(e.clientX<innerWidth*.5||portraitMode()&&e.clientX<innerWidth*.45){const s={ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};TCH.ptr[e.pointerId]={k:{},stick:s};stickShow(s)}
-  touchRecompute()});
- T.addEventListener('pointermove',e=>{const P=TCH.ptr[e.pointerId];if(!P)return;
-  if(P.drag){const r=T.getBoundingClientRect(),x=cl((e.clientX-P.ox-r.left)/r.width,.05,.97),y=cl((e.clientY-P.oy-r.top)/r.height,.08,.95);P.drag.style.left=x*100+'%';P.drag.style.top=y*100+'%';const k=tKey();SAVE.touchPos[k]=SAVE.touchPos[k]||{};SAVE.touchPos[k][P.drag.dataset.k]=[x,y];return}
-  if(P.stick){const s=P.stick;s.x=e.clientX;s.y=e.clientY;const m=60*OPT.tsize,dx=s.x-s.ox,dy=s.y-s.oy,d=Math.hypot(dx,dy);if(d>m){s.ox+=dx*(1-m/d);s.oy+=dy*(1-m/d)}P.k=stickDirs(s.x-s.ox,s.y-s.oy);stickShow(s)}
+  else if(stickZone(e.clientX,e.clientY)&&!Object.values(TCH.ptr).some(p=>p.stick)){let ox=e.clientX,oy=e.clientY;
+   if(OPT.stickMode==='fixed'){const sr=T.querySelector('.stick').getBoundingClientRect();ox=sr.left+sr.width/2;oy=sr.top+sr.height/2}
+   const s={ox,oy,x:e.clientX,y:e.clientY};TCH.ptr[e.pointerId]={k:stickDirs(s.x-s.ox,s.y-s.oy),stick:s};stickShow(s)}
+  touchRecompute()},{passive:false});
+ T.addEventListener('pointermove',e=>{const P=TCH.ptr[e.pointerId];if(!P)return;e.preventDefault();
+  if(P.drag){const r=T.getBoundingClientRect(),x=cl((e.clientX-P.ox-r.left)/r.width,.04,.97),y=cl((e.clientY-P.oy-r.top)/r.height,.06,.96);P.drag.style.left=x*100+'%';P.drag.style.top=y*100+'%';editSave(P.drag,x,y);return}
+  if(P.stick){const s=P.stick;s.x=e.clientX;s.y=e.clientY;P.k=stickDirs(s.x-s.ox,s.y-s.oy);stickShow(s)}
   else if(P.btn){const b=btnAt(e.clientX,e.clientY);P.k=b&&b.dataset.k?{[b.dataset.k]:1}:{}}
-  touchRecompute()});
+  touchRecompute()},{passive:false});
  const up=e=>{const P=TCH.ptr[e.pointerId];if(P&&P.stick)stickShow(null);if(P&&P.drag)persist();delete TCH.ptr[e.pointerId];touchRecompute()};
- T.addEventListener('pointerup',up);T.addEventListener('pointercancel',up);
+ T.addEventListener('pointerup',up);T.addEventListener('pointercancel',up);T.addEventListener('lostpointercapture',up);
  document.getElementById('tpause').addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();TAP[0].st=1;buzz('ui')});
  document.getElementById('fsbtn').addEventListener('click',e=>{e.stopPropagation();toggleFS()});
  document.getElementById('rotok').addEventListener('click',()=>{document.body.classList.add('portrait');SAVE.portraitOK=1;persist();buildTouch();setTimeout(resize,30)});
  document.addEventListener('contextmenu',e=>e.preventDefault());
+ ['gesturestart','gesturechange','dblclick','selectstart'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+ document.addEventListener('touchmove',e=>{if(e.touches.length>1||e.target.closest&&e.target.closest('#touch,#c'))e.preventDefault()},{passive:false});
+ addEventListener('blur',()=>{TCH.ptr={};touchRecompute();stickShow(null)});
  if(!FS_OK)document.getElementById('fsbtn').style.display='none'}
 function orientCheck(){const por=innerHeight>innerWidth*1.05;document.body.classList.toggle('isportrait',por);
  const want=por&&!!SAVE.portraitOK;if(want!==portraitMode()){document.body.classList.toggle('portrait',want);buildTouch();resize()}}
 addEventListener('resize',orientCheck);
+cv.addEventListener('pointerleave',()=>{MOUSEP=null;HOVER=null});

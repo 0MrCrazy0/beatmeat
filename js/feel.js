@@ -25,8 +25,8 @@ padMap=function(p=0){return Object.assign({},OPT.padPreset==='six'?PAD_SIX:PAD_D
 // v4 default keyboard layout: reset an older saved keymap once
 // touch: punches on the top row, kicks on the bottom row (mirrors the pad's 2x2), block/run on the right edge, SP by the thumb
 TL.classic.splice(0,TL.classic.length,['lp','LP',.66,.62],['hp','HP',.78,.56],['lk','LK',.68,.84],['hk','HK',.80,.78],['bl','BLOCK',.92,.60],['rn','RUN',.92,.84],['sp','SP',.555,.86]);
-TLP.classic.splice(0,TLP.classic.length,['lp','LP',.60,.30],['hp','HP',.84,.27],['lk','LK',.60,.52],['hk','HK',.84,.49],['sp','SP',.58,.74],['bl','BLK',.86,.71],['rn','RUN',.72,.90]);
-if(SAVE.kmv!==4){SAVE.keymap=null;SAVE.touchPos={};SAVE.kmv=4;try{persist()}catch(e){}applyKeymap()}
+TLP.classic.splice(0,TLP.classic.length,['lp','LP',.60,.30],['hp','HP',.84,.27],['lk','LK',.60,.52],['hk','HK',.84,.49],['sp','SP',.58,.74],['bl','BLK',.86,.71],['rn','RUN',.80,.92]);
+if(SAVE.kmv!==5){if(SAVE.kmv!==4)SAVE.keymap=null;SAVE.touchPos={};SAVE.touchSize={};SAVE.kmv=5;try{persist()}catch(e){}applyKeymap()}
 try{buildTouch()}catch(e){}
 // ---- settings additions & pause-safe drawing ----
 const _setTabs=setTabs;
@@ -36,7 +36,7 @@ function drawUnder(back){if(back&&(back.story||back.id==='story'))drawStory();el
 // controls screen can be opened from pause and returns there
 {const cu=SCN.controls.update,cd=SCN.controls.draw;
  SCN.controls.update=function(s){if(s.back&&(anyP('st')||anyP('se')||anyP('lp')||anyP('lk'))){SFX.back();SC=s.back;HITS=[];return}cu(s)};
- SCN.controls.draw=function(s){if(s.back){const g=go;go=function(id,d){if(id==='menu'){SC=s.back;HITS=[]}else g(id,d)};try{cd(s)}finally{go=g}}else cd(s)}}
+}
 // ---- pause menu (every mode): Resume, Move List, Settings, Controls, Restart, Quit ----
 G.restart=null;
 {const nf=newFight;newFight=function(...a){const r=nf(...a);G.restart={k:'fight',a};return r}}
@@ -78,16 +78,17 @@ moveList=function(ch,pg,sc=0,story){const st=STYLE[ch.id]||{};txt((pg?'P2: ':'P1
  ctrlStrip(pg,W/2,Math.max(9,SAFE.t+7)+10,.85);
  const x0=SAFE.l+12,x1=W-SAFE.r-12;X.save();X.beginPath();X.rect(0,30,W,H-48);X.clip();let y=40-sc*18;const row=(a,b,c='#fff',bc='#9cf')=>{txt(a,x0,y,{sz:5.2,al:'left',lw:1,c});txt(b,x1,y,{sz:5.2,al:'right',c:bc,lw:1});y+=8},hd=t=>{y+=2;txt(t,x0,y,{sz:6.4,big:1,al:'left',c:'#f88',lw:1});y+=9},note=l=>{txt(l,x0,y,{sz:4.8,al:'left',c:'#ccc',lw:.8,b:0});y+=8};
  if(st.desc){note(st.desc);y+=1}
- hd('MOVEMENT');row('DASH / BACKDASH','\u2192\u2192  /  \u2190\u2190  (backdash is briefly invincible)');row('RUN','hold RUN + \u2192');row('SIDESTEP','\u2193\u2193'+(story?'  (tap)':'  \u2014 dodges straight attacks'));row('JUMP','\u2191 (short pre-jump)'+(story?'  \u2014 in story, TAP \u2191 to jump, HOLD \u2191/\u2193 to change lane':''));row('BLOCK','hold BLOCK  (\u2193+BLOCK = low)');
- hd('SPECIALS  (motion + button, or SP + direction)  \u2022  hold RUN for EX (1 bar)');(ch.sp||[]).forEach((s,i)=>row(s.n+(s.big?'  [BIG]':''),(s.air?'in air: \u2193+'+BTNN[s.b]:motionTxt3(s.m,s.b))+'   ['+(SPDIR[i]||'SP')+']'));
- hd('TARGET COMBOS (dial in on hit)');(ch.tc||[ch.combo]).forEach((t,i)=>row((st.tcn&&st.tcn[i])||'STRING '+(i+1),t.map(b=>BTNN[b]).join(' > ')+(t.length>=10?'  (10 HITS)':'')));
- const cm=Object.keys(ch.atk||{}).filter(k=>/^[fb]_/.test(k));cm.forEach(k=>{const c=ch.atk[k];row(c.n||'COMMAND NORMAL',(k[0]==='f'?'\u2192':'\u2190')+'+'+BTNN[k.slice(2)]+(c.oh?'  OVERHEAD':c.low?'  LOW':''))});
- hd('METER (3 BARS)');row('SUPER: '+(st.sup&&st.sup.n||''),'\u2193\u2192\u2193\u2192+HP  or  SP+RUN  (2 bars)');row('X-RAY: '+(st.xr&&st.xr.n||''),'\u2193\u2190\u2193\u2190+HK  or  SP+BLOCK  (3 bars)');if(!story)row('BREAKER','SP+BLOCK while being hit  (1 bar)');
+ hd('MOVEMENT');row('DASH / BACKDASH','F,F  /  B,B  (backdash is briefly invincible)');row('RUN','hold RUN + F');row('SIDESTEP','D,D'+(story?'  (tap)':'  \u2014 dodges straight attacks'));row('JUMP / FLIP','U  \u2022  U+F or U+B = flip jump'+(story?'  \u2014 in story, TAP \u2191 to jump, HOLD \u2191/\u2193 to change lane':''));row('BLOCK','hold BLOCK  (D+BLOCK = low)');
+ hd('SPECIALS  (motion + button, or SP + direction)  \u2022  hold RUN for EX (1 bar)');(ch.sp||[]).forEach((s,i)=>row(s.n+(s.big?'  [BIG]':''),(s.air?'in air: D+'+BTNN[s.b]:motionTxt3(s.m,s.b))+'   ['+(SPDIR[i]||'SP')+']'));
+ hd('TARGET COMBOS (dial in on hit)');(ch.tc||[ch.combo]).forEach((t,i)=>row((st.tcn&&st.tcn[i])||'STRING '+(i+1),t.map(b=>BTNN[b]).join(', ')+(t.length>=10?'  (10 HITS)':'')));
+ if(!story){hd('KICKS, AIR ATTACKS & JUGGLES');row('ROUNDHOUSE','B+HK  (knockdown, WALL BOUNCE near the edge)');row('JUMP PUNCH / HAMMER FIST','in air: LP  /  HP (overhead)');row('JUMP KNEE / JUMP ROUNDHOUSE','in air: LK  /  HK');row('FLYING KICK','U+F (flip jump), then HK  \u2014 WALL BOUNCE');row('AIR COMBO','chain 3 different air buttons on hit (e.g. LP, LK, HK)');row('UPPERCUT','D+HP  (launches for juggles)')}
+ const cm=Object.keys(ch.atk||{}).filter(k=>/^[fb]_/.test(k));cm.forEach(k=>{const c=ch.atk[k];row(c.n||'COMMAND NORMAL',(k[0]==='f'?'F':'B')+'+'+BTNN[k.slice(2)]+(c.oh?'  OVERHEAD':c.low?'  LOW':''))});
+ hd('METER (3 BARS)');row('SUPER: '+(st.sup&&st.sup.n||''),'D,F,D,F+HP  or  SP+RUN  (2 bars)');row('X-RAY: '+(st.xr&&st.xr.n||''),'D,B,D,B+HK  or  SP+BLOCK  (3 bars)');if(!story)row('BREAKER','SP+BLOCK while being hit  (1 bar)');
  if(story){const c=ST&&ST.camp&&CAMPS[ST.camp];hd('STREET MOVES ('+(c?c.name:'STORY')+')');
   row('STAR MOVE','SP+RUN with < 2 bars  (spends a star \u2605)');if(!c||c.van)row('RIOT VAN BACKUP','BLOCK+RUN  (once per life, clears the screen)');
   row('GRAB','walk into a dizzy enemy');row('  HAIR-GRAB KNEES','while holding: LP x3');row('  ELBOW / RISING KNEE','\u2193+LP  /  \u2191+LK');row('  THROW / BACK THROW','LK or HK  /  \u2190+LK or HK');
   row('BACK ELBOW','\u2190+HP with an enemy right behind you');row('CYCLONE KICK','LK+HK in the air');row('WEAPONS','LP picks up \u2022 attack swings \u2022 HK throws knives');row('ESCAPE A BEAR-HUG','mash buttons + wiggle')}
- else{hd('FINISHERS  (during END THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,motionTxt3(f.m,f.b)+'   [SP+'+['\u2193','\u2191','\u2192'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'\u2193\u2193+BLOCK   [SP+\u2190]')}
+ else{hd('FINISHERS  (during END THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,motionTxt3(f.m,f.b)+'   [SP+'+['D','U','F'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'D,D+BLOCK   [SP+B]')}
  hd('NORMALS  startup/active/recovery  advantage');['lp','hp','lk','hk'].forEach(b=>{const a=ch.atk&&ch.atk[b];if(a)row(BTNN[b],frameData(a),'#ddd','#ffd23a')});
  hd('SYSTEMS');['Parry: tap \u2192 (or \u2193 for lows) just before a hit. Tech roll: press any button as you land.','Throw: \u2192+LP close. Juggles scale damage. Counter hits deal +20%. Chip damage on specials.','Inputs pressed during hit-freeze are buffered.'].forEach(note);
  X.restore()};

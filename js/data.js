@@ -98,7 +98,7 @@ const DIFFN=['NOVICE','EASY','MEDIUM','HARD','BRUTAL'];
 const FINLBL=['EXECUTION','ANNIHILATION'];
 const ARROW={F:'\u2192',B:'\u2190',D:'\u2193',U:'\u2191'};
 const BTNN={lp:'LP',hp:'HP',lk:'LK',hk:'HK'};
-function motionTxt(m,b){return m.split('').map(c=>ARROW[c]).join(' ')+' +'+BTNN[b]}
+function motionTxt(m,b){return m.split('').join(',')+'+'+BTNN[b]}
 // ---- poses: lean, hd(head tilt), a1/a2 [shoulder, elbow] front/back arm, l1/l2 [hip,knee] front/back leg. 0=down, 90=forward, 180=up
 const P=(lean,a1,a2,l1,l2,hd=0)=>({lean,a1,a2,l1,l2,hd});
 const LI=[[24,-22],[-16,-10]];
@@ -129,4 +129,13 @@ const POSE={
  win0:P(0,[176,0],[20,118],[16,-4],[-14,-2],-8),win1:P(2,[168,8],[24,112],[16,-4],[-14,-2],-12),
  point:P(4,[120,0],[20,110],[16,-4],[-14,-2])
 };
+// v5 poses: distinct air normals, flying kick, spinning roundhouse, bicycle kick
+Object.assign(POSE,{
+ jhp0:P(4,[170,-10],[150,20],[70,-110],[40,-120]),jhp1:P(26,[70,10],[80,30],[70,-110],[40,-120]),
+ jkn0:P(4,[60,90],[40,100],[60,-120],[30,-110]),jkn1:P(10,[40,110],[20,120],[110,-150],[10,-90]),
+ jrh0:P(-6,[40,110],[20,100],[90,-100],[-10,-60]),jrh1:P(-30,[20,90],[-30,80],[118,-2],[-20,-30]),
+ fly0:P(-10,[60,100],[30,100],[80,-100],[0,-110]),fly1:P(-38,[10,80],[-30,70],[112,0],[30,-125]),
+ rh0:P(-14,[45,100],[20,100],[95,-100],[-12,-6]),rh1:P(-34,[20,90],[-30,80],[136,-2],[-14,-4]),
+ bike0:P(-55,[10,70],[-20,60],[115,-2],[60,-120]),bike1:P(-55,[10,70],[-20,60],[60,-120],[115,-2])
+});
 POSE.port=P(4,[22,48],[12,56],[16,-6],[-12,-4],-4);

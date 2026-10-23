@@ -12,7 +12,7 @@ function rig(ch,p,big){const s=ch.look.h||1,b=ch.look.b||1,T=21*s,TH=17*s,SN=17*
  const hip={x:0,y:0},neck={x:u.x*T,y:u.y*T},sh={x:u.x*T*.86,y:u.y*T*.86},hd=lean+(p.hd||0)*D2R,hr=6.5*s*(big?1.35:1);
  const head={x:neck.x+Math.sin(hd)*hr,y:neck.y-Math.cos(hd)*hr};
  const shF={x:sh.x+n.x*2,y:sh.y+n.y*2},shB={x:sh.x-n.x*3,y:sh.y-n.y*3},hpF={x:n.x*2,y:n.y*2},hpB={x:-n.x*2,y:-n.y*2};
- const aF=limbJ(shF,p.a1[0],p.a1[1],UA,FA),aB=limbJ(shB,p.a2[0],p.a2[1],UA,FA),lF=limbJ(hpF,p.l1[0],p.l1[1],TH,SN),lB=limbJ(hpB,p.l2[0],p.l2[1],TH,SN);
+ const aF=limbJ(shF,p.a1[0],p.a1[1],UA,FA),aB=limbJ(shB,p.a2[0],p.a2[1],UA,FA),lF=limbJ(hpF,p.l1[0],Math.min(0,p.l1[1]),TH,SN),lB=limbJ(hpB,p.l2[0],Math.min(0,p.l2[1]),TH,SN);
  let my=-1e9;[[lF[1],2.8],[lB[1],2.8],[aF[1],3],[aB[1],3],[head,6.5*s],[hip,5],[neck,4],[lF[0],3],[lB[0],3]].forEach(([q,r])=>my=Math.max(my,q.y+r));
  return{s,b,T,lean,u,n,hip,neck,sh,head,hd,shF,shB,hpF,hpB,aF,aB,lF,lB,oy:-my}}
 const PKEYS=['a1','a2','l1','l2'];
@@ -23,7 +23,7 @@ const LX=.45,LY=-.89;
 function tlimb(g,a,b,r1,rm,r2,col,o={}){const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||.001,ux=dx/L,uy=dy/L,nx=-uy,ny=ux,mx=(a.x+b.x)/2,my=(a.y+b.y)/2,bm=rm*1.16;
  g.beginPath();g.moveTo(a.x+nx*r1,a.y+ny*r1);g.quadraticCurveTo(mx+nx*bm,my+ny*bm,b.x+nx*r2,b.y+ny*r2);const an=Math.atan2(ny,nx);g.arc(b.x,b.y,r2,an,an+Math.PI,true);
  g.quadraticCurveTo(mx-nx*bm,my-ny*bm,a.x-nx*r1,a.y-ny*r1);g.arc(a.x,a.y,r1,an+Math.PI,an,true);g.closePath();
- const lit=(nx*LX+ny*LY)>0?1:-1;if(QL()>0){const gr=g.createLinearGradient(mx+nx*rm*lit,my+ny*rm*lit,mx-nx*rm*lit,my-ny*rm*lit);gr.addColorStop(0,shade(col,1.28));gr.addColorStop(.38,col);gr.addColorStop(1,shade(col,.5));g.fillStyle=gr}else g.fillStyle=col;
+ const ld=nx*LX+ny*LY,lit=Math.max(-1,Math.min(1,ld*2.2));if(QL()>0){const gr=g.createLinearGradient(mx+LX*rm,my+LY*rm,mx-LX*rm,my-LY*rm);gr.addColorStop(0,shade(col,1.28));gr.addColorStop(.38,col);gr.addColorStop(1,shade(col,.5));g.fillStyle=gr}else g.fillStyle=col;
  g.fill();g.lineWidth=o.lw||.5;g.strokeStyle=OUT;g.stroke();
  if(o.rim&&QL()>1){g.strokeStyle=o.rim;g.globalAlpha*=.55;g.lineWidth=.45;g.beginPath();g.moveTo(a.x-nx*lit*(r1-.35),a.y-ny*lit*(r1-.35));g.quadraticCurveTo(mx-nx*lit*(bm-.4),my-ny*lit*(bm-.4),b.x-nx*lit*(r2-.35),b.y-ny*lit*(r2-.35));g.stroke();g.globalAlpha/=.55}
  if(o.hl!==0&&QL()>0){g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=.5;g.beginPath();g.moveTo(a.x+nx*lit*r1*.5+ux,a.y+ny*lit*r1*.5+uy);g.quadraticCurveTo(mx+nx*lit*bm*.55,my+ny*lit*bm*.55,b.x+nx*lit*r2*.5-ux,b.y+ny*lit*r2*.5-uy);g.stroke()}

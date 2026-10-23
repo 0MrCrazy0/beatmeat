@@ -131,7 +131,7 @@ function campExtras(P,q,II,h,pr){const btn=['lp','hp','lk','hk'].find(k=>pr[k]),
  // pick up / use weapons
  if(btn==='lp'&&P.y===0){const it=ST.items.find(it=>it.y<=0&&WEP[it.k]&&Math.abs(it.x-P.x)<14&&Math.abs(it.z-P.z)<9);if(it){if(P.wep)ST.items.push({k:P.wep.k,x:P.x,z:P.z,y:0,vy:0,t:0,w:1,dur:P.wep.dur});P.wep={k:it.k,dur:it.dur||WEP[it.k].dur};ST.items.splice(ST.items.indexOf(it),1);SFX.sel();sideTxt(P,it.k.toUpperCase(),{kind:'sp'});return 1}}
  if(P.wep&&P.y===0&&(btn==='hk'&&WEP[P.wep.k].throw)){ST.projs.push({x:P.x+P.face*12,z:P.z,y:34,vx:P.face*6,dmg:14,team:'p',o:P,t:0,s:{art:'disc',col:'#dfe8f0'},hs:new Set(),hits:1});P.wep=null;campAtk(P,'hp');return 1}
- if(P.wep&&P.y===0&&(btn==='lp'||btn==='hp')&&!h.d){const w=WEP[P.wep.k];startAtk(P,{an:'cross',s:5,a:4,r:11,dmg:w.dmg*P_DMG(P)*(btn==='hp'?1.25:1),reach:w.reach,hy:44,hh:36,stun:18,kb:2.6,kd:btn==='hp'?1:0,vy:4,wep:1,heavy:btn==='hp'});if(--P.wep.dur<=0){P.wep=null;toast('WEAPON BROKE')}return 1}
+ if(P.wep&&P.y===0&&(btn==='lp'||btn==='hp')&&!h.d){const w=WEP[P.wep.k];startAtk(P,{an:'cross',s:5,a:4,r:11,dmg:w.dmg*P_DMG(P)*(btn==='hp'?1.25:1),reach:w.reach,hy:44,hh:36,stun:18,kb:2.6,kd:btn==='hp'?1:0,vy:4,wep:1,heavy:btn==='hp'});return 1}
  // DD-style back elbow: HP while holding away with an enemy behind you
  if(btn==='hp'&&fwd<0&&P.y===0){const e=ST.en.find(e=>!e.dead&&e.st!=='ride'&&Math.abs(e.z-P.z)<9&&(e.x-P.x)*P.face<0&&(e.x-P.x)*P.face>-34);if(e){P.face*=-1;startAtk(P,Object.assign({},AT(P,'hp'),{n:'BACK ELBOW',s:4,dmg:9,kd:1,vy:4,kb:3}));sideTxt(P,'BACK ELBOW',{kind:'sp',sz:7});return 1}}
  // cyclone kick: LK+HK together in the air
@@ -245,7 +245,7 @@ SCN.cutscene={enter(s){s.i=0;s.t=0;s.k=0},update(s){s.k=Math.min(1,s.k+.06);cons
   const by=H-bar-46;X.fillStyle='rgba(8,4,16,.9)';rrect(X,SAFE.l+10,by,W-SAFE.l-SAFE.r-20,40,4);X.fill();X.strokeStyle=C?C.col:'#fff';X.lineWidth=1;X.stroke();
   const nm=who==='P1'&&P?P.ch.name:who==='NOVA'?'NOVA':'';if(nm)txt(nm,SAFE.l+18,by+8,{sz:6,big:1,al:'left',c:'#ffd23a',lw:1});
   wrapT(l[1].slice(0,Math.floor(s.t*1.8)),SAFE.l+18,by+(nm?19:12),W-SAFE.l-SAFE.r-40,9,{sz:6,al:'left',c:'#fff',lw:1,b:0});
-  if(s.t%40<26)txt('\u25bc',W-SAFE.r-20,by+33,{sz:6,c:'#ffd23a',lw:1});txt((s.i+1)+'/'+L.length+'   ESC SKIP',W-SAFE.r-14,bar+10,{sz:4.6,big:1,al:'right',c:'#888',lw:.8});hitR(0,0,W,H,()=>{s.tap=1})}};
+  if(s.t%40<26)txt('\u25bc',W-SAFE.r-20,by+33,{sz:6,c:'#ffd23a',lw:1});txt((s.i+1)+'/'+L.length+'   ESC SKIP',SAFE.l+18,by+34,{sz:4.6,big:1,al:'left',c:'#888',lw:.8});hitR(0,0,W,H,()=>{s.tap=1})}};
 // endings
 SCN.sending={enter(s){s.go=1},update(s){if(!s.go)return;s.go=0;const C=CAMPS[G.camp],bad=G.campBad,score=s.score||0;SAVE.camp=SAVE.camp||{};SAVE.camp[G.camp]=null;SAVE.stats['clear_'+G.camp]=(SAVE.stats['clear_'+G.camp]||0)+1;if(!bad)SAVE.stats['true_'+G.camp]=1;persist();
   go('cutscene',{pages:bad?C.ending.bad:C.ending.good,camp:G.camp,then:()=>go('initials',{score,stage:SSTAGES.length})})},draw(){X.fillStyle='#000';X.fillRect(0,0,W,H)}};
