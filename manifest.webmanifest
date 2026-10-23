@@ -1,5 +1,5 @@
 {
- "name": "Splatter Circuit",
+ "name": "Splatter Circuit: Pocket Carnage",
  "short_name": "Splatter",
  "start_url": "./",
  "scope": "./",
@@ -87,5 +87,6 @@
    "purpose": "any"
   }
  ],
- "description": "Gory six-button arcade fighting and co-op street brawling."
+ "description": "An original gory 2D fighter and co-op street brawler. Version 11. Created by MrCrazy.",
+ "version": "11.0"
 }

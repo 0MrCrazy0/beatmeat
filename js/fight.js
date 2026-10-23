@@ -345,8 +345,8 @@ function finTick(){const z=F.fin,t=++z.t,a=z.att,d=z.def,hy=GY-40;F.dark=Math.mi
  if(t===240){F.phase='matchEnd';F.pt=0;Voice.announce(a.ch.name.toLowerCase().replace(/^(mr|dr)\. /,'$1 ').replace('-9',' nine')+' wins',{queue:1});say(a.ch.name+' WINS',{life:220,sz:14,y:44,grad:['#fff','#ffd23a']});if(a.hp>=100)say('UNTOUCHED!',{life:200,sz:12,y:124,grad:['#9ff','#39f']})}}
 // ---- CPU opponent logic ----
 function aiInput(f,o){const I={h:{},p:{}},A=f.ai,d=f.dif,dist=Math.abs(o.x-f.x),fw=f.face>0?'r':'l',bk=f.face>0?'l':'r';
- if(F.phase==='finish'){if(f!==F.win)return I;A.ft=(A.ft||0)+1;if(A.ft===1){A.doFin=TEST.fin||R()<[.35,.55,.75,.9,1][d];A.fu=ri(0,STAGE_FIN[F.stIdx]?3:2);if(TEST.finIdx!=null)A.fu=TEST.finIdx}
-  if(A.ft>40&&A.ft%25===0){if(A.doFin){I.p.sp=I.h.sp=1;I.h[[ 'd','u',fw,bk][A.fu]]=1}else if(dist<40){I.p.hk=I.h.hk=1;I.h[bk]=1}}else if(!A.doFin&&dist>36)I.h[fw]=1;return I}
+ if(F.phase==='finish'){if(f!==F.win)return I;A.ft=(A.ft||0)+1;if(A.ft===1){A.doFin=1;A.fu=ri(0,STAGE_FIN[F.stIdx]?3:2);if(TEST.finIdx!=null)A.fu=TEST.finIdx}
+  if(A.ft>30&&A.ft%20===0){if(A.doFin){I.p.sp=I.h.sp=1;I.h[[ 'd','u',fw,bk][A.fu]]=1}else if(dist<40){I.p.hk=I.h.hk=1;I.h[bk]=1}}else if(!A.doFin&&dist>36)I.h[fw]=1;return I}
  if(F.phase!=='fight')return I;
  // defensive reflexes
  if((f.st==='hit'||f.st==='air')&&f.meter>=BAR&&o.cc>=3&&R()<[0,.01,.03,.05,.08][d]){I.p.sp=1;I.h.sp=1;I.p.th=I.h.th=1;return I}
@@ -401,7 +401,7 @@ function fightTick(){F.tick++;const[a,b]=F.p;
  }}
 function timeOver(){const[a,b]=F.p;say('TIME',{life:80});if(Math.abs(a.hp-b.hp)<.5){F.phase='roundEnd';F.pt=0;F.win=null;say('DRAW',{life:120,y:110});Voice.announce('Time! Draw.');return}
  const w=a.hp>b.hp?a:b,l=other(w);F.win=w;F.lose=l;F.final=w.wins+1>=F.need;
- if(F.final){w.wins++;F.phase='finish';F.pt=0;l.hp=0;setSt(l,'dizzy');say('END THEM!',{life:120,sz:26,grad:['#ff4040','#600']});Voice.announce('Time! End them!',{big:1})}else{w.wins++;F.phase='roundEnd';F.pt=0;say(w.ch.name+' WINS',{life:150,sz:14,y:44,grad:['#fff','#ffd23a']});Voice.announce('Time! '+w.ch.name.toLowerCase()+' wins')}}
+ if(F.final){w.wins++;F.phase='finish';F.pt=0;l.hp=0;setSt(l,'dizzy');say('END THEM!',{life:120,y:112,sz:26,grad:['#ff4040','#600']});Voice.announce('Time! End them!',{big:1})}else{w.wins++;F.phase='roundEnd';F.pt=0;say(w.ch.name+' WINS',{life:150,sz:14,y:44,grad:['#fff','#ffd23a']});Voice.announce('Time! '+w.ch.name.toLowerCase()+' wins')}}
 function poseOf(f){const t=f.t;switch(f.st){
  case 'idle':return'idle'+[0,1,2,1][Math.floor(F.tick/PH(f).idle)%4];
  case 'walk':{const c=Math.floor((f.wph||0)/PH(f).stride)%4;return'walk'+(f.wd<0?(4-c)%4:c)}case 'run':return'run'+Math.floor(t/5)%4;

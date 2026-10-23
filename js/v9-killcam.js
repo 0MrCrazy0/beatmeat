@@ -19,7 +19,7 @@ function kcOK9(){return OPT.replay!==0&&!(typeof TEST!=='undefined'&&TEST.demo)&
  if(ST.phase==='clear'&&ph0!=='clear'&&KC9.last&&F.tick-KC9.last.tick<5){if(KC9.pend&&KC9.pend.kill===KC9.last.tick)KC9.pend.kind+=' \u2022 LEVEL CLEAR';else KC9.pend={kill:KC9.last.tick,at:F.tick+42,x:KC9.last.x,z:KC9.last.z,kind:'LEVEL CLEAR'}}
  if(KC9.pend&&ST.phase==='clear')ST.clearT=Math.min(ST.clearT,1);
  if(KC9.pend&&F.tick>=KC9.pend.at){const P=KC9.pend;KC9.pend=null;
-  if(kcOK9()){const B=KC9.buf,k=Math.max(0,B.findIndex(s=>s.tick>=P.kill));const frames=B.slice(Math.max(0,k-110),B.length);
+  if(kcOK9()){const B=KC9.buf,k=Math.max(0,B.findIndex(s=>s.tick>=P.kill));const frames=B.slice(Math.max(0,k-(P.pre||110)),B.length);
    if(frames.length>20){KC9.rp={frames,i:0,t:0,kill:P.kill,x:P.x,z:P.z,kind:P.kind};KC9.shown++;KC9.kinds.push(P.kind);SFX.announce&&SFX.announce();Voice.announce('Replay',{boom:true})}}}}}
 {const _d=drawStory;drawStory=function(){const R=KC9.rp;if(!ST||!R)return _d.apply(this,arguments);
  const fr=R.frames[Math.min(R.frames.length-1,Math.floor(R.i))],near=Math.abs(fr.tick-R.kill)<30;

@@ -39,7 +39,7 @@ function canvasPt(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.le
 cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch')LAST_DEV[0]='touch';const p=canvasPt(e);const h=hitAt(p);if(h){e.preventDefault();buzz('ui');h.fn(p)}});
 // v5: the smallest region under the pointer wins, so full-screen 'tap to continue' areas never swallow BACK or other buttons
 // v5: mouse hover highlight on every clickable region
-function drawHover(){if(!MOUSEP||performance.now()-MOUSET>4000||TCH.isTouch&&LAST_DEV[0]==='touch')return;const h=hitAt(MOUSEP);if(!h||h.w*h.h>W*H*.4)return;X.save();X.setTransform(S,0,0,S,0,0);X.strokeStyle='rgba(255,210,58,.9)';X.lineWidth=1;X.shadowColor='#ffd23a';X.shadowBlur=6;rrect(X,h.x+.5,h.y+.5,h.w-1,h.h-1,3);X.stroke();X.fillStyle='rgba(255,210,58,.08)';X.fill();X.restore()}
+function drawHover(){if(!MOUSEP||performance.now()-MOUSET>4000||TCH.isTouch&&LAST_DEV[0]==='touch')return;const h=hitAt(MOUSEP);if(!h||h.w*h.h>W*H*.4)return;X.save();X.setTransform(S,0,0,S,0,0);const sel=h.id!=null&&typeof SC!=='undefined'&&SC.i===h.id;X.strokeStyle=sel?'rgba(255,255,255,.55)':'rgba(255,210,58,.85)';X.lineWidth=.8;X.setLineDash(sel?[]:[3,2]);rrect(X,h.x-2,h.y-2,h.w+4,h.h+4,4);X.stroke();X.setLineDash([]);X.restore()}
 function hitAt(p){let best=null,ba=1e9;for(let i=HITS.length-1;i>=0;i--){const h=HITS[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h){const a=h.w*h.h;if(a<ba){ba=a;best=h}}}return best}
 cv.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const p=canvasPt(e);const o=hitAt(p);MOUSEP=p;MOUSET=performance.now();cv.style.cursor=o?'pointer':'default';HOVER=o&&o.id!=null?o.id:null});
 // ---- touch overlay (v5): anchored stick, lockable editable layout, multitouch ----

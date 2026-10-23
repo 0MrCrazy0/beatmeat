@@ -103,6 +103,7 @@ Move and resize any button in **Settings > Edit Touch Layout**. There is also a 
 - **Parry:** tap forward just before an attack lands (tap down for low attacks) to deflect it.
 - **Combos:** chain normals into each other and cancel them into specials. Each fighter has target combos, listed in the **Move List**.
 - **Finishers:** when **END THEM!** appears, enter one of your fighter's finisher inputs (see the Move List) to finish your opponent in style. Some arenas also have a stage kill.
+- **Boss executions (Story):** when you beat a story boss, the boss staggers and **END THEM!** appears. Get close and press **Meter** with a direction: **Down** rips the head off, **Up** makes the boss burst and **Forward/Back** tears off the limbs. A prompt over the boss shows the input and a bar shows the time left. If you wait too long, the boss drops dead anyway. Every execution is replayed in the kill-cam.
 - **Inputs feel like the arcade classics:** diagonals count, small slips in a motion are forgiven, you can press the button slightly after the motion, and buttons pressed during hit-freeze are kept. Cancel a normal into a special as it connects.
 - **High and low:** standing jabs, straights, hooks, uppercuts and roundhouses hit high or mid. Crouching jabs, shin kicks and sweeps hit low and look low. Block low attacks crouching and overheads standing.
 - **Kill-cam:** the deciding hit of every round (in Versus, Arcade and Survival), every finisher, X-Ray and stage kill, every story boss kill and the hit that ends a story level is replayed in slow motion. Press any button or tap the screen to skip it, or turn it off in **Settings > Video > KILL-CAM REPLAY**.
@@ -155,4 +156,4 @@ Every fighter also has command normals, target combos, a Super, an X-Ray and thr
 
 ---
 
-**Created by MrCrazy.** All characters, stages, story, art, music and sound are original.
+**Splatter Circuit: Pocket Carnage v11. Created by MrCrazy.** All characters, stages, story, art, music and sound are original.

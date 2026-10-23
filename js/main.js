@@ -130,7 +130,7 @@ SCN.title={enter(){Music.play('title')},update(s){if(anyP('st')||anyP('lp')){SFX
  X.fillStyle=lgr(X,0,H*.5,0,H,['rgba(0,0,0,0)','rgba(0,0,0,.7)']);X.fillRect(0,H*.5,W,H*.5);
  txt('MRCRAZY PRESENTS',W/2,Math.max(12,SAFE.t+10),{sz:6,c:'#f99',lw:1.2});bloodTitle(56,40,s.t);txt('POCKET CARNAGE',W/2,112,{sz:9,big:1,c:'#ffd23a',lw:1.6,it:1});
  if(s.t%60<42)txt(TCH.isTouch?'TAP TO START':'PRESS START',W/2,150,{sz:11,big:1,c:'#fff',lw:2});
- txt('v8.0  \u00a9 2026 MRCRAZY  \u2022  ALL-ORIGINAL CHARACTERS',W/2,H-SAFE.b-6,{sz:4.5,c:'#888',lw:1});hitR(0,0,W,H,()=>{SFX.sel();go('menu')})}};
+ txt('v11.0  \u00a9 2026 MRCRAZY  \u2022  ALL-ORIGINAL CHARACTERS',W/2,H-SAFE.b-6,{sz:4.5,c:'#888',lw:1});hitR(0,0,W,H,()=>{SFX.sel();go('menu')})}};
 // --- main menu ---
 const MENU=[['ARCADE','Fight the circuit. Beat the Warden.'],['VERSUS','Player vs player. Pick an arena.'],['SURVIVAL','One life. Endless opponents.'],['TRAINING','Hitboxes, inputs, free practice.'],['CPU BATTLE','Sit back and watch the carnage.'],['SETTINGS','Video, audio, controls, haptics.'],['HOW TO PLAY','Controls and move basics.'],['CREDITS','Who made this mess.']];
 let MENUI=0;
@@ -270,7 +270,7 @@ SCN.credits={update(s){if(anyP('st')||anyP('se')||anyP('lp')||anyP('lk')){SFX.ba
  if(s.unl){txt('UNLOCKABLES',W/2,20,{sz:11,big:1,c:'#ffd23a',lw:1.4});const total=Object.values(SAVE.stats.clears).reduce((a,b)=>a+b,0);
   [['GOLIATH-9 & THE WARDEN','Clear Arcade once',SAVE.unlock.bosses],['ALT COSTUMES','Clear Arcade twice or Survival 5 wins  ('+total+' clears, best '+SAVE.stats.survBest+')',SAVE.unlock.alts],['BIG HEAD MODE','25 executions or Survival 10 wins  ('+SAVE.stats.execs+' execs)',SAVE.unlock.bighead]].forEach((u,i)=>{const y=48+i*30;X.fillStyle='rgba(255,255,255,.06)';rrect(X,W/2-120,y-10,240,24,4);X.fill();
    txt(u[2]?'\u2713':'\ud83d\udd12',W/2-108,y+2,{sz:10,c:u[2]?'#9f9':'#888',lw:1});txt(u[0],W/2-96,y-2,{sz:7,big:1,al:'left',c:u[2]?'#fff':'#999',lw:1});txt(u[1],W/2-96,y+7,{sz:4.6,al:'left',c:'#bbb',lw:1})});return}
- const L=['SPLATTER CIRCUIT','POCKET CARNAGE  v2','','A MRCRAZY PRODUCTION','','DESIGN, CODE, ART, MUSIC','MrCrazy','','FIGHTERS','Razor \u2022 Kira \u2022 Tusk \u2022 Sol Reyes \u2022 and friends','Goliath-9 \u2022 The Warden','','ENGINE','HTML5 Canvas \u2022 Web Audio \u2022 Gamepad API \u2022 Vibration API','','All characters, names and moves are original.','No real blood was spilled.','','THANKS FOR PLAYING'];
+ const L=['SPLATTER CIRCUIT','POCKET CARNAGE  v11','','A MRCRAZY PRODUCTION','','DESIGN, CODE, ART, MUSIC','MrCrazy','','FIGHTERS','Razor \u2022 Kira \u2022 Tusk \u2022 Sol Reyes \u2022 and friends','Goliath-9 \u2022 The Warden','','ENGINE','HTML5 Canvas \u2022 Web Audio \u2022 Gamepad API \u2022 Vibration API','','All characters, names and moves are original.','No real blood was spilled.','','THANKS FOR PLAYING'];
  const y0=H-(s.t*.35)%(L.length*12+H);L.forEach((l,i)=>txt(l,W/2,y0+i*12,{sz:i===0?14:l===l.toUpperCase()?7:6,big:l===l.toUpperCase()?1:0,c:i<2?'#ffd23a':l===l.toUpperCase()?'#f88':'#ddd',lw:1}));}};
 // ---- modes ----
 function checkUnlocks(){const U=SAVE.unlock,st=SAVE.stats,total=Object.values(st.clears).reduce((a,b)=>a+b,0),n=[];
