@@ -44,9 +44,9 @@ function hitAt(p){let best=null,ba=1e9;for(let i=HITS.length-1;i>=0;i--){const h
 cv.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const p=canvasPt(e);const o=hitAt(p);MOUSEP=p;MOUSET=performance.now();cv.style.cursor=o?'pointer':'default';HOVER=o&&o.id!=null?o.id:null});
 // ---- touch overlay (v5): anchored stick, lockable editable layout, multitouch ----
 // positions are fractions of the overlay; sizes are multipliers (1 = default size)
-const TL={classic:[['lp','LP',.640,.52],['mp','MP',.755,.47],['hp','HP',.870,.42],['lk','LK',.660,.80],['mk','MK',.775,.75],['hk','HK',.890,.70],['th','THROW',.965,.90],['sp','SP',.540,.86]],
- simple:[['hp','PUNCH',.74,.78],['hk','KICK',.87,.64],['th','THROW',.94,.88],['sp','SPECIAL',.60,.84]]};
-const TLP={classic:[['lp','LP',.56,.30],['mp','MP',.74,.26],['hp','HP',.92,.22],['lk','LK',.56,.56],['mk','MK',.74,.52],['hk','HK',.92,.48],['sp','SP',.60,.82],['th','THR',.86,.80]],simple:[['hp','PUNCH',.60,.36],['hk','KICK',.86,.32],['sp','SP',.60,.66],['th','THROW',.86,.64]]};
+const TL={classic:[['lp','LP',.640,.52],['mp','MP',.755,.47],['hp','HP',.870,.42],['lk','LK',.660,.80],['mk','MK',.775,.75],['hk','HK',.890,.70],['th','THROW',.965,.90]],
+ simple:[['hp','PUNCH',.74,.78],['hk','KICK',.87,.64],['th','THROW',.94,.88]]};
+const TLP={classic:[['lp','LP',.56,.30],['mp','MP',.74,.26],['hp','HP',.92,.22],['lk','LK',.56,.56],['mk','MK',.74,.52],['hk','HK',.92,.48],['th','THR',.86,.80]],simple:[['hp','PUNCH',.60,.36],['hk','KICK',.86,.32],['th','THROW',.86,.64]]};
 const TSUB={lp:'LIGHT',mp:'MEDIUM',hp:'HEAVY',lk:'LIGHT',mk:'MEDIUM',hk:'HEAVY',th:'',bl:'',rn:'',sp:'SPECIAL'};
 const _sv=p=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>';
 const FIST=_sv('<path d="M6 9.5V7a1.5 1.5 0 0 1 3 0V6a1.5 1.5 0 0 1 3 0v.5a1.5 1.5 0 0 1 3 0V8a1.5 1.5 0 0 1 3 0v5.5c0 3.6-2.6 6.5-6.2 6.5H11c-2.8 0-5-2.3-5-5.1z" fill="currentColor"/>'),

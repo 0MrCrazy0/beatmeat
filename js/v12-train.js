@@ -85,7 +85,7 @@ function iconRow12(a){return{pad:XB12(a),kb:keyFor(0,a),touch:TCHN12(a)}}
 function chip12(x,y,t,c){const w=Math.max(9,t.length*3.1+5);X.fillStyle=c;rrect(X,x,y-4,w,8,2.5);X.fill();txt(t,x+w/2,y+.3,{sz:4,big:1,c:'#fff',lw:.5});return w+2}
 {const _ml=moveList;moveList=function(ch,pg,sc=0,story){_ml.apply(this,arguments);if(story)return;
   // legend strip: each button with its pad / key / touch name
-  const acts=['lp','mp','hp','lk','mk','hk','th','sp'],y=H-SAFE.b-9;X.fillStyle='rgba(0,0,0,.8)';X.fillRect(0,y-7,W,14);let x=SAFE.l+6;
+  const acts=['lp','mp','hp','lk','mk','hk','th'],y=H-SAFE.b-9;X.fillStyle='rgba(0,0,0,.8)';X.fillRect(0,y-7,W,14);let x=SAFE.l+6;
   const cw=t=>Math.max(9,t.length*3.1+5)+2,need=acts.reduce((n,a)=>{const r=iconRow12(a);return n+BTN12[a].length*3+5+cw(r.pad)+cw(r.kb)+(r.touch!==BTN12[a]?cw(r.touch):0)+4},0),avail=W-SAFE.r-6-x;
   const lbl=need+62<=avail?'TOUCH NAME / PAD / KEY:':need+30<=avail?'PAD / KEY:':'';if(lbl){txt(lbl,x,y,{sz:4,al:'left',c:'#aaa',lw:.5});x+=lbl.length>12?62:30}
   const k=Math.min(1,(W-SAFE.r-6-x)/need);X.save();X.translate(x,y);X.scale(k,k);x=0;

@@ -2,7 +2,7 @@
 // Story never uses the versus control code. Story players are drawn with the same high-detail rig as the
 // versus fighters but are driven by bzPlayer() below.
 //   PAD:  A jump | X attack (chain) | B special (costs a little health on hit) | Y grab / pick up / throw weapon
-//         RB block (tap with an enemy behind = back attack) | RT back attack | LB run | LT star move
+//         RB block (tap with an enemy behind = back attack) | RT back attack | LB run | LT police call (STORY_ACTS label is replaced in v12-2-story.js)
 //   KEYS: J jump | U attack | K special | I grab | O block | L back attack | H run | SPACE star | WASD move
 'use strict';
 const STORY_ACTS=[['lp','ATTACK'],['lk','JUMP'],['mk','SPECIAL'],['mp','GRAB'],['hp','BLOCK'],['hk','BACK'],['th','RUN'],['sp','STAR'],['st','PAUSE']];

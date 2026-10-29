@@ -24,7 +24,7 @@ const PAD_SIX={lp:2,hp:3,lk:0,hk:1,bl:4,rn:7,sp:5,st:9,se:8};
 padMap=function(p=0){const M=Object.assign({},PAD_DEF);if(OPT.blockBtn){M.bl=M.th;delete M.th}return Object.assign(M,(SAVE.padMaps&&SAVE.padMaps[p])||(p===0?SAVE.padMap:null)||{})};
 // v4 default keyboard layout: reset an older saved keymap once
 // touch: punches on the top row, kicks on the bottom row (mirrors the pad's 2x2), block/run on the right edge, SP by the thumb
-TL.classic.splice(0,TL.classic.length,['lp','LP',.66,.62],['hp','HP',.78,.56],['lk','LK',.68,.84],['hk','HK',.80,.78],['bl','BLOCK',.92,.60],['rn','RUN',.92,.84],['sp','SP',.555,.86]);
+TL.classic.splice(0,TL.classic.length,['lp','LP',.66,.62],['hp','HP',.78,.56],['lk','LK',.68,.84],['hk','HK',.80,.78],['bl','BLOCK',.92,.60],['rn','RUN',.92,.84]);
 TLP.classic.splice(0,TLP.classic.length,['lp','LP',.60,.30],['hp','HP',.84,.27],['lk','LK',.60,.52],['hk','HK',.84,.49],['sp','SP',.58,.74],['bl','BLK',.86,.71],['rn','RUN',.80,.92]);
 if(SAVE.kmv!==5){if(SAVE.kmv!==4)SAVE.keymap=null;SAVE.touchPos={};SAVE.touchSize={};SAVE.kmv=5;try{persist()}catch(e){}applyKeymap()}
 try{buildTouch()}catch(e){}

@@ -1,6 +1,6 @@
 ![Beat Meat](assets/og-image.png)
 
-# Beat Meat: Tenderize Your Friends  (v13)
+# Beat Meat: Tenderize Your Friends  (v13.1)
 
 **A gory arcade fighter and co-op street brawler that you play free in your browser.**
 
@@ -12,7 +12,7 @@
 - **Play online with a friend:** Menu → ONLINE → host story co-op or versus, then send your friend the code or the invite link (`https://0mrcrazy0.github.io/beatmeat/?join=CODE`). Peer to peer, no account; versus uses rollback netcode.
 - Arcade, Versus, Survival, Training and Tutorial modes. Works with a controller, a keyboard or touch.
 
-## Controls: Versus
+## Controls: Versus (local and online)
 
 | Action | Xbox | Keyboard (P1) | Touch |
 |---|---|---|---|
@@ -20,23 +20,26 @@
 | Light / Medium / Heavy Punch | X / Y / RB | U / I / O | LP / MP / HP |
 | Light / Medium / Heavy Kick | A / B / RT | J / K / L | LK / MK / HK |
 | Throw | LB | H | THROW |
-| Story star move (story only) | LT | Space | STAR |
 | Block | Hold away | Hold away | Hold away |
-| Pause | MENU | Enter | II |
+| Block button (optional setting; on a pad it takes LB from Throw) | LB | Q | BLOCK |
+| Pause (MOVE LIST is in the pause menu) | MENU / VIEW | Enter / Esc | II |
 
-## Controls: Story
+Specials are motion + any punch or kick (each fighter's list is in the pause menu). LT / Space does nothing in versus: there is no meter, and the old star move is gone.
+
+## Controls: Story (local and online)
 
 | Action | Xbox | Keyboard (P1) | Touch |
 |---|---|---|---|
 | Move | Stick / D-pad | W A S D | Joystick |
 | Attack | X | U | ATTACK |
-| Jump | A | J | JUMP |
-| Special (costs a little health) | B | K | SPECIAL |
-| Grab / pick up | Y | I | GRAB |
+| Jump (Special in the air = Cyclone Kick) | A | J | JUMP |
+| Special: spin attack, → + Special = signature move (costs 3 health only when it hits, never below 1) | B | K | SPECIAL |
+| Grab / pick up / throw weapon | Y | I | GRAB |
 | Block | RB | O | BLOCK |
 | Back attack | RT | L | BACK |
 | Run | LB | H | RUN |
-| Police call (once per stage) | LT | Space | CALL |
+| Police call (once per stage; riot van on stages that have one) | LT | Space | CALL |
+| Pause | MENU | Enter | II |
 
 Player 2 can join at any time by pressing **START**. Every fighter's full move list is in the pause menu.
 
