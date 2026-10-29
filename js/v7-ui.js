@@ -3,28 +3,27 @@
 // one-time save migration: old 4-button bindings and touch positions do not fit the 6-button layout
 if(SAVE.v7!==1){SAVE.keymap=null;SAVE.padMap=null;SAVE.padMaps=[null,null];SAVE.touchPos={};SAVE.touchSize={};delete OPT.padPreset;SAVE.v7=1;try{applyKeymap();persist()}catch(e){}try{buildTouch()}catch(e){}}
 KACTS.length=0;KACTS.push('u','d','l','r','lp','mp','hp','lk','mk','hk','th','sp','bl','rn','st','se');
-Object.assign(KACTN,{lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB',sp:'METER / SPECIAL (LT)',bl:'BLOCK (button mode) / TAB',rn:'RUN / TAB'});
+Object.assign(KACTN,{lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB',sp:'STORY: STAR (LT)',bl:'BLOCK (button mode) / TAB',rn:'RUN / TAB'});
 for(const k in PADN)delete PADN[k];
-Object.assign(PADN,{lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB',sp:'METER / SPECIAL',bl:'BLOCK (button mode)',rn:'RUN (optional)',st:'START / PAUSE',se:'BACK / MOVE LIST'});
-CTRL_ACTS.length=0;CTRL_ACTS.push(['lp','LP'],['mp','MP'],['hp','HP'],['lk','LK'],['mk','MK'],['hk','HK'],['th','THROW'],['sp','METER'],['st','PAUSE']);
+Object.assign(PADN,{lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB',sp:'STORY: STAR',bl:'BLOCK (button mode)',rn:'RUN (optional)',st:'START / PAUSE',se:'BACK / MOVE LIST'});
+CTRL_ACTS.length=0;CTRL_ACTS.push(['lp','LP'],['mp','MP'],['hp','HP'],['lk','LK'],['mk','MK'],['hk','HK'],['th','THROW'],['st','PAUSE']);
 // tutorial text
 {const T=k=>TUT.find(t=>t[0]===k);const set=(k,s)=>{const t=T(k);if(t)t[1]=s};
  set('ATTACK','Six attack buttons: LP MP HP (X Y RB) and LK MK HK (A B RT). Try four.');
  set('BLOCK','Hold \u2190 (away) while the dummy attacks. \u2199 blocks lows.');
  set('SPECIAL','Roll \u2193\u2198\u2192 then press a PUNCH for a special.');
  set('THROW','Get close and press LB (THROW). \u2190+LB throws backwards.');
- set('SUPER','Meter is full: \u2193\u2198\u2192\u2193\u2198\u2192 + PUNCH, or LT + HP = SUPER.');
- set('X-RAY','Meter full again: \u2193\u2198\u2192\u2193\u2198\u2192 + KICK, or LT + HK = X-RAY.')}
+}
 // HOW TO PLAY table rows (KB / pads)
 ctlRows=function(){const M=padMap(0),g=t=>a=>M[a]!=null?GLY[t][M[a]]:'-';const X1=g('xb'),P1=g('ps'),S1=g('sw');
- const A=[['LIGHT PUNCH','lp','#ff8a8a'],['MEDIUM PUNCH','mp','#ff8a8a'],['HEAVY PUNCH','hp','#ff8a8a'],['LIGHT KICK','lk','#8ac4ff'],['MEDIUM KICK','mk','#8ac4ff'],['HEAVY KICK','hk','#8ac4ff'],['THROW / GRAB','th','#ddd'],['METER / SPECIAL','sp','#ffd23a'],['PAUSE','st','#ddd'],['BACK / MOVES','se','#ddd']];
+ const A=[['LIGHT PUNCH','lp','#ff8a8a'],['MEDIUM PUNCH','mp','#ff8a8a'],['HEAVY PUNCH','hp','#ff8a8a'],['LIGHT KICK','lk','#8ac4ff'],['MEDIUM KICK','mk','#8ac4ff'],['HEAVY KICK','hk','#8ac4ff'],['THROW / GRAB','th','#ddd'],['STORY STAR','sp','#ffd23a'],['PAUSE','st','#ddd'],['BACK / MOVES','se','#ddd']];
  if(OPT.blockBtn)A.splice(6,1,['BLOCK','bl','#ddd']);
  return [['','KEYBOARD P1','KEYBOARD P2','XBOX','PLAYSTATION','SWITCH'],['MOVE',[keysFor(0,'u'),keysFor(0,'l'),keysFor(0,'d'),keysFor(0,'r')].join(' '),'ARROWS','D-PAD/LS','D-PAD/LS','D-PAD/LS']]
   .concat(A.map(([n,a,col])=>[n,keysFor(0,a),keysFor(1,a),X1(a),P1(a),S1(a),col]))};
 // ---- Xbox controller diagram ----
 const XBCOL={A:'#3cb44a',B:'#e0403a',X:'#2f7de1',Y:'#f0c020'};
 function padActFor7(btnIdx){const M=padMap(0);for(const a of ['lp','mp','hp','lk','mk','hk','th','sp','bl','st','se'])if(M[a]===btnIdx)return a;return null}
-const ACTL7={lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB (story: THROW WEAPON)',sp:'METER: EX / SUPER / X-RAY',bl:'BLOCK',st:'PAUSE',se:'MOVE LIST / BACK'};
+const ACTL7={lp:'LIGHT PUNCH',mp:'MEDIUM PUNCH',hp:'HEAVY PUNCH',lk:'LIGHT KICK',mk:'MEDIUM KICK',hk:'HEAVY KICK',th:'THROW / GRAB (story: THROW WEAPON)',sp:'STORY: STAR MOVE (not used in versus)',bl:'BLOCK',st:'PAUSE',se:'MOVE LIST / BACK'};
 function drawXbox7(cx,cy){X.save();
  // body
  X.fillStyle='#1d2027';X.strokeStyle='#5a6070';X.lineWidth=1;X.beginPath();X.moveTo(cx-46,cy-16);X.quadraticCurveTo(cx,cy-24,cx+46,cy-16);X.quadraticCurveTo(cx+66,cy-6,cx+62,cy+22);X.quadraticCurveTo(cx+58,cy+38,cx+44,cy+34);X.quadraticCurveTo(cx+30,cy+18,cx,cy+18);X.quadraticCurveTo(cx-30,cy+18,cx-44,cy+34);X.quadraticCurveTo(cx-58,cy+38,cx-62,cy+22);X.quadraticCurveTo(cx-66,cy-6,cx-46,cy-16);X.fill();X.stroke();
@@ -56,13 +55,13 @@ SCN.controls={update(s){if(anyP('bl')||anyP('l'))ctlTab7(s,-1);if(anyP('rn')||an
   txt('\u2190 \u2192 : switch tab',W/2,y0+21,{sz:3.8,c:'#778',lw:.6});
   const top=y0+28;
   if(s.tab===0){xboxPanel7(W/2,top);
-   ['SAME BUTTONS IN VERSUS AND STORY \u2022 Specials: P = any punch (X/Y/RB), K = any kick (A/B/RT). Light/Medium/Heavy = speed & power.','EX = hold LT (or press 2 punches/kicks) \u2022 SUPER = \u2193\u2198\u2192\u2193\u2198\u2192+P or LT+HP \u2022 X-RAY = \u2193\u2198\u2192\u2193\u2198\u2192+K or LT+HK \u2022 BREAKER = LT+LB when hit','STORY: LP on a weapon picks it up \u2022 LB with a weapon THROWS it \u2022 tap \u2191 jump, hold \u2191/\u2193 change lane \u2022 LT+HP star move \u2022 LT+LB riot van'].forEach((l,i)=>txt(l,W/2,top+78+i*8,{sz:4.2,c:'#ccc',lw:.8,b:0}))}
+   ['SAME BUTTONS IN VERSUS AND STORY \u2022 Specials: P = any punch (X/Y/RB), K = any kick (A/B/RT). Light/Medium/Heavy = speed & power.','EX = hold LT (or press 2 punches/kicks) \u2022 FINISH THEM! = QCF,QCF+P / +K, or LT+direction \u2022 BREAKER = LT+LB when hit','STORY: LP on a weapon picks it up \u2022 LB with a weapon THROWS it \u2022 tap \u2191 jump, hold \u2191/\u2193 change lane \u2022 LT+HP star move \u2022 LT+LB riot van'].forEach((l,i)=>txt(l,W/2,top+78+i*8,{sz:4.2,c:'#ccc',lw:.8,b:0}))}
   else if(s.tab===1){const c=[W/2-160,W/2-78,W/2-18,W/2+36,W/2+86,W/2+136].map(v=>Math.max(SAFE.l+4,v));const rows=ctlRows();
    rows.forEach((r,i)=>{const y=top+i*8.6;if(i&&i%2===0){X.fillStyle='rgba(255,255,255,.04)';X.fillRect(c[0]-4,y-4.3,c[5]-c[0]+40,8.6)}r.slice(0,6).forEach((v,j)=>txt(v,c[j],y,{sz:i?4.8:5.2,big:!i||!j?1:0,al:j?'center':'left',c:i===0?'#ffd23a':j===0?(r[6]||'#f99'):j>=3?'#9f9':'#fff',lw:1}))});
-   txt('Keyboard P1: U I O = LP MP HP \u2022 J K L = LK MK HK \u2022 H = THROW \u2022 SPACE = METER \u2022 Q/E = tabs (Q blocks in button mode). Rebind in Settings > Keyboard.',W/2,top+rows.length*8.6+4,{sz:4,c:'#ccc',lw:.8,b:0})}
+   txt('Keyboard P1: U I O = LP MP HP \u2022 J K L = LK MK HK \u2022 H = THROW \u2022 SPACE = STORY STAR \u2022 Q/E = tabs (Q blocks in button mode). Rebind in Settings > Keyboard.',W/2,top+rows.length*8.6+4,{sz:4,c:'#ccc',lw:.8,b:0})}
   else if(s.tab===2){const L=[['CLASSIC (default)','Stick on the left half. Right side: LP MP HP on the top row, LK MK HK below, THROW and SP buttons.'],['SIMPLE','PUNCH, KICK, SPECIAL, THROW. SPECIAL + direction fires a special (easy specials are on).'],['EDIT','Settings > Edit Touch Layout: unlock, drag to move, pinch/buttons to resize, lock.'],['BLOCK','Hold the stick away from the opponent. Turn on BLOCK BUTTON in settings for a dedicated button.'],['PAUSE','Tap II (top). The move list opens from pause.']];
    L.forEach(([a,b],i)=>{txt(a,SAFE.l+20,top+6+i*16,{sz:5.4,big:1,al:'left',c:'#ffd23a',lw:1});txt(b,SAFE.l+20,top+13+i*16,{sz:4.4,al:'left',c:'#ddd',lw:.8,b:0})})}
-  else{const L=[['MOTIONS','\u2193\u2198\u2192 QCF \u2022 \u2193\u2199\u2190 QCB \u2022 \u2192\u2193\u2198 DP \u2022 \u2190\u2199\u2193\u2198\u2192 HCF \u2022 360\u00b0 full circle \u2022 [\u2190]\u2192 charge 1 sec \u2022 RAPID = tap 3x'],['CANCELS','Any normal that connects can cancel into a special. Lights chain into lights. Target combos: see each MOVE LIST.'],['CLOSE / FAR','Standing normals change up close (elbows, knees, uppercuts). \u2192 or \u2190 + button = command normals.'],['THROWS','LB when close (\u2190+LB = back throw), or close \u2192/\u2190 + MP/HP. Tech by pressing LB as they grab.'],['DEFENCE','Hold \u2190 to block high, \u2199 low. Tap \u2192 just before a hit to PARRY. \u2190\u2190 backdash is briefly invincible.'],['FINISHERS','During END THEM!: motion + button from the move list, or LT + \u2193/\u2191/\u2192.']];
+  else{const L=[['MOTIONS','\u2193\u2198\u2192 QCF \u2022 \u2193\u2199\u2190 QCB \u2022 \u2192\u2193\u2198 DP \u2022 \u2190\u2199\u2193\u2198\u2192 HCF \u2022 360\u00b0 full circle \u2022 [\u2190]\u2192 charge 1 sec \u2022 RAPID = tap 3x'],['CANCELS','Any normal that connects can cancel into a special. Lights chain into lights. Target combos: see each MOVE LIST.'],['CLOSE / FAR','Standing normals change up close (elbows, knees, uppercuts). \u2192 or \u2190 + button = command normals.'],['THROWS','LB when close (\u2190+LB = back throw), or close \u2192/\u2190 + MP/HP. Tech by pressing LB as they grab.'],['DEFENCE','Hold \u2190 to block high, \u2199 low. Tap \u2192 just before a hit to PARRY. \u2190\u2190 backdash is briefly invincible.'],['FINISHERS','During FINISH THEM!: motion + button from the move list, or LT + \u2193/\u2191/\u2192.']];
    L.forEach(([a,b],i)=>{txt(a,SAFE.l+16,top+5+i*14,{sz:5.2,big:1,al:'left',c:'#ffd23a',lw:1});txt(b,SAFE.l+16,top+11.5+i*14,{sz:4.3,al:'left',c:'#ddd',lw:.8,b:0})})}
   hint('B / ESC: back')}};
 // ---- move list ----
@@ -82,9 +81,9 @@ moveList=function(ch,pg,sc=0,story){const st=STYLE[ch.id]||{};txt((pg?'P2: ':'P1
  hd('MOVEMENT & DEFENCE');row('BLOCK',OPT.blockBtn?'hold BLOCK (LB / Q)  \u2022  \u2193 + BLOCK = low':'hold \u2190 (away)  \u2022  \u2199 = low block');row('THROW',OPT.blockBtn?'close \u2192/\u2190 + MP or HP':'LB / H close  \u2022  \u2190 + LB = back throw  \u2022  close \u2192 + MP/HP');row('DASH / RUN','\u2192\u2192  (keep holding \u2192 to run)  \u2022  \u2190\u2190 backdash');row('SIDESTEP','\u2193\u2193'+(story?'':'  \u2014 dodges straight attacks'));row('JUMP','\u2191  \u2022  \u2197 / \u2196 flip jump'+(story?'  \u2014 story: TAP \u2191 jump, HOLD \u2191/\u2193 change lane':''));
  if(story){const c=ST&&ST.camp&&CAMPS[ST.camp];hd('STREET MOVES ('+(c?c.name:'STORY')+')  \u2014 same buttons as versus');
   row('WEAPON PICK UP','LP while standing on a weapon');row('WEAPON SWING','LP / MP / HP  (HP = knockdown)');row('WEAPON THROW','LB  \u2014 flies in an arc, lands, pick it up again');
-  row('STAR MOVE','LT + HP with < 2 bars  (spends a star \u2605)');if(!c||c.van)row('RIOT VAN BACKUP','LT + LB  (once per life, clears the screen)');
+  row('POLICE CALL','LT + HP  (once per stage)');if(!c||c.van)row('RIOT VAN BACKUP','LT + LB  (once per life, clears the screen)');
   row('HAIR GRAB','walk into a dizzy enemy, or LB up close');row('  KNEES / ELBOW / RISING KNEE','P x3  /  \u2193 + P  /  \u2191 + K');row('  THROW / BACK THROW','K or LB  /  \u2190 + K or LB');
   row('BACK ELBOW','\u2190 + HP with an enemy right behind you');row('CYCLONE KICK','LK + HK in the air');row('ESCAPE A BEAR-HUG','mash buttons + wiggle')}
- else{hd('FINISHERS  (during END THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,finTxt7(f.m,f.b)+'   [LT + '+['\u2193','\u2191','\u2192'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'\u2193 \u2193 + LB   [LT + \u2190]')}
+ else{hd('FINISHERS  (during FINISH THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,finTxt7(f.m,f.b)+'   [LT + '+['\u2193','\u2191','\u2192'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'\u2193 \u2193 + LB   [LT + \u2190]')}
  hd('SYSTEMS');['Parry: tap \u2192 (or \u2193 for lows) just before a hit. Tech roll: press any button as you land.','Juggles scale damage. Counter hits deal +20%. Specials do chip damage. Inputs during hit-freeze are buffered.'].forEach(note);
  X.restore()};

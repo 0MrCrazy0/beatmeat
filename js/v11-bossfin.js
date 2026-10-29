@@ -4,7 +4,7 @@ const BF11={win:300,near:72};
 {const _ko=sKO;sKO=function(a,d,dmg,o){
   if(typeof ST!=='undefined'&&ST&&d&&d.boss&&!d.pl&&!d.bf11&&a&&a.pl&&!TEST.noBossFin){
    d.bf11=1;d.hp=1;d.st='bfin';d.t=0;d.vx=0;d.vy=0;d.y=0;d.inv=99999;d.grab=null;
-   ST.bf={e:d,a,t:0,o:o||{},dmg};F.slow=0;SFX.announce&&SFX.announce();Voice.announce('END THEM!',{big:1});return}
+   ST.bf={e:d,a,t:0,o:o||{},dmg};F.slow=0;SFX.announce&&SFX.announce();Voice.announce('FINISH THEM!',{big:1});return}
   return _ko.apply(this,arguments)};
  BF11.ko=_ko}
 {const _se=sEnemy;sEnemy=function(e){if(e.st==='bfin'){e.t++;e.x+=Math.sin(e.t/9)*.15;return}return _se.apply(this,arguments)}}
@@ -29,13 +29,13 @@ function bfTick11(){const B=ST.bf;if(!B)return;B.t++;const e=B.e;
 {const _t=storyTick;storyTick=function(){if(ST&&ST.bf&&!ST.talk&&SC.id==='story'&&!(typeof KC9!=='undefined'&&KC9.rp)){if(F.hitstop>0)F.hitstop=0;bfTick11()}return _t.apply(this,arguments)}}
 // sPlayer: don't let the execution button fire meter moves during the window
 {const _pl=sPlayer;sPlayer=function(P){if(ST.bf&&PAD[P.p]&&P.bfNear){const I=PAD[P.p];if((I.h.sp||I.p.sp)&&(I.h.u||I.h.d||I.h.l||I.h.r)){I._sp11=[I.h.sp,I.p.sp];I.h.sp=0;I.p.sp=0;const r=_pl.apply(this,arguments);I.h.sp=I._sp11[0];I.p.sp=I._sp11[1];return r}}return _pl.apply(this,arguments)}}
-{const _h=sHUD;sHUD=function(){_h.apply(this,arguments);const B=ST&&ST.bf;if(!B||(typeof KC9!=='undefined'&&KC9.rp))return;const e=B.e,pad=LAST_DEV&&LAST_DEV[0]==='pad',m=pad?'LT':'METER';
- const a=Math.sin(performance.now()/110)*.25+.75;X.save();X.globalAlpha=a;txt('END THEM!',W/2,H*.3,{sz:22,big:1,grad:['#ff4040','#600']});X.restore();
- const near=ST.ps.some(P=>P&&P.bfNear);const y=H-SAFE.b-40;X.fillStyle='rgba(0,0,0,.62)';rrect(X,W/2-125,y-10,250,20,5);X.fill();
- txt(near?m+' + \u2193 HEAD RIP  \u2022  \u2191 BURST  \u2022  \u2192/\u2190 DISMEMBER':'GET CLOSE TO THE BOSS, THEN '+m+' + DIRECTION',W/2,y,{sz:6.5,big:1,c:'#ffd23a',lw:1.4});
+{const _h=sHUD;sHUD=function(){_h.apply(this,arguments);const B=ST&&ST.bf;if(!B||(typeof KC9!=='undefined'&&KC9.rp))return;const e=B.e,pad=LAST_DEV&&LAST_DEV[0]==='pad',m=pad?'LT':(typeof CTRL_SCHEME!=='undefined'&&CTRL_SCHEME==='story'?'GRAB':'METER');
+ const a=Math.sin(performance.now()/110)*.25+.75;X.save();X.globalAlpha=a;txt('FINISH THEM!',W/2,H*.3,{sz:22,big:1,grad:['#ff4040','#600']});X.restore();
+ const near=ST.ps.some(P=>P&&P.bfNear);const y=H-SAFE.b-40;X.fillStyle='rgba(0,0,0,.62)';rrect(X,W/2-150,y-10,300,20,5);X.fill();
+ txt(near?m+' + \u2193 HEAD RIP  \u2022  \u2191 BURST  \u2022  \u2192/\u2190 DISMEMBER'+(typeof CTRL_SCHEME!=='undefined'&&CTRL_SCHEME==='story'?'  \u2022  GRAB':''):'GET CLOSE TO THE BOSS, THEN '+m+' + DIRECTION',W/2,y,{sz:6.5,big:1,c:'#ffd23a',lw:1.4});
  const k=1-B.t/BF11.win;X.fillStyle='#400';X.fillRect(W/2-60,y+6,120,2.5);X.fillStyle='#f33';X.fillRect(W/2-60,y+6,120*k,2.5);
  const ex=e.x-ST.cam,ey=SFY(e.z)-e.y-92+Math.sin(performance.now()/150)*3;txt('\u25bc',ex,ey,{sz:10,c:'#ff3030',lw:1.5})}}
 // any normal/special/weapon hit on the staggered boss lands and ends it as a regular KO (kill-cam included)
 {const _hit=sHit;sHit=function(a,d,dmg,o){if(d&&d.st==='bfin'&&ST.bf&&ST.bf.e===d&&a&&a.pl){ST.bf=null;d.inv=0;d.st='idle';d.t=0;d.hp=1;BF11.last={kind:'hit'};return _hit.call(this,a,d,Math.max(dmg,1),o)}return _hit.apply(this,arguments)}}
-// versus: the dazed loser can be hit straight away during END THEM! (even while still standing up)
+// versus: the dazed loser can be hit straight away during FINISH THEM! (even while still standing up)
 {const _hu=hurt;hurt=function(f){if(typeof F!=='undefined'&&F&&F.phase==='finish'&&f===F.lose&&(f.st==='getup'||f.st==='down')&&f.inv<=0){const s=f.st;f.st='dizzy';try{return _hu.apply(this,arguments)}finally{f.st=s}}return _hu.apply(this,arguments)}}

@@ -1,5 +1,5 @@
 'use strict';
-// ===== SPLATTER CIRCUIT v4: CAMPAIGNS - "Take Back the City" & "Blood Vendetta" =====
+// ===== BEAT MEAT v4: CAMPAIGNS - "Take Back the City" & "Blood Vendetta" =====
 // Created by MrCrazy - game idea, design & direction.
 // Story players are full versus fighters: same buttons, motions, specials, strings, supers, X-rays and per-fighter physics.
 // ---------- extra themes, enemies, items ----------
@@ -23,8 +23,8 @@ const CREW={duke:['razor','DUKE MARINO',40],vesper:['hex','VESPER',160],sal:['tu
 for(const k in CREW){const[b,n,h]=CREW[k];mkCrew(b,'c_'+k,n,h)}
 function W8(len,pools,mid){const n=6,out=[];for(let i=0;i<n;i++){const x=Math.round(200+(len-280)*i/(n-1));out.push([x,i===n-1?'BOSS,'+pools[i%pools.length]:i===2&&mid?'MID,'+pools[i%pools.length]:pools[i%pools.length]])}return out}
 const CAMPS={
- city:{name:'TAKE BACK THE CITY',tag:'STORY 1',style:'Street brawler \u2022 Star moves \u2022 RIOT VAN backup',van:1,col:'#ffd23a',
-  intro:[['narr','The Malgrave Family bought the mayor, the courts and the cops. Then they bought the streets, one block at a time.'],['P1','They forgot to buy me.'],['narr','Eight districts. Seven lieutenants. One family at the top.'],['P1','I\'m taking back the city. Block by block.']],
+ city:{name:'TAKE BACK THE CITY',tag:'STORY 1',style:'Four new fighters \u2022 Star moves \u2022 RIOT VAN backup',van:1,col:'#ffd23a',
+  intro:[['narr','The Malgrave Family bought the mayor, the courts and the cops. Then they bought the streets, one block at a time.'],['narr','Four people they could not buy: Jax Rourke, a cop thrown off the force for refusing a bribe. Rena Vale, a kickboxing champ. Brick Brannigan, a wrestler who would not throw his fights. Kenji Arata, whose dojo the Family burned down.'],['P1','They forgot to buy us.'],['narr','Eight districts. Seven lieutenants. One family at the top.'],['P1','We\'re taking back the city. Block by block.']],
   stages:[
    {name:'NEON ROW',sub:'STAGE 1',th:'street',len:1500,music:'s0',mid:'sol',boss:'c_duke',w:['thug,thug,thug','thug,knife,thug2','thug2,thug2,knife','biker,thug,thug','bruiser,thug,knife','thug,thug2'],crates:[[300,'apple'],[620,'pipe'],[900,'star'],[1150,'burger']],
     intro:[['narr','Neon Row. The Family\'s collectors work every door on this street.'],['P1','Collection day is cancelled.']],bossTalk:[['B','Mr. Malgrave sends his regards.'],['P1','Send him yours. In pieces.']]},
@@ -44,8 +44,8 @@ const CAMPS={
     intro:[['narr','The penthouse. Victor Malgrave has watched the whole fight from up here.'],['P1','Show\'s over, Victor.']],bossTalk:[['B','This city was dying before I fed on it. I am the only thing holding it up.'],['P1','Then it\'s time it learned to stand.']]}],
   ending:{good:[['narr','Victor Malgrave falls forty floors into the street he owned.'],['narr','The Family\'s books hit every newsroom by morning. The bent cops are arrested by honest ones.'],['P1','The city\'s ours again.'],['narr','TAKE BACK THE CITY - COMPLETE']],
    bad:[['narr','Victor Malgrave falls. But the Family\'s books burn before anyone can read them.'],['narr','By winter, a new Malgrave sits in the penthouse.'],['P1','Then I\'ll come back. As many times as it takes.'],['narr','ENDING B - Clear the last two stages without a continue for the true ending.']]}},
- vendetta:{name:'BLOOD VENDETTA',tag:'STORY 2',style:'Revenge brawler \u2022 Hair-grab knees \u2022 Back elbow \u2022 Hazards',van:0,col:'#ff3040',
-  intro:[['narr','Midnight. The garage door explodes inward.'],['narr','Saint Kane\'s crew drags NOVA out into the dark, and Kane leaves a calling card soaked in oil.'],['P1','Nova!'],['narr','Find Kane. Get her back. Make every one of them pay.']],
+ vendetta:{name:'BLOOD VENDETTA',tag:'STORY 2',style:'The Calder brothers \u2022 Grabs & suplexes \u2022 Weapons \u2022 Hazards',van:0,col:'#ff3040',
+  intro:[['narr','Midnight. Calder Brothers Garage. The door explodes inward.'],['narr','Saint Kane\'s crew drags NOVA out into the dark: the brothers\' oldest friend and the best mechanic on the east side. Kane leaves a calling card soaked in oil.'],['P1','Nova!'],['narr','Ray and Dane Calder pick up their gloves. Find Kane. Get her back. Make every one of them pay.']],
   stages:[
    {name:'BURNING GARAGE',sub:'MISSION 1',th:'garage',len:1500,music:'s3',mid:'razor',boss:'c_torch',w:['thug,thug,thug2','knife,thug,thug','bruiser,thug2','biker,thug,knife','hugger,thug,thug2','thug,knife'],crates:[[300,'pipe'],[700,'apple'],[1100,'burger']],
     intro:[['P1','Torch. You lit the fuse.'],['narr','MISSION 1 - BURNING GARAGE']],bossTalk:[['B','Kane said to leave you breathing. I hate following orders.'],['P1','Then you\'ll love this.']]},
@@ -235,7 +235,7 @@ drawStory=function(){if(!ST)return;F.camX=ST.cam;_drawStory();drawVan();
  // stars, meter bars and backup indicator under each HUD
  const pw=Math.min(150,(W-SAFE.l-SAFE.r-20)/2);[0,1].forEach(i=>{const P=ST.ps[i];if(!P||!P.vs)return;const x=i?W-SAFE.r-6-pw:SAFE.l+6,y=Math.max(4,SAFE.t+4)+27;
   for(let k=0;k<3;k++){X.fillStyle=k<P.stars?'#ffd23a':'rgba(255,255,255,.15)';X.beginPath();for(let j=0;j<10;j++){const r=j%2?1.6:3.6,a=j*Math.PI/5;X.lineTo(x+6+k*9+Math.sin(a)*r,y+4-Math.cos(a)*r)}X.closePath();X.fill()}
-  const bars=Math.floor(P.meter/100);txt('METER '+bars+'/3',x+36,y+4.5,{sz:4.4,big:1,al:'left',c:bars?'#6cf':'#678',lw:.8});if(ST.van)txt(ST.vanUsed?'VAN USED':'VAN READY ('+glyph(P.p,'sp')+'+'+glyph(P.p,'th')+')',x+80,y+4.5,{sz:4.2,big:1,al:'left',c:ST.vanUsed?'#567':'#9cf',lw:.8})})};
+  const bars=Math.floor(P.meter/100);if(P.bz){const rd=P.call12St!==ST.stage||!P.call12Used;txt((ST.van?'RIOT VAN ':'POLICE CALL ')+(rd?'READY':'USED')+(rd&&!/^CALL$/i.test(glyph(P.p,'sp'))?' ['+glyph(P.p,'sp')+']':''),x+36,y+4.5,{sz:4.2,big:1,al:'left',c:rd?'#9cf':'#567',lw:.8})}else txt('METER '+bars+'/3',x+36,y+4.5,{sz:4.4,big:1,al:'left',c:bars?'#6cf':'#678',lw:.8});if(ST.van&&!P.bz)txt(ST.vanUsed?'VAN USED':'VAN READY ('+glyph(P.p,'sp')+'+'+glyph(P.p,'th')+')',x+(P.bz?92:80),y+4.5,{sz:4.2,big:1,al:'left',c:ST.vanUsed?'#567':'#9cf',lw:.8})})};
 // ---------- cutscenes ----------
 SCN.cutscene={enter(s){s.i=0;s.t=0;s.k=0},update(s){s.k=Math.min(1,s.k+.06);const L=s.pages||[];if((s.t>14&&(anyP('lp')||anyP('st')||anyP('hp')||s.tap))||TEST.demo&&s.t>30){s.tap=0;s.i++;s.t=0;SFX.move();if(s.i>=L.length){const f=s.then;s.then=null;if(f)f();else go('menu')}}if(anyP('se')&&s.t>5){const f=s.then;s.then=null;if(f)f();else go('menu')}},
  draw(s){const L=s.pages||[],l=L[Math.min(s.i,L.length-1)]||['narr',''],C=CAMPS[s.camp||G.camp];const th=(SSTAGES[0]||{}).th||'street';sBG(s.bg||th,s.i*60+s.t*.3,s.t);X.fillStyle='rgba(0,0,0,.55)';X.fillRect(0,0,W,H);

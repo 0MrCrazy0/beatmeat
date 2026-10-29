@@ -19,7 +19,7 @@ function spin8(f,win){const L=[];for(let k=f.nh.length-1;k>=0;k--){const[d,t]=f.
  let best=1,run=1,dir=0;for(let i=1;i<L.length;i++){const a=RING8.indexOf(L[i-1]),b=RING8.indexOf(L[i]);if(a<0||b<0){run=1;dir=0;continue}let st=(b-a+8)%8;st=st===1?1:st===7?-1:0;
   if(st&&(dir===0||st===dir)){run++;dir=st}else{run=1;dir=0}best=Math.max(best,run)}return best}
 function recent7(f,set,win){for(let k=f.nh.length-1;k>=0;k--){const[d,t]=f.nh[k];if(F.tick-t>win)break;if(set.includes(d))return true}return false}
-function easy7(f){return f.cpu||OPT.easySp||(f.side!=null&&OPT.tlayout==='simple'&&typeof LAST_DEV!=='undefined'&&LAST_DEV[f.p??f.side]==='touch')}
+function easy7(f){return!!f.cpu}
 function motion7(f,m){const L=OPT.simple?1.8:1;
  if(PAT7[m])return seq7(f,PAT7[m],WIN7[m]*L);
  if(m==='CBF')return chargeOK(f,'B')&&(f.cur%3===0||recent7(f,[3,6,9],10));
@@ -53,7 +53,7 @@ function threat7(f,o){if(F.story&&typeof ST!=='undefined'&&ST&&f.vs)return story
  return 0}
 function storyThreat7(P){for(const e of ST.en){if(e.dead||Math.abs(e.z-P.z)>14)continue;const dx=Math.abs(e.x-P.x);if(dx<74&&(e.st==='atk'||e.st==='special'))return 1}
  for(const q of ST.projs||[])if(q.team==='e'&&Math.abs(q.z-P.z)<14&&Math.abs(q.x-P.x)<120&&Math.sign(P.x-q.x)===Math.sign(q.vx||0))return 1;return 0}
-control=function(f,o,I){const raw=I.h,h=Object.assign({},I.h),p=I.p;I.h=h;const dir=(h.r?1:0)-(h.l?1:0),fwd=dir*f.face;
+control=function(f,o,I){if(!f.cpu&&I&&I.p){I.p.sp=0;if(I.h)I.h.sp=0}const raw=I.h,h=Object.assign({},I.h),p=I.p;I.h=h;const dir=(h.r?1:0)-(h.l?1:0),fwd=dir*f.face;
  // numpad buffer
  if(!f.nh)f.nh=[];const nd=numDir7(h,f.face,I.rawd);if(nd!==f.cur){f.cur=nd;f.nh.push([nd,F.tick]);if(f.nh.length>28)f.nh.shift()}
  if(p.d)f.hist.push(['D',F.tick]);if(p.u)f.hist.push(['U',F.tick]);
@@ -70,13 +70,13 @@ control=function(f,o,I){const raw=I.h,h=Object.assign({},I.h),p=I.p;I.h=h;const 
  const canCtl=F.phase==='fight'||(F.phase==='finish'&&f===F.win);
  if(!canCtl){if(FREE.has(f.st))setIf(f,'idle');return}
  if(f.st==='air'&&f.hp>0&&(p.th||btn))f.techT=F.tick;
- if((f.st==='hit'||f.st==='air')&&f.hp>0&&f.meter>=BAR&&!f.broke&&((p.sp&&(h.th||h.bl))||(p.th&&h.sp)||(p.bl&&h.sp))&&F.phase==='fight'){breaker(f,o);return}
  if(f.bstun>0){f.bstun--;if(f.bstun===0)setSt(f,h.bl?(h.d?'cblock':'block'):'idle');return}
  if(FREE.has(f.st)&&Math.abs(o.x-f.x)>2)f.face=o.x>f.x?1:-1;
  // finisher
- if(F.phase==='finish'&&(btn||p.sp||p.th)&&f.y===0&&FREE.has(f.st)){let fi=-1;
-  if(p.sp){if(h.d)fi=0;else if(h.u)fi=1;else if(fwd>0)fi=2;else if(fwd<0)fi=3}
-  if(fi<0)f.ch.fin.forEach((fn,i)=>{if(fi<0&&btn===fn.b&&motionOK(f,fn.m,50))fi=i});
+ if(F.phase==='finish'&&(btn||p.th)&&f.y===0&&FREE.has(f.st)){let fi=-1;
+  // v12: the SUPER input is the finisher: QCF,QCF + punch = finisher 1, + kick = finisher 2 (no meter needed)
+  if(fi<0&&btn&&motion7(f,'QCF2'))fi=typ==='K'?1:0;
+  if(fi<0&&btn&&v12qcb2(f,70))fi=2;
   if(fi<0&&(p.th||p.bl)&&motion(f,'DD',40))fi=3;
   if(fi===3&&!STAGE_FIN[F.stIdx])fi=2;
   if(fi>=0&&f.ch.fin[Math.min(fi,2)]){startFinisher(f,o,fi);return}}
@@ -84,31 +84,24 @@ control=function(f,o,I){const raw=I.h,h=Object.assign({},I.h),p=I.p;I.h=h;const 
  const spCancel=f.st==='special'&&f.hitDone&&f.spec&&!f.spec.super&&f.t>4;
  const rapidReady=f.st==='atk'&&f.atk&&!f.atk.air&&!f.atk.thr&&BTN6.some(b=>f.atk.key===b||(f.atk.key||'').endsWith(b));
  const twoP=(p.lp?1:0)+(p.mp?1:0)+(p.hp?1:0)>=2||((p.lp||p.mp||p.hp)&&(h.lp+h.mp+h.hp>=2)),twoK=(p.lk?1:0)+(p.mk?1:0)+(p.hk?1:0)>=2||((p.lk||p.mk||p.hk)&&(h.lk+h.mk+h.hk>=2));
- const exOK=f.meter>=BAR&&(h.sp||(typ==='P'?twoP:typ==='K'?twoK:0)||(f.cpu&&h.rn));
- // super / x-ray: double QCF + P (super, 2 bars) / + K (x-ray, 3 bars)
- const q2=btn&&motion7(f,'QCF2');
- if((ready||spCancel)&&(f.y===0||f.st==='jump')&&F.phase==='fight'&&q2){if(typ==='K'&&f.meter>=300){startXray(f,o);return}if(typ==='P'&&f.meter>=200){startSuper(f,o);return}}
+ const exOK=false;// v12.2: no meter, no EX specials
  // rekka follow-up
- if(f.st==='special'&&f.spec.t==='rekka'&&f.rk<2&&f.t>=8&&f.t<=30&&((typ&&typ===f.spec.b)||(p.sp&&easy7(f)))){f.rk++;setSt(f,'special');f.hitDone=0;sideTxt(f,f.spec.names[f.rk],{kind:'sp'});SFX.special();return}
+ if(f.st==='special'&&f.spec.t==='rekka'&&f.rk<2&&f.t>=8&&f.t<=30&&((typ&&typ===f.spec.b)||(p.sp&&f.cpu))){f.rk++;setSt(f,'special');f.hitDone=0;sideTxt(f,f.spec.names[f.rk],{kind:'sp'});SFX.special();return}
  // ground specials (also cancel from normals)
- if((btn||(p.sp&&easy7(f)))&&(f.y===0||(f.st==='jump'&&f.t<4)||f.st==='bdash')&&(ready||rapidReady)){let si=-1;const sp=f.ch.sp;
+ if((btn||(p.sp&&f.cpu))&&(f.y===0||(f.st==='jump'&&f.t<4)||f.st==='bdash')&&(ready||rapidReady)){let si=-1;const sp=f.ch.sp;
   if(btn){const order=sp.map((s,i)=>i).filter(i=>!sp[i].air&&sp[i].b===typ).sort((a,b)=>(PRI7[sp[b].m]||0)-(PRI7[sp[a].m]||0));
    for(const i of order){const m=sp[i].m;if(m==='RAPID'?rapid7(f,typ):(rapidReady&&!ready)?false:motion7(f,m)){si=i;break}}}
   else{const want=fwd>0?1:fwd<0?2:h.d?3:h.u?4:0;si=sp[want]&&!sp[want].air?want:0}
   if(si>=0){if(f.st==='jump'||f.st==='bdash'){f.y=0;f.vy=0;f.vx=0}if(trySpecial(f,o,si,exOK,btn?str7(btn):1)){f.hist.length=0;f.nh.length=0;if(sp[si].m==='RAPID'){f.rpP.length=0;f.rpK.length=0}return}}}
- // meter shortcuts: LT + HP = super, LT + HK = x-ray
- if((ready||spCancel)&&(f.y===0||f.st==='jump')&&F.phase==='fight'){
-  const su=(p.sp&&h.hp)||(p.hp&&h.sp),xr=(p.sp&&h.hk)||(p.hk&&h.sp);
-  if(xr&&f.meter>=300){startXray(f,o);return}if(su&&f.meter>=200){startSuper(f,o);return}}
  // target combos + light chains
  if(btn&&f.st==='atk'&&!f.atk.air&&f.hitDone&&f.t>=f.atk.s){let nx=null;
   if(f.tcs&&f.tcs[f.tci+1]===btn){f.tci++;nx=btn}
-  else{for(const s of f.ch.tc||[f.ch.combo]){if(s[0]===f.atk.key&&s[1]===btn){f.tcs=s;f.tci=1;nx=btn;break}}}
+  else{for(const s of f.ch.tc||[f.ch.combo]){if((s[0]===f.atk.key||'n'+s[0]===f.atk.key)&&s[1]===btn){f.tcs=s;f.tci=1;nx=btn;break}}}
   if(nx){const a=Object.assign({},AT(f,nx));a.key=nx;a.s=Math.max(2,a.s-2);a.tc=f.tci;if(f.tci>=2&&Math.abs(o.x-f.x)>36)a.step=Math.max(a.step||0,2.5);if(f.tci===f.tcs.length-1){a.kd=1;a.vy=5.5;a.dmg*=1.2;a.heavy=1}startAtk(f,a);
    if(f.tci===f.tcs.length-1||f.tci>=3){const S=f.ch.style,ix=(f.ch.tc||[]).indexOf(f.tcs);sideTxt(f,(S&&S.tcn&&S.tcn[ix]?S.tcn[ix]+' ':'STRING ')+(f.tci+1),{kind:'tc',y:62,sz:7})}return}
   if(LIGHTS7.has(f.atk.key)&&(btn==='lp'||btn==='lk')&&(f.lch||0)<3){f.lch=(f.lch||0)+1;const k=h.d?'c'+btn:btn;const a=Object.assign({},AT(f,k),{key:k});startAtk(f,a);return}}
  // air specials
- if((btn||(p.sp&&easy7(f)))&&f.st==='jump'&&!f.airShot&&f.y>14){const sp=f.ch.sp;let si=sp.findIndex(s=>s.air&&(btn?(s.b===typ&&h.d):h.d));
+ if((btn||(p.sp&&f.cpu))&&f.st==='jump'&&!f.airShot&&f.y>14){const sp=f.ch.sp;let si=sp.findIndex(s=>s.air&&(btn?(s.b===typ&&h.d):h.d));
   if(si<0)si=sp.findIndex(s=>s.t==='proj'&&(btn?(s.b===typ&&s.m!=='RAPID'&&motion7(f,s.m)):p.sp));
   if(si>=0){const s0=sp[si],s=variant7(s0,btn?str7(btn):1);f.airShot=1;f.hist.length=0;f.nh.length=0;if(s0.air){trySpecial(f,o,si,exOK,btn?str7(btn):1);return}
    if(!F.projs.some(q=>q.o===f&&!q.multi)){F.projs.push({x:f.x+f.face*18,y:f.y+40,vx:f.face*s.spd*.9,vy:-1.6,o:f,s,t:0,air:1});SFX.proj();buzz('light',f);sideTxt(f,'AIR '+s.n,{kind:'sp'});f.vy=Math.max(f.vy,1.5);return}}}

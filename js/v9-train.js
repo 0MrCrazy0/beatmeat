@@ -33,8 +33,8 @@ function trials9(f){const sp=(f.ch.sp||[]).filter(s=>!s.air&&s.m!=='RAPID'&&s.m!
  if(chg&&air<40){T.push({n:'CROUCH-CHARGE JAB CANCEL',st:['clp','SP:'+s0.n]});T.push({n:'CROUCH-CHARGE SHIN CANCEL',st:['clk','SP:'+s0.n]})}
  else{if(s0)T.push({n:'JUMP-IN BREAD & BUTTER',st:['jhp','cmk','SP:'+s0.n]});
  if(chg)T.push({n:'AIR-CHARGE JUMP-IN (hold \u2199 in the air)',st:['jmk','cmk','SP:'+s0.n]});else if(tcs[1]&&s0)T.push({n:'STRING INTO SPECIAL',st:tcs[1].slice(0,2).concat(['SP:'+s0.n])})}
- const sg=f.ch.style&&f.ch.style.sup&&f.ch.style.sup.t==='sgrab';T.push(sg?{n:'SUPER GRAB (get close)',st:['SUPER'],meter:1}:{n:'SUPER CANCEL',st:['cmk','SUPER'],meter:1});return T}
-{const _st=startThrow;startThrow=function(f,o,s){const sup=f.spec&&f.spec.super;const r=_st.apply(this,arguments);if(sup&&F&&F.training&&TR9.trial&&f===F.p[0]){const T=trials9(f)[TR9.trial-1];if(T&&T.st.length===1&&T.st[0]==='SUPER'){TR9.cur=['SUPER'];TR9.prog=1;TR9.clearT=120;SFX.special&&SFX.special()}}return r}}
+ return T}
+{const _st=startThrow;startThrow=function(f,o,s){const sup=f.spec&&f.spec.super;const r=_st.apply(this,arguments);if(sup&&F&&F.training&&TR9.trial&&f===F.p[0]){const T=trials9(f)[TR9.trial-1];if(T&&T.st.length===1&&T.st[0]==='SUPER'){TR9.cur=['SUPER'];TR9.prog=1;TR9.clearT=120;TR9.done=TR9.done||{};TR9.done[f.ch.id+TR9.trial]=1;SFX.special&&SFX.special()}}return r}}
 const tokOK9=(want,got)=>want===got||(want==='mp'&&/^(n|f_)?mp$/.test(got))||(want===got.replace(/^n/,''))||(want.startsWith('j')&&got==='fly'&&want==='jhk');
 {const _ah=applyHit;applyHit=function(att,def,a){const r=_ah.apply(this,arguments);const fresh=att.cc<=1;
  if(F&&F.training&&TR9.trial&&att===F.p[0]&&def.hp<(def.mhp||1e9)+1){const tok=F.cut||a.super||(att.spec&&att.spec.super)?'SUPER':att.st==='special'&&att.spec?'SP:'+att.spec.n:att.atk?att.atk.key:null;
@@ -42,7 +42,7 @@ const tokOK9=(want,got)=>want===got||(want==='mp'&&/^(n|f_)?mp$/.test(got))||(wa
    TR9.prog=Math.max(fresh?0:TR9.prog,pr);if(pr>=T.st.length){TR9.clearT=120;TR9.done=(TR9.done||{});TR9.done[att.ch.id+TR9.trial]=1;SFX.special&&SFX.special()}}}}return r}}
 // a hit that lands on a non-combo state resets progress after a while
 {const _tt=trainingTick;trainingTick=function(){_tt.apply(this,arguments);const o=F.p[1];if(['idle','walk','crouch','block','cblock'].includes(o.st)&&o.t>20&&TR9.clearT<=0){TR9.prog=0;TR9.cur=[]}
- if(TR9.trial){const T=trials9(F.p[0])[TR9.trial-1];if(T&&T.meter)F.p[0].meter=METER_MAX}if(TR9.clearT>0&&--TR9.clearT===0){TR9.prog=0;TR9.cur=[]}if(TR9.msgT>0)TR9.msgT--}}
+ if(TR9.clearT>0&&--TR9.clearT===0){TR9.prog=0;TR9.cur=[]}if(TR9.msgT>0)TR9.msgT--}}
 // demo scripts (relative directions, frames, button)
 function demoSeq9(s){const b=s.b==='P'?'mp':'mk',M={QCF:[2,3,6],QCB:[2,1,4],DP:[6,2,3],RDP:[4,2,1],HCF:[4,1,2,3,6],HCB:[6,3,2,1,4],QCF2:[2,3,6,2,3,6]};
  if(M[s.m])return[[5,6],...M[s.m].map(d=>[d,3]),[M[s.m][M[s.m].length-1],4,b],[5,20]];
@@ -59,8 +59,9 @@ function demoSeq9(s){const b=s.b==='P'?'mp':'mk',M={QCF:[2,3,6],QCB:[2,1,4],DP:[
 {const _dh=drawTrainingHUD;drawTrainingHUD=function(){const T=F.training,inp=T.input;T.input=0;_dh.apply(this,arguments);T.input=inp;const f=F.p[0];
  if(inp){const L=TR9.log.slice(-14),x0=SAFE.l+6,y0=60;X.fillStyle='rgba(0,0,0,.55)';rrect(X,x0-2,y0-4,62,L.length*8+6,3);X.fill();
   L.forEach((e,i)=>{const y=y0+2+(L.length-1-i)*8;txt(ARW9[e.d],x0+3,y,{sz:6,al:'left',c:e.d===5?'#889':'#fff',lw:1});if(e.b)txt(e.b,x0+14,y,{sz:4.6,al:'left',c:'#ffd23a',lw:1});txt(String(e.n),x0+57,y,{sz:4.4,al:'right',c:'#9cf',lw:.8})})}
- if(TR9.msg&&TR9.msgT>0){X.globalAlpha=Math.min(1,TR9.msgT/30);txt(TR9.msg.s,W/2,H-SAFE.b-24,{sz:5,c:TR9.msg.ok?'#7f7':'#f88',lw:1.2});X.globalAlpha=1}
+ if(TR9.msg&&TR9.msgT>0){X.globalAlpha=Math.min(1,TR9.msgT/30);txt(TR9.msg.s,W/2,typeof tY12==='function'?tY12('msg'):H-SAFE.b-24,{sz:5,c:TR9.msg.ok?'#7f7':'#f88',lw:1.2});X.globalAlpha=1}
  const sp=f.ch.sp||[];if(TR9.try>=0&&sp[TR9.try]){const s=sp[TR9.try];txt('TRY THIS: '+s.n+'   '+motionTxt7(s.m,s.b),W/2,60,{sz:5.5,c:'#ffd23a',lw:1.2});if(TR9.demo)txt('DEMO',W/2,68,{sz:4.5,c:'#9cf',lw:1})}
- if(TR9.trial){const tr=trials9(f)[TR9.trial-1];if(tr){const xr=W-SAFE.r-6,w=118,y0=60;X.fillStyle='rgba(0,0,0,.6)';rrect(X,xr-w,y0-6,w+2,tr.st.length*8+16,3);X.fill();
+ if(TR9.trial&&typeof tY12==='function'&&tT12()){const tr=trials9(f)[TR9.trial-1];if(tr){txt((TR12.demo?'\u25b6 DEMO  ':'')+'TRIAL '+TR9.trial+': '+tr.n,W/2,56,{sz:4.8,c:'#9cf',lw:1});txt(tr.st.map((k,i)=>(i<TR9.prog?'\u2714':'\u25CB')+' '+nmOf9(f,k).replace(/ \(.*\)/,'')).join('  \u203a  '),W/2,63.5,{sz:4.4,c:TR9.prog>=tr.st.length?'#7f7':'#fff',lw:.9});if(TR9.clearT>0)txt('TRIAL CLEAR!',W/2,112,{sz:12,big:1,grad:['#fff','#7f7'],lw:1.6})}}
+ else if(TR9.trial){const tr=trials9(f)[TR9.trial-1];if(tr){const xr=W-SAFE.r-6,w=118,y0=60;X.fillStyle='rgba(0,0,0,.6)';rrect(X,xr-w,y0-6,w+2,tr.st.length*8+16,3);X.fill();
   txt('TRIAL '+TR9.trial+': '+tr.n,xr-w/2,y0,{sz:4.6,c:'#9cf',lw:1});tr.st.forEach((k,i)=>txt((i<TR9.prog?'\u2714 ':'\u25CB ')+nmOf9(f,k),xr-w+4,y0+9+i*8,{sz:4.2,al:'left',c:i<TR9.prog?'#7f7':'#fff',lw:.8}));
   if(TR9.clearT>0)txt('TRIAL CLEAR!',W/2,90,{sz:12,big:1,grad:['#fff','#7f7'],lw:1.6})}}}}

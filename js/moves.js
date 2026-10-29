@@ -108,7 +108,7 @@ warden:{style:'THRONE ARTS',arch:'OVERLORD \u2022 COUNTERS',desc:'A boss with ev
  sup:{n:'FINAL SENTENCE',t:'rain',col:'#ff2a6d',art:'void'},xr:{n:'CONDEMNED'},
  fin:[{n:'SENTENCED',m:'BFD',b:'hp',type:'decap'},{n:'ERASURE',m:'DDF',b:'lk',type:'shock'},{n:'QUARTERED',m:'FBF',b:'hk',type:'legs'}]}
 };
-// Stage finishers (some arenas): input SP+\u2190 or \u2193\u2193+BLOCK during END THEM! near the opponent
+// Stage finishers (some arenas): input SP+\u2190 or \u2193\u2193+BLOCK during FINISH THEM! near the opponent
 const STAGE_FIN={0:{n:'ROOFTOP DROP',type:'ledge'},1:{n:'CEILING SPIKES',type:'spikes'},2:{n:'CRUCIBLE POUR',type:'crucible'},4:{n:'THIRD RAIL',type:'train'},5:{n:'ACID BATH',type:'acidbath'}};
 const FINLBL3=['EXECUTION','ANNIHILATION','DISMEMBERMENT','STAGE KILL'];
 const METER_MAX=300,BAR=100;

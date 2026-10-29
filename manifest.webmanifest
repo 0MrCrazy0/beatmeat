@@ -1,6 +1,6 @@
 {
- "name": "Splatter Circuit: Pocket Carnage",
- "short_name": "Splatter",
+ "name": "Beat Meat: Tenderize Your Friends",
+ "short_name": "Beat Meat",
  "start_url": "./",
  "scope": "./",
  "display": "fullscreen",
@@ -87,6 +87,6 @@
    "purpose": "any"
   }
  ],
- "description": "An original gory 2D fighter and co-op street brawler. Version 11. Created by MrCrazy.",
- "version": "11.0"
+ "description": "An original gory 2D fighter and co-op street brawler. Version 13. Created by MrCrazy.",
+ "version": "13"
 }

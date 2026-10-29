@@ -44,7 +44,7 @@ function v6WallBounce(e,side){e.wb=0;e.vx=-side*2.4;e.vy=Math.max(e.vy,4.2);e.ju
  if(e.st!=='air')e.wb=0;if(e.st==='air'&&!e.dead)e.x=cl(e.x,ST.cam-30,ST.cam+W+30)}}
 {const _bg=sBG;sBG=function(th,cam,t){_bg(th,cam,t);if(!ST||!ST.v6w)return;for(const s of ST.v6w){const x=s.x-cam;if(x<-10||x>W+10)continue;s.t=Math.min(s.t+.2,40);
   X.fillStyle='#6a0010';X.beginPath();X.ellipse(x,s.y,s.r*.6,s.r,0,0,7);X.fill();X.fillRect(x-.6,s.y,1.2,s.r+s.t*.5);X.fillStyle='#a01020';X.beginPath();X.ellipse(x,s.y-.5,s.r*.35,s.r*.6,0,0,7);X.fill()}}}
-{const _d=SCN.story.draw;SCN.story.draw=function(s){_d.call(this,s);if(F&&F.v5flash>0){X.save();X.globalAlpha=.10*F.v5flash;X.fillStyle='#fff';X.fillRect(0,0,W,H);X.restore()}v6DrawXR()}}
+{const _d=SCN.story.draw;SCN.story.draw=function(s){_d.call(this,s);if(F&&F.v5flash>0){X.save();X.globalAlpha=Math.min(.09,.025*F.v5flash);X.fillStyle='#fff4e0';X.fillRect(0,0,W,H);X.restore()}v6DrawXR()}}
 // rebalance: the player kit is far stronger now (air combos, wall bounce, EX, X-Ray), so gang members carry more health
 {const _sp=sSpawn;sSpawn=function(k,side){const e=_sp(k,side);if(e){const m=e.boss?1.2:1.3;e.hp*=m;e.maxhp=e.hp}return e}}
 // launcher jump-cancel: hold UP after a landed launcher to chase the enemy into an air combo

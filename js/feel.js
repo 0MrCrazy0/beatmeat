@@ -1,5 +1,5 @@
 'use strict';
-// ===== SPLATTER CIRCUIT v4: movement feel, per-fighter physics, presets, pause, smooth rendering =====
+// ===== BEAT MEAT v4: movement feel, per-fighter physics, presets, pause, smooth rendering =====
 // Created by MrCrazy - game idea, design & direction.
 // ---- per-fighter physics: jump, gravity, weight, pre-jump, dashes, hitstun recovery, stride, size ----
 const PHYS={
@@ -30,7 +30,7 @@ if(SAVE.kmv!==5){if(SAVE.kmv!==4)SAVE.keymap=null;SAVE.touchPos={};SAVE.touchSiz
 try{buildTouch()}catch(e){}
 // ---- settings additions & pause-safe drawing ----
 const _setTabs=setTabs;
-setTabs=function(){const T=_setTabs();const c=T.find(t=>t[0]==='CONTROLS');if(c)c[1].splice(0,0,['BLOCKING',()=>OPT.blockBtn?'BLOCK BUTTON':'HOLD BACK',()=>{OPT.blockBtn=OPT.blockBtn?0:1;toast(OPT.blockBtn?'BLOCK BUTTON: LB / Q blocks, throw = close \u2192/\u2190+MP/HP':'HOLD BACK TO BLOCK (default)')}],['EASY SPECIALS',()=>OPT.easySp?'ON (LT+DIR)':'OFF',()=>{OPT.easySp=OPT.easySp?0:1}]);return T};
+setTabs=function(){const T=_setTabs();const c=T.find(t=>t[0]==='CONTROLS');if(c)c[1].splice(0,0,['BLOCKING',()=>OPT.blockBtn?'BLOCK BUTTON':'HOLD BACK',()=>{OPT.blockBtn=OPT.blockBtn?0:1;toast(OPT.blockBtn?'BLOCK BUTTON: LB / Q blocks, throw = close \u2192/\u2190+MP/HP':'HOLD BACK TO BLOCK (default)')}]);return T};
 function drawUnder(back){if(back&&(back.story||back.id==='story'))drawStory();else if(F&&F.p&&F.p.length)drawFight()}
 {const d=SCN.settings.draw;SCN.settings.draw=function(s){if(s.from==='pause'){const df=drawFight;drawFight=()=>{drawFight=df;try{drawUnder(s.back)}finally{drawFight=df}};try{d(s)}finally{drawFight=df}}else d(s)}}
 // controls screen can be opened from pause and returns there
@@ -42,7 +42,7 @@ G.restart=null;
 {const nf=newFight;newFight=function(...a){const r=nf(...a);G.restart={k:'fight',a};return r}}
 pauseItems=function(){const story=SC.story||(SC.back&&SC.back.story);const L=[];
  L.push(['RESUME',()=>{SC={id:story?'story':'fight',t:0};HITS=[]}]);L.push(['MOVE LIST',()=>{SC.list=1;SC.pg=0;SC.sc=0}]);
- if(!story&&F.training){const T=F.training,D=['stand','crouch','block','jump','cpu'];L.push(['DUMMY: '+T.dummy.toUpperCase(),()=>{T.dummy=D[(D.indexOf(T.dummy)+1)%D.length];F.p[1].cpu=T.dummy==='cpu';F.p[1].ai={act:null,cool:30}}],['HITBOXES: '+(T.boxes?'ON':'OFF'),()=>T.boxes^=1],['INPUT DISPLAY: '+(T.input?'ON':'OFF'),()=>T.input^=1],['FILL METER',()=>{F.p.forEach(f=>f.meter=METER_MAX);toast('METER FULL')}])}
+ if(!story&&F.training){const T=F.training,D=['stand','crouch','block','jump','cpu'];L.push(['DUMMY: '+T.dummy.toUpperCase(),()=>{T.dummy=D[(D.indexOf(T.dummy)+1)%D.length];F.p[1].cpu=T.dummy==='cpu';F.p[1].ai={act:null,cool:30}}],['HITBOXES: '+(T.boxes?'ON':'OFF'),()=>T.boxes^=1],['INPUT DISPLAY: '+(T.input?'ON':'OFF'),()=>T.input^=1])}
  L.push(['SETTINGS',()=>go('settings',{from:'pause',back:SC})]);L.push(['CONTROLS',()=>go('controls',{back:SC})]);
  L.push(['RESTART',()=>{if(story){if(window.campRestart)campRestart();SC={id:'story',t:0}}else if(F.training){const w=F.p.map(f=>f.wins);startRound();F.phase='fight';F.p.forEach((f,i)=>f.wins=w[i]);SC={id:'fight',t:0}}else if(G.restart){const a=G.restart.a;newFight(...a);SC={id:'fight',t:0}}HITS=[]}]);
  L.push([story?'SAVE & QUIT':'QUIT TO MENU',()=>{persist();Music.stop();go('menu')}]);return L};
@@ -60,7 +60,7 @@ function withInterp(fn){const a=cl(G.alpha,0,1);if(a>=.999||OPT.interp===0){fn()
 {const sd=SCN.story.draw,fd=SCN.fight.draw;SCN.story.draw=function(s){withInterp(()=>sd(s))};SCN.fight.draw=function(s){withInterp(()=>fd(s))}}
 // ---- on-screen controls: device-aware button badges (keyboard caps, pad face/shoulder icons, touch labels) ----
 const BADGE_COL={xb:{A:'#3cb44a',B:'#e0403a',X:'#2f7de1',Y:'#f0c020'},ps:{'\u2715':'#7aa7ff','\u25cb':'#ff6670','\u25a1':'#ff8fd8','\u25b3':'#3fd8b0'},sw:{}};
-function devOf(p){const g=GP_ON[p];if(g&&LAST_DEV[p]==='pad')return padType(g);if(p===0&&TCH.isTouch&&LAST_DEV[0]==='touch')return'touch';return'kb'}
+function devOf(p){const g=GP_ON[p];if(g&&LAST_DEV[p]==='pad')return padType(g);if(p===0&&touchUI12(0))return'touch';return'kb'}
 function badge(x,y,a,p,sz=1){const d=devOf(p),lbl=String(glyph(p,a));X.save();X.font='bold '+Math.round(5.4*sz)+'px sans-serif';const tw=Math.max(7*sz,X.measureText(lbl).width+5*sz),h=8*sz;
  const face=d!=='kb'&&d!=='touch'&&lbl.length<=2&&!/^[LRZ]/.test(lbl);const col=face?((BADGE_COL[d]||{})[lbl]||'#ddd'):'#ddd';
  X.fillStyle='rgba(0,0,0,.6)';X.strokeStyle=col;X.lineWidth=.8*sz;X.beginPath();if(face){X.arc(x+h/2,y,h/2,0,7)}else{const r=d==='kb'?1.5*sz:3*sz;X.roundRect?X.roundRect(x,y-h/2,tw,h,r):X.rect(x,y-h/2,tw,h)}X.fill();X.stroke();
@@ -85,10 +85,10 @@ moveList=function(ch,pg,sc=0,story){const st=STYLE[ch.id]||{};txt((pg?'P2: ':'P1
  const cm=Object.keys(ch.atk||{}).filter(k=>/^[fb]_/.test(k));cm.forEach(k=>{const c=ch.atk[k];row(c.n||'COMMAND NORMAL',(k[0]==='f'?'F':'B')+'+'+BTNN[k.slice(2)]+(c.oh?'  OVERHEAD':c.low?'  LOW':''))});
  hd('METER (3 BARS)');row('SUPER: '+(st.sup&&st.sup.n||''),'D,F,D,F+HP  or  SP+RUN  (2 bars)');row('X-RAY: '+(st.xr&&st.xr.n||''),'D,B,D,B+HK  or  SP+BLOCK  (3 bars)');if(!story)row('BREAKER','SP+BLOCK while being hit  (1 bar)');
  if(story){const c=ST&&ST.camp&&CAMPS[ST.camp];hd('STREET MOVES ('+(c?c.name:'STORY')+')');
-  row('STAR MOVE','SP+RUN with < 2 bars  (spends a star \u2605)');if(!c||c.van)row('RIOT VAN BACKUP','BLOCK+RUN  (once per life, clears the screen)');
+  row('POLICE CALL','SP  (once per stage)');if(!c||c.van)row('RIOT VAN BACKUP','BLOCK+RUN  (once per life, clears the screen)');
   row('GRAB','walk into a dizzy enemy');row('  HAIR-GRAB KNEES','while holding: LP x3');row('  ELBOW / RISING KNEE','\u2193+LP  /  \u2191+LK');row('  THROW / BACK THROW','LK or HK  /  \u2190+LK or HK');
   row('BACK ELBOW','\u2190+HP with an enemy right behind you');row('CYCLONE KICK','LK+HK in the air');row('WEAPONS','LP picks up \u2022 attack swings \u2022 HK throws knives');row('ESCAPE A BEAR-HUG','mash buttons + wiggle')}
- else{hd('FINISHERS  (during END THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,motionTxt3(f.m,f.b)+'   [SP+'+['D','U','F'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'D,D+BLOCK   [SP+B]')}
+ else{hd('FINISHERS  (during FINISH THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,motionTxt3(f.m,f.b)+'   [SP+'+['D','U','F'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'D,D+BLOCK   [SP+B]')}
  hd('NORMALS  startup/active/recovery  advantage');['lp','hp','lk','hk'].forEach(b=>{const a=ch.atk&&ch.atk[b];if(a)row(BTNN[b],frameData(a),'#ddd','#ffd23a')});
  hd('SYSTEMS');['Parry: tap \u2192 (or \u2193 for lows) just before a hit. Tech roll: press any button as you land.','Throw: \u2192+LP close. Juggles scale damage. Counter hits deal +20%. Chip damage on specials.','Inputs pressed during hit-freeze are buffered.'].forEach(note);
  X.restore()};

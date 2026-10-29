@@ -1,3 +1,5 @@
+// v12.2: shoulder armour sits on the shoulder (down and back) so it never covers the face in a high guard
+function padGeo12(k,sh,b){const r=(k==='shoulders'?4.9:3.4)*b;return{x:sh.x-r*.3,y:sh.y+r*.4,r}}
 'use strict';
 // ===== v2 vector character renderer: bezier rigs, gradients, rim light, expressive faces =====
 const D2R=Math.PI/180,OUT='#140a12';
@@ -178,7 +180,7 @@ function drawFighterV(g,ch,p,o={}){const R=rig(ch,p,o.big),pal=ch.pal,L=ch.look,
   const d=tlimbDir(a[0],a[1]),fx=a[1].x+d.ux*1.6,fy=a[1].y+d.uy*1.6;g.save();g.translate(fx,fy);g.rotate(Math.atan2(d.uy,d.ux));
   g.fillStyle=lgr(g,0,-3,0,3,[shade(pal.glove,1.45),c(pal.glove),shade(pal.glove,.45)]);rrect(g,-2.4*b,-2.6*b,5.4*b,5.2*b,1.8*b);g.fill();g.strokeStyle=OUT;g.lineWidth=.45;g.stroke();
   for(let i=-1;i<=1;i++)strokeP(g,[[2.2*b,i*1.5*b],[3*b,i*1.5*b]],rgba(OUT,.6),.25);ell(g,.4,-2.2*b,1.6*b,.9*b,shade(pal.glove,1.2));g.restore();
-  if(L.extra==='shoulders'||L.extra==='pads'){const r=(L.extra==='shoulders'?5.6:3.6)*b,cc=c(L.extra==='shoulders'?pal.top:pal.acc);g.fillStyle=rgr(g,sh.x+1,sh.y-2,r*1.3,[shade(cc,1.5),cc,shade(cc,.45)]);g.beginPath();g.arc(sh.x,sh.y,r,0,7);g.fill();g.strokeStyle=OUT;g.lineWidth=.45;g.stroke();
+  if(L.extra==='shoulders'||L.extra==='pads'){const _p=padGeo12(L.extra,sh,b),r=_p.r,cc=c(L.extra==='shoulders'?pal.top:pal.acc);sh={x:_p.x,y:_p.y};g.fillStyle=rgr(g,sh.x+1,sh.y-2,r*1.3,[shade(cc,1.5),cc,shade(cc,.45)]);g.beginPath();g.arc(sh.x,sh.y,r,0,7);g.fill();g.strokeStyle=OUT;g.lineWidth=.45;g.stroke();
    if(L.extra==='shoulders'){strokeP(g,[[sh.x-r*.7,sh.y],[sh.x+r*.7,sh.y]],shade(pal.top2,1),.8);ell(g,sh.x,sh.y-r*.45,.6,.6,'#ddd')}}};
  // cape / coat tails behind
  if(L.extra==='cape'){const t=ad(R.sh,n,-3.5),sw=Math.sin((o.t||0)*.07)*2,bt1=ad(ad(R.hip,n,-15+sw),{x:0,y:1},30*s),bt2=ad(ad(R.hip,n,-1),{x:0,y:1},33*s);g.fillStyle=lgr(g,t.x,t.y,bt1.x,bt1.y,[shade(pal.top2,1.1),pal.top2,shade(pal.top2,.3)]);
@@ -253,7 +255,7 @@ function skelV(g,R,o){const B='#f2ecd8',J='#c4bca4',sB=(a,q,w)=>{g.strokeStyle='
 function skullV(g,x,y,k,c='#efe8d2'){g.save();g.translate(x,y);g.scale(k,k);g.fillStyle=lgr(g,3,-6,-3,6,['#fffaf0',c,shade(c,.6)]);g.beginPath();g.ellipse(-.4,-1,5.8,5.6,0,0,7);g.fill();g.beginPath();g.moveTo(1,2);g.quadraticCurveTo(6.4,1.6,6,4.6);g.lineTo(1.6,6.2);g.quadraticCurveTo(-1,5,1,2);g.fill();g.strokeStyle='#3a2a1a';g.lineWidth=.4;g.stroke();
  ell(g,3.5,-.8,1.5,1.3,'#1a0a0a');ell(g,1,-.6,1.1,1.2,'#1a0a0a');g.fillStyle='#1a0a0a';g.beginPath();g.moveTo(5.2,1.6);g.lineTo(5.9,2.8);g.lineTo(4.8,2.9);g.fill();for(let i=0;i<4;i++)strokeP(g,[[2+i*1,4],[2.2+i*1,5.6]],'#3a2a1a',.3);g.restore()}
 // ---- buffered compositing for tints ----
-const TINT={flash:['#ffffff',.55],char:['#1a0804',.92],acid:['#60ff30',.6],shock:['#a0ffff',.7],ghost:['#4060ff',.5]};
+const TINT={flash:['#ffe6c8',.26],char:['#1a0804',.92],acid:['#60ff30',.6],shock:['#a0ffff',.7],ghost:['#4060ff',.5]};
 const BUF=[];function getBuf(i){const w=Math.ceil(170*S),h=Math.ceil(150*S);let b=BUF[i];if(!b||b.c.width!==w||b.c.height!==h){const[c,g]=mkC(w,h);b=BUF[i]={c,g}}return b}
 function portraitV(g,ch,x,y,w,h,o={}){const pose=POSE[o.pose||'port'],R=rig(ch,pose),hs=13*(ch.look.h||1),k=h*(o.zoom||.55)/hs,hy=R.head.y+R.oy;
  g.save();g.beginPath();g.rect(x,y,w,h);g.clip();if(o.bg!==0){g.fillStyle=lgr(g,0,y,0,y+h,[shade(ch.pal.top2,.5),shade(ch.pal.top,.25),'#05030a']);g.fillRect(x,y,w,h);g.fillStyle=rgr(g,x+w*.6,y+h*.35,w*.8,[rgba(ch.pal.acc,.35),rgba(ch.pal.acc,0)]);g.fillRect(x,y,w,h)}

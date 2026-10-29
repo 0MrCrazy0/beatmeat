@@ -25,4 +25,4 @@ addEventListener('resize',()=>setTimeout(()=>touchFit(),60));
  const big=a.heavy||a.kd||a.launch||a.super;if(big&&OPT.shake!==0)F.v5flash=Math.max(F.v5flash||0,a.super?4:2);
  if(st0==='air'&&gore()){spray(hx,hy,Math.round(6+dmg),dir,1.0,1.1)} // juggle hits throw blood upward
  if(def.hp<=0&&gore()){spray(hx,hy,30,dir,.6,1.5);if(typeof gush==='function')gush(hx,hy,10,-5,2)}}}catch(e){}return r}}
-{const _fd=SCN.fight.draw;SCN.fight.draw=function(s){_fd.call(this,s);if(F&&F.v5flash>0){X.save();X.globalAlpha=.10*F.v5flash;X.fillStyle='#fff';X.fillRect(0,0,W,H);X.restore();F.v5flash--}}}
+{const _fd=SCN.fight.draw;SCN.fight.draw=function(s){_fd.call(this,s);if(F&&F.v5flash>0){X.save();X.globalAlpha=Math.min(.09,.025*F.v5flash);X.fillStyle='#fff4e0';X.fillRect(0,0,W,H);X.restore();F.v5flash--}}}

@@ -1,16 +1,18 @@
 'use strict';
-// ===== SPLATTER CIRCUIT v3: core utils, viewport, save, audio =====
+// ===== BEAT MEAT v3: core utils, viewport, save, audio =====
 // Created by MrCrazy - game idea, design & direction.
 const WMIN=320,WMAX=444,H=200,GY=186,STW=640;
 let W=356,S=3,CSS_S=3;
 const cv=document.getElementById('c'),X=cv.getContext('2d');
-const R=Math.random,rnd=(a,b)=>a+R()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1)),pick=a=>a[Math.floor(R()*a.length)],cl=(v,a,b)=>Math.max(a,Math.min(b,v)),sgn=v=>v<0?-1:1,lerp=(a,b,k)=>a+(b-a)*k;
+const R=()=>Math.random(),rnd=(a,b)=>a+R()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1)),pick=a=>a[Math.floor(R()*a.length)],cl=(v,a,b)=>Math.max(a,Math.min(b,v)),sgn=v=>v<0?-1:1,lerp=(a,b,k)=>a+(b-a)*k;
 function srng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const QS=new URLSearchParams(location.search);
 // ---- save ----
-const SAVEK='splatterCircuit3';
-const DEF={opt:{diff:2,gore:1,music:1,sfx:1,mvol:.7,svol:.85,time:60,rounds:3,quality:(matchMedia('(pointer:coarse)').matches?1:2),fps:0,haptic:1,hint:.8,touch:'auto',tlayout:'classic',top:.5,tsize:1,bighead:0,shake:1,vvol:.8,voice:1,announcer:1,fpscap:60,cb:0,simple:0,tsz:1,dz:.25,scrSplat:1,story:'normal'},keymap:null,padMaps:[null,null],ach:{},board:[],story:null,seen:{},
+const GAME_VER='v13';const SAVEK='beatMeat13';
+// carry saves over from the old name
+try{if(!localStorage.getItem(SAVEK)){const o=localStorage.getItem('splatterCircuit3');if(o)localStorage.setItem(SAVEK,o)}}catch(e){}
+const DEF={opt:{diff:2,gore:1,music:1,sfx:1,mvol:.7,svol:.85,time:60,rounds:3,quality:(matchMedia('(pointer:coarse)').matches?1:2),fps:0,haptic:1,hint:.8,touch:'auto',tlayout:'classic',top:.5,tsize:1,bighead:0,shake:1,vvol:.8,avol:.9,voice:1,announcer:1,fpscap:60,cb:0,simple:0,tsz:1,dz:.25,scrSplat:1,story:'normal',fxq:3},keymap:null,padMaps:[null,null],ach:{},board:[],story:null,seen:{},
  touchPos:{},padMap:null,unlock:{bosses:0,alts:0,bighead:0},stats:{clears:{},execs:0,wins:0,survBest:0,matches:0,supers:0,xrays:0,bestCombo:0,storyClears:0,enemiesKO:0,playFrames:0,finSeen:{},picks:{}}};
 let SAVE=null;try{SAVE=JSON.parse(localStorage.getItem(SAVEK))}catch(e){}
 if(!SAVE||typeof SAVE!=='object'){SAVE={};try{const old=JSON.parse(localStorage.getItem('splatterCircuit2'))||JSON.parse(localStorage.getItem('splatterCircuit1'));if(old&&old.unlock){SAVE.unlock=old.unlock;SAVE.stats=old.stats;if(old.opt)SAVE.opt=old.opt;if(old.touchPos)SAVE.touchPos=old.touchPos}}catch(e){}}
@@ -22,7 +24,7 @@ function persist(){try{localStorage.setItem(SAVEK,JSON.stringify(SAVE))}catch(e)
 const RESIZE_HOOKS=[];let SAFE={l:0,r:0,t:0,b:0};
 function resize(){const gb=document.getElementById('game'),gr=gb?gb.getBoundingClientRect():{width:innerWidth,height:innerHeight};const vw=Math.max(1,gr.width),vh=Math.max(1,gr.height),asp=vw/vh;W=cl(200*asp,WMIN,WMAX);
  let cw=vw,ch=vh;if(asp>WMAX/200)cw=vh*WMAX/200;else if(asp<WMIN/200)ch=vw*200/WMIN;
- const cap=[420,720,1080][OPT.quality]??1080,dpr=Math.min(window.devicePixelRatio||1,3);const ph=Math.max(200,Math.min(ch*dpr,cap));
+ const cap=([420,720,1080][OPT.quality]??1080)*(window.DYNRES||1),dpr=Math.min(window.devicePixelRatio||1,3);const ph=Math.max(200,Math.min(ch*dpr,cap));
  const oldS=S;S=ph/200;CSS_S=ch/200;cv.width=Math.round(W*S);cv.height=Math.round(ph);cv.style.width=cw+'px';cv.style.height=ch+'px';
  const pr=document.getElementById('safeprobe');if(pr){const c=getComputedStyle(pr);SAFE={l:parseFloat(c.paddingLeft)||0,r:parseFloat(c.paddingRight)||0,t:parseFloat(c.paddingTop)||0,b:parseFloat(c.paddingBottom)||0};
   const r=cv.getBoundingClientRect();SAFE.l=Math.max(0,SAFE.l-r.left)/CSS_S;SAFE.r=Math.max(0,SAFE.r-(innerWidth-r.right))/CSS_S;SAFE.t=Math.max(0,SAFE.t-r.top)/CSS_S;SAFE.b=Math.max(0,SAFE.b-(innerHeight-r.bottom))/CSS_S}

@@ -71,7 +71,11 @@ const _m7=motion7;motion7=function(f,m){if(f.cpu||!F||!F.p)return _m7.apply(this
   if(btn&&!readyNow){f.buf9={k:btn,t:IN9.T,d:!!I.h.d}}
   else if(!btn&&f.buf9&&IN9.T-f.buf9.t<=6&&readyNow){I.p[f.buf9.k]=1;f.buf9=null}
   else if(!btn&&f.buf9&&IN9.T-f.buf9.t>6)f.buf9=null;
-  if(!btn&&!f.buf9&&readyNow&&F.phase==='fight'){for(const k of['lp','mp','hp']){if(IN9.R[i][k]===IN9.T&&(f.ch.sp||[]).some(s=>s.b==='P'&&!s.air&&MOT9[s.m]&&match9(i,s.m,f.face)===true)){I.p[k]=1;f.neg9=1;break}}}
+  // v12.2 kara / negative-edge window: a ground normal still in start-up (before its active frames) can be cancelled into a special
+  const karaOK=f.st==='atk'&&f.atk&&!f.atk.air&&!f.atk.thr&&!f.hitDone&&f.t<Math.max(4,(f.atk.s||4));
+  const spM=(s,i)=>!s.air&&(MOT9[s.m]||s.m==='360')&&match9(i,s.m,f.face)===true;
+  if(btn&&karaOK&&F.phase==='fight'&&(f.ch.sp||[]).some(s=>s.b===(btn[1]==='p'?'P':'K')&&spM(s,i))){f.atk=null;f.hb=null;setSt(f,'idle')}
+  if(!btn&&!f.buf9&&(readyNow||karaOK)&&F.phase==='fight'){for(const k of['lp','mp','hp']){if(IN9.R[i][k]===IN9.T&&(f.ch.sp||[]).some(s=>s.b==='P'&&spM(s,i))){if(karaOK){f.atk=null;f.hb=null;setSt(f,'idle')}I.p[k]=1;f.neg9=1;break}}}
   const r=_c.apply(this,arguments);
   if(btn||f.neg9){const sp=(f.ch.sp||[]);IN9.last[i]={t:IN9.T,btn:btn||'neg',st:f.st,special:f.st==='special'&&f.spec?f.spec.n:null,why:IN9.why[i].slice(0,4)};f.neg9=0}
   return r}}
@@ -82,7 +86,7 @@ for(const fn of['startSuper','startXray']){const _o=window[fn];if(typeof _o==='f
 // RAPID (hundred-hand style): humans need 4 presses in 24f, and a live target-combo continuation always wins over it
 {const _r7=rapid7;rapid7=function(f,typ){if(f.cpu)return _r7.apply(this,arguments);const a=typ==='P'?f.rpP:f.rpK;if(!a)return false;
  const btn=f.inp&&f.inp.p?BTN9.find(k=>f.inp.p[k]):null;
- if(btn&&f.st==='atk'&&f.atk&&!f.atk.air&&f.hitDone){if(f.tcs&&f.tcs[f.tci+1]===btn)return false;if(!f.tcs)for(const s of f.ch.tc||[f.ch.combo]||[]){if(s&&s[0]===f.atk.key&&s[1]===btn)return false}}
+ if(btn&&f.st==='atk'&&f.atk&&!f.atk.air&&f.hitDone){if(f.tcs&&f.tcs[f.tci+1]===btn)return false;if(!f.tcs)for(const s of f.ch.tc||[f.ch.combo]||[]){if(s&&(s[0]===f.atk.key||'n'+s[0]===f.atk.key)&&s[1]===btn)return false}}
  return a.filter(t=>F.tick-t<=30).length>=4}}
 // SF2 cancel rule: a special/super cancelled from a normal that hit is a true combo (opponent's hitstun is held until it connects)
 {const _ts2=trySpecial;trySpecial=function(f,o){const was=f.st==='atk'&&f.hitDone&&!f.atk.air&&o&&o.st==='hit';const r=_ts2.apply(this,arguments);
