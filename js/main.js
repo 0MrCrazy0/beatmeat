@@ -142,7 +142,7 @@ SCN.menu={enter(s){s.i=MENUI;Music.play('title')},update(s){const n=MENU.length;
   const lx=SAFE.l+16;txt('BEAT',lx,18,{sz:16,big:1,al:'left',grad:['#ff8080','#c01020'],lw:1.6});txt('MEAT',lx+50,20,{sz:9,big:1,al:'left',c:'#cdd',lw:1.2,it:1});
   const rh=Math.min(19,(H-48)/MENU.length);
   MENU.forEach((m,i)=>{const y=38+i*rh,on=i===s.i;if(on){X.fillStyle=lgr(X,lx-6,0,lx+170,0,['rgba(255,40,70,.85)','rgba(255,40,70,0)']);X.beginPath();X.moveTo(lx-6,y-rh*.42);X.lineTo(lx+170,y-rh*.42);X.lineTo(lx+164,y+rh*.42);X.lineTo(lx-10,y+rh*.42);X.fill()}
-   txt(m[0],lx+(on?6:0),y,{sz:on?11:9,big:1,al:'left',c:on?'#fff':'#c9a0a8',lw:1.4,it:1});if(on)txt(m[1],lx+100,y+1,{sz:4.6,al:'left',c:'#ffe',lw:1});hitR(lx-8,y-rh/2,180,rh,()=>{if(s.i===i)menuPick(i);else{s.i=i;SFX.move();if(TCH.isTouch)menuPick(i)}},i)});
+   txt(m[0],lx+(on?6:0),y,{sz:on?11:9,big:1,al:'left',c:on?'#fff':'#c9a0a8',lw:1.4,it:1});if(on)txt(m[1],lx+100,y+1,{sz:4.6,al:'left',c:'#ffe',lw:1});hitR(lx-8,y-rh/2,180,rh,()=>{if(s.i===i)menuPick(i);else{s.i=i;SFX.move();menuPick(i)}},i)});
   if(HOVER!=null&&HOVER!==s.i&&HOVER<MENU.length)s.i=HOVER;
   txt('EXECUTIONS '+SAVE.stats.execs+'   \u2022   ARCADE CLEARS '+Object.values(SAVE.stats.clears).reduce((a,b)=>a+b,0)+'   \u2022   SURVIVAL BEST '+SAVE.stats.survBest,lx,H-SAFE.b-8,{sz:4.6,al:'left',c:'#f99',lw:1})}};
 // --- character select ---
@@ -161,7 +161,7 @@ SCN.select={enter(s){s.c=[0,4];s.alt=[0,0];s.done=[0,s.mode==='arcade'||s.mode==
   L.forEach((ch,i)=>{const cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh,w=cw-2,h=chh-2;X.fillStyle='#000';rrect(X,cx-.5,cy-.5,w+1,h+1,2);X.fill();
    if(ch&&ch!=='rnd'){X.save();rrect(X,cx,cy,w,h,2);X.clip();drawPort(s.alt[act]&&SAVE.unlock.alts?altCh(ch):ch,cx,cy,w,h,{zoom:.62});X.restore()}else{X.fillStyle='#16141c';rrect(X,cx,cy,w,h,2);X.fill();txt(ch==='rnd'?'?':'\ud83d\udd12',cx+w/2,cy+h/2,{sz:ch==='rnd'?18:10,big:1,c:ch==='rnd'?'#ccc':'#555'})}
    if(ch===null)txt('LOCKED',cx+w/2,cy+h-4,{sz:4,c:'#a66',lw:1});
-   hitR(cx,cy,w,h,()=>{const p=s.done[0]?1:0;if(s.done[p])return;if(s.c[p]===i)SCN.select.pick(s,p);else{s.c[p]=i;SFX.move()}})});
+   hitR(cx,cy,w,h,()=>{const p=window.TAPP14?1:(typeof NET13!=='undefined'&&NET13.role)?0:s.done[0]?1:0;if(s.done[p])return;if(s.c[p]===i)SCN.select.pick(s,p);else{s.c[p]=i;SFX.move()}})});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;const i=s.c[p],cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh;X.strokeStyle=p?'#3af':'#f33';X.lineWidth=1.4;if(!s.done[p]||s.t%8<4){rrect(X,cx-.5+p,cy-.5+p,cw-1-p*2,chh-1-p*2,2);X.stroke()}txt('P'+(p+1),cx+(p?cw-7:5),cy+4,{sz:5,c:p?'#3af':'#f33',lw:1.2})});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;let ch=s.done[p]?s.pick[p]:s.list[s.c[p]];if(!ch||ch==='rnd')return;if(!s.done[p]&&s.alt[p]&&SAVE.unlock.alts)ch=altCh(ch);const x=p?W-SAFE.r-42:SAFE.l+42;
    X.save();X.translate(x,H+4);X.scale(p?-1.25:1.25,1.25);drawFighterV(X,ch,POSE[s.done[p]?'win'+Math.floor(s.t/30)%2:IDLEP(s.t)],{expr:s.done[p]?'grin':'angry',rim:p?'#4af':'#f44',t:s.t});X.restore();

@@ -110,12 +110,12 @@ control=function(f,o,I){if(!f.cpu&&I&&I.p){I.p.sp=0;if(I.h)I.h.sp=0}const raw=I.
  if(btn&&f.st==='atk'&&f.atk.air&&f.hitDone&&f.t>=f.atk.s&&(f.ach||0)<3&&f.y>8&&btn!==f.atk.key.slice(1)&&f.atk.key!=='fly'){f.ach=(f.ach||0)+1;f.acomb=(f.acomb||1)+1;f.vy=Math.max(f.vy,1.8);startAir(f,airKey(btn));if(f.acomb>=2)sideTxt(f,f.acomb>=3?'AIR COMBO x3':'AIR COMBO',{kind:'tc',y:62,sz:7});return}
  // throws: LB (back held = back throw) or close forward/back + MP/HP
  const close=Math.abs(o.x-f.x)<34;
- if(FREE.has(f.st)&&f.y===0&&!btnBl&&(p.th||((btn==='mp'||btn==='hp')&&fwd!==0&&close&&throwable(o)))){
+ if(FREE.has(f.st)&&f.y===0&&!btnBl&&(p.th||(!I.v14&&(btn==='mp'||btn==='hp')&&fwd!==0&&close&&throwable(o)))){
   if(close&&throwable(o)){if(fwd<0){f.face*=-1;startThrow(f,o,{n:'BACK THROW',dmg:12});f.face*=-1;sideTxt(f,'BACK THROW',{kind:'sp',sz:7})}else startThrow(f,o,{n:'THROW',dmg:12});return}
   if(p.th&&!btn){startAtk(f,{an:'grab',key:'th',s:4,a:2,r:16,dmg:0,reach:0,hy:-200,hh:0,stun:0,kb:0,whiff:1});sideTxt(f,'GRAB',{kind:'tech',sz:6});return}}
  // grounded normals
  if(btn&&FREE.has(f.st)&&!btnBl){const S=f.ch.atk||{};const near=Math.abs(o.x-f.x)<30&&o.y<20;let a=btn;
-  if(h.d)a='c'+btn;else if(fwd>0&&S['f_'+btn])a='f_'+btn;else if(fwd<0&&S['b_'+btn])a='b_'+btn;else if(btn==='hk'&&fwd<0)a='rh';else if(near&&S['n'+btn])a='n'+btn;
+  if(h.d)a='c'+btn;else if(fwd>0&&S['f_'+btn])a='f_'+btn;else if(fwd<0&&S['b_'+btn])a='b_'+btn;else if(btn==='hk'&&fwd<0)a='rh';else if(near&&S['n'+btn])a='n'+btn;if(I.f14&&AT(f,I.f14))a=I.f14;
   f.tcs=null;f.tci=0;f.lch=0;const A=AT(f,a)||AT(f,btn);startAtk(f,Object.assign({},A,{key:a},frenzy(f)?{s:Math.max(2,A.s-1),dmg:A.dmg*1.15}:{}));if(A.n&&/^[fb]_/.test(a))sideTxt(f,A.n,{kind:'sp',sz:7});return}
  // dash / backdash / sidestep (double taps)
  if(FREE.has(f.st)&&f.y===0&&!h.bl&&!btn){const D2=k=>{let n=0;for(let i=f.hist.length-1;i>=0;i--){const e=f.hist[i];if(F.tick-e[1]>14)break;if(e[0]===k)n++;else if(e[0]!==k&&k!=='D')break}return n>=2};

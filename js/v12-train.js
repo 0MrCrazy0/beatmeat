@@ -12,11 +12,11 @@ function trials12(f){const sp=f.ch.sp||[],hs=hitSp12(f),X=hs[0],Y=hs[1]||hs[0],t
  const add=(n,st,tip,o={})=>T.push(Object.assign({n,st,tip},o));const ov=TRF12[f.ch.id]||{};
 {const S0=X||sp[0];if(S0)add('SPECIAL MOVE',['SP:'+S0.n],'Do the motion, then the button.')}
  if(tc[0])add('TARGET COMBO',tc[0].slice(),'Press each button as the previous one hits.');
- add('ANTI-AIR',['chp'],'The dummy jumps: hit it out of the air with crouching HP (↓ + HP).',{dummy:'jump',aa:1});
- if(X)add('CANCEL INTO SPECIAL',[ov.c||'cmk','SP:'+(ov.cx||X.n)],'Crouch MK, then do the special motion while it hits.');
- add('JUMP-IN COMBO',['jhp',ov.c||'cmk'].concat(Y?['SP:'+(ov.cx||Y.n)]:[]),Y?'Jump in, hit HP late in the jump, land, crouch MK, cancel.':'Jump in, hit HP late in the jump, land and crouch MK at once.',{far:1});
+ add('ANTI-AIR',['chp'],'The dummy jumps: hit it out of the air with the uppercut (↘ + 2).',{dummy:'jump',aa:1});
+ if(X)add('CANCEL INTO SPECIAL',[ov.c||'cmk','SP:'+(ov.cx||X.n)],'Low kick (↓ + 4), then do the special motion while it hits.');
+ add('JUMP-IN COMBO',['jhp',ov.c||'cmk'].concat(Y?['SP:'+(ov.cx||Y.n)]:[]),Y?'Jump in, hit 2 late in the jump, land, ↓ + 4, cancel.':'Jump in, hit 2 late in the jump, land and ↓ + 4 at once.',{far:1});
  if(tc[0]&&X&&tc[0].length>=3)add('STRING INTO SPECIAL',tc[0].slice(0,2).concat(['SP:'+X.n]),'First two hits of the target combo, then cancel.');
- if(tc[0]&&X)add('FULL COMBO',['jhp'].concat(tc[0].slice(0,2),['SP:'+X.n]),'Jump-in HP, first two hits of the target combo, then cancel into the special.',{far:1,hard:1});
+ if(tc[0]&&X)add('FULL COMBO',['jhp'].concat(tc[0].slice(0,2),['SP:'+X.n]),'Jump-in 2, first two hits of the target combo, then cancel into the special.',{far:1,hard:1});
  if(ov.drop)ov.drop.forEach(n=>{const i=T.findIndex(t=>t.n===n);if(i>=0)T.splice(i,1)});return T}
 const TRF12={mae:{superGrab:1},okafor:{drop:['FULL COMBO']}};
 // measured jump-in start distances (middle of the range that connects)

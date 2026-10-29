@@ -1,52 +1,28 @@
-![Beat Meat](assets/og-image.png)
+# BEAT MEAT: Tenderize Your Friends (v14.0.1)
 
-# Beat Meat: Tenderize Your Friends  (v13.1)
+An original, gory 2D fighter and co-op street brawler. Play it free in your browser, on desktop or phone, and install it as an app.
 
-**A gory arcade fighter and co-op street brawler that you play free in your browser.**
+**Play now: https://0mrcrazy0.github.io/beatmeat/**
 
-### ▶ [PLAY NOW](https://0mrcrazy0.github.io/beatmeat/)
+## Modes
+- **Versus / Arcade / Survival / Training**: 11 fighters, four-limb controls, strings, specials and hidden fatalities.
+- **Story**: two co-op campaigns. *Blood Vendetta* (Ray and Dane) and *Take Back the City* (Jax, Rena, Brick and Kenji).
+- **Online**: host a match, send your friend the link or the 5-letter code, and play Versus or Story co-op. Each player picks their own fighter.
 
-- **11 fighters, 6 buttons:** combos, specials, throws and bloody finishers.
-- **Hidden FATALITIES:** when the announcer yells *FINISH THEM!*, enter the secret code.
-- **Story mode for 1 or 2 players:** two street-brawling campaigns with six heroes who each play differently.
-- **Play online with a friend:** Menu → ONLINE → host story co-op or versus, then send your friend the code or the invite link (`https://0mrcrazy0.github.io/beatmeat/?join=CODE`). Peer to peer, no account; versus uses rollback netcode.
-- Arcade, Versus, Survival, Training and Tutorial modes. Works with a controller, a keyboard or touch.
+## Controls (Xbox pad / keyboard)
+**Versus & Online**: each button is one limb.
+X / U = 1 left punch, Y / I = 2 right punch, A / J = 3 left kick, B / K = 4 right kick.
+1+2 = throw, 3+4 = signature move, hold back = block. Full move list in PAUSE.
 
-## Controls: Versus (local and online)
+**Blood Vendetta**: X punch, A kick, B or Y jump, LB or RB guard, guard + X special, X + A back elbow, LT police call.
 
-| Action | Xbox | Keyboard (P1) | Touch |
-|---|---|---|---|
-| Move / jump / crouch | Stick / D-pad | W A S D | Joystick |
-| Light / Medium / Heavy Punch | X / Y / RB | U / I / O | LP / MP / HP |
-| Light / Medium / Heavy Kick | A / B / RT | J / K / L | LK / MK / HK |
-| Throw | LB | H | THROW |
-| Block | Hold away | Hold away | Hold away |
-| Block button (optional setting; on a pad it takes LB from Throw) | LB | Q | BLOCK |
-| Pause (MOVE LIST is in the pause menu) | MENU / VIEW | Enter / Esc | II |
+**Take Back the City**: X attack, A jump, Y special, forward + Y rush, X + A back attack, forward forward + X blitz, LB police call. Walk into a thug to grab, then A to vault or X to suplex.
 
-Specials are motion + any punch or kick (each fighter's list is in the pause menu). LT / Space does nothing in versus: there is no meter, and the old star move is gone.
+On touch screens every mode gets its own buttons. Menus also work with mouse, touch and keyboard. On-screen arrows appear when no controller is connected.
 
-## Controls: Story (local and online)
+## Playing online
+1. ONLINE > HOST, then tap **COPY LINK** (or SHARE) and send it.
+2. Your friend opens the link and joins automatically. They can also choose ONLINE > JOIN and type the code.
+3. Both players pick and press READY. You can show or hide the ping meter in Settings > Online.
 
-| Action | Xbox | Keyboard (P1) | Touch |
-|---|---|---|---|
-| Move | Stick / D-pad | W A S D | Joystick |
-| Attack | X | U | ATTACK |
-| Jump (Special in the air = Cyclone Kick) | A | J | JUMP |
-| Special: spin attack, → + Special = signature move (costs 3 health only when it hits, never below 1) | B | K | SPECIAL |
-| Grab / pick up / throw weapon | Y | I | GRAB |
-| Block | RB | O | BLOCK |
-| Back attack | RT | L | BACK |
-| Run | LB | H | RUN |
-| Police call (once per stage; riot van on stages that have one) | LT | Space | CALL |
-| Pause | MENU | Enter | II |
-
-Player 2 can join at any time by pressing **START**. Every fighter's full move list is in the pause menu.
-
-## Install on your phone
-
-Open the play link, then tap **Share → Add to Home Screen** on iPhone, or **⋮ → Install app** on Android. After that it works offline.
-
----
-
-**Created by MrCrazy**
+Created by MrCrazy.

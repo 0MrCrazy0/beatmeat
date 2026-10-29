@@ -193,13 +193,13 @@ SCN.online={enter(s){s.i=s.i||0;s.st=s.st||(NET13.phase==='error'?'error':'menu'
  draw(s){bgPattern(s.t||0,'#0a0614','#2a0a1a');txt('ONLINE',W/2,Math.max(14,SAFE.t+12),{sz:16,big:1,grad:['#fff','#f44'],lw:2,it:1});
   txt('PLAY WITH A FRIEND OVER THE INTERNET \u2022 PEER TO PEER',W/2,Math.max(30,SAFE.t+28),{sz:5.5,c:'#c9a'});
   if(s.st==='menu'){ONL13.forEach((m,i)=>{const y=70+i*26,on=i===s.i;if(on){X.fillStyle='rgba(255,40,64,.18)';rrect(X,W/2-110,y-10,220,20,4);X.fill()}
-    txt(m[0],W/2,y,{sz:on?11:9,big:1,c:on?'#fff':'#a88',lw:1.2});if(TCH.isTouch)hitR(W/2-110,y-10,220,20,()=>{s.i=i;PAD[0].p.lp=true})});
+    txt(m[0],W/2,y,{sz:on?11:9,big:1,c:on?'#fff':'#a88',lw:1.2});hitR(W/2-110,y-10,220,20,()=>{s.i=i;TAP[0].lp=1})});
    txt(ONL13[s.i][1],W/2,H-SAFE.b-30,{sz:6,c:'#ddd'});txt('BOTH PLAYERS NEED THE SAME VERSION ('+GAME_VER.toUpperCase()+')',W/2,H-SAFE.b-16,{sz:4.5,c:'#866'});return}
   if(s.st==='host'){const ph=NET13.phase;const ok=ph==='waiting'||ph==='linking';txt(NET13.mode==='story'?'HOSTING STORY CO-OP':'HOSTING VERSUS',W/2,64,{sz:9,big:1,c:'#ffd23a'});
    if(!NET13.code||ph==='connecting'){txt('CONNECTING TO MATCHMAKING'+'.'.repeat(1+(s.t/20|0)%3),W/2,104,{sz:7,c:'#fff'});return}
    txt('YOUR CODE',W/2,88,{sz:6,c:'#c9a'});txt(NET13.code,W/2,112,{sz:28,big:1,grad:['#fff','#ff4a4a'],lw:2.4});
    txt(netLink13(NET13.code),W/2,138,{sz:5.5,c:'#9cf'});txt((TCH.isTouch?'TAP HERE':'PRESS MP')+' TO COPY THE INVITE LINK'+(s.copied&&s.t-s.copied<120?'  \u2714 COPIED':''),W/2,152,{sz:5.5,c:'#fff'});
-   if(TCH.isTouch)hitR(W/2-140,130,280,30,()=>netCopy13());
+   hitR(W/2-140,130,280,30,()=>netCopy13());
    txt(ph==='linking'?'FRIEND FOUND - LINKING'+'.'.repeat(1+(s.t/20|0)%3):'WAITING FOR YOUR FRIEND'+'.'.repeat(1+(s.t/20|0)%3),W/2,180,{sz:7,c:ok?'#8f8':'#fff'});txt('BACK TO CANCEL',W/2,H-SAFE.b-14,{sz:5,c:'#866'});return}
   if(s.st==='join'){txt('ENTER CODE',W/2,72,{sz:9,big:1,c:'#ffd23a'});for(let i=0;i<5;i++){const x=W/2-60+i*30,c=s.code[i]||(i===s.code.length?NETAB[s.ci||0]:'_');txt(c,x,110,{sz:22,big:1,c:i<s.code.length?'#fff':(s.t%40<26?'#f66':'#622'),lw:2})}
    txt('TYPE IT, OR UP/DOWN + LP. MK DELETES. START TO JOIN.',W/2,146,{sz:5.5,c:'#ccc'});txt('OR JUST OPEN THE INVITE LINK YOUR FRIEND SENT YOU',W/2,160,{sz:5.5,c:'#9cf'});return}
@@ -228,9 +228,9 @@ MENU.splice(Math.max(0,MENU.findIndex(m=>m[0]==='VERSUS'))+1,0,['ONLINE','Invite
 {const j=QS.get('join');if(j){const _b=SCN.boot.update;let done=0;SCN.boot.update=function(s){if(!done&&SC.id==='boot'){const r=_b.apply(this,arguments);if(SC.id!=='boot'){done=1;go('online',{st:'join',code:j.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5),auto:1})}return r}return _b.apply(this,arguments)}}}
 // ---------- online HUD overlay: ping, role, stalls, connection lost
 {const _r2=render2;render2=function(){_r2.apply(this,arguments);if(!NET13.role||!NET13.on&&!NET13.lost)return;X.setTransform(S,0,0,S,0,0);
- const p=NET13.ping,c=p<80?'#6f6':p<150?'#fd4':'#f55';const inF=SC.id==='fight'||SC.id==='story',bx=inF?SAFE.l+6:W-SAFE.r-64,y=inF?H-SAFE.b-10:SAFE.t+8;
- X.fillStyle='rgba(0,0,0,.55)';rrect(X,bx,y-6,58,12,3);X.fill();X.fillStyle=c;for(let i=0;i<4;i++){if(p<[300,150,80,40][i]||i===0)X.fillRect(bx+4+i*3,y+3-i*2-2,2,i*2+2)}
- txt((NET13.role==='host'?'HOST ':'GUEST ')+p+'ms',bx+54,y,{sz:5,al:'right',c:'#fff',lw:.8});
+ const p=NET13.ping,c=p<80?'#6f6':p<150?'#fd4':'#f55';const inF=SC.id==='fight'||SC.id==='story',bx=inF?SAFE.l+6:W-SAFE.r-98,y=inF?H-SAFE.b-10:SAFE.t+8;
+ if(!OPT.noPing14){X.fillStyle='rgba(0,0,0,.55)';rrect(X,bx,y-6,58,12,3);X.fill();X.fillStyle=c;for(let i=0;i<4;i++){if(p<[300,150,80,40][i]||i===0)X.fillRect(bx+4+i*3,y+3-i*2-2,2,i*2+2)}
+ txt((NET13.role==='host'?'HOST ':'GUEST ')+p+'ms',bx+54,y,{sz:5,al:'right',c:'#fff',lw:.8});}
  if(NET13.phase==='rb'&&RB13.on&&RB13.stallRun>20)txt('WAITING FOR OPPONENT...',W/2,H/2-40,{sz:9,big:1,c:'#fff',lw:1.6});
  if(NET13.desyncAt)txt('DESYNC DETECTED',bx+54,y+11,{sz:4.5,al:'right',c:'#f55'});
  if(F&&F.rp&&NET13.phase==='rb'){const R=F.rp,a=R.ag13||[0,0];const me=RB13.side;txt(me===0?'HOST: ANY BUTTON SKIPS':(a[1]?'SKIP REQUESTED \u2022 WAITING FOR HOST':'PRESS A BUTTON TO ASK TO SKIP'),W/2,H-SAFE.b-26,{sz:5.5,c:'#ffd23a'})}

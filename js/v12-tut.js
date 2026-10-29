@@ -3,7 +3,7 @@
 CAMPS.practice={name:'PRACTICE YARD',tag:'TUTORIAL',style:'Learn every story move',van:0,col:'#6f6',intro:[],ending:{good:[],bad:[]},
  stages:[{name:'PRACTICE YARD',sub:'TUTORIAL',th:'street',len:6000,music:'s0',mid:'sol',boss:'c_duke',waves:[],crates:[],intro:[['P1','Okay. Show me what you\'ve got.']],bossTalk:[]}]};
 CAMP_CAST.practice=CAMP_CAST.city.concat(CAMP_CAST.vendetta);
-const NM={lp:'ATTACK',lk:'JUMP',mk:'SPECIAL',mp:'GRAB',hp:'BLOCK',hk:'BACK',th:'RUN',sp:'CALL'};
+const NM={lp:'ATTACK',lk:'JUMP',mp:'SPECIAL',hp:'GRAB',rn:'BLOCK',bl:'BACK',th:'CALL',sp:'RUN'};
 const B=k=>{const g=bzBtn(0,k);return NM[k]+(g&&g!==NM[k]?' ['+g+']':'')};
 // [flag, title, instruction, setup]
 const STEPS=[
@@ -11,16 +11,16 @@ const STEPS=[
  ['jump','JUMP',()=>'Press '+B('lk')+'. Hold a direction to jump forward.'],
  ['chain','COMBO CHAIN',()=>'Walk up to the sparring partner and press '+B('lp')+' 4 times in a row.','foe'],
  ['jumpatk','JUMP ATTACK',()=>''+B('lk')+', then '+B('lp')+' in the air. Hold down for a knee drop.','foe'],
- ['runatk','RUNNING ATTACK',()=>'Double-tap forward (or hold '+B('th')+'), then press '+B('lp')+'.','foe'],
- ['special','SPECIAL',()=>'Press '+B('mk')+' to clear space. Forward + SPECIAL is your signature move.','foe'],
+ ['runatk','RUNNING ATTACK',()=>'Double-tap forward, then press '+B('lp')+' for a blitz.','foe'],
+ ['special','SPECIAL',()=>'Press '+B('mp')+' to clear space. Forward + SPECIAL is your signature move.','foe'],
  ['knee','GRAB + KNEES',()=>'Walk into the enemy to grab, then press '+B('lp')+' for knee strikes.','foe'],
- ['throw','THROW',()=>'Grab again, then press '+B('mp')+'. Hold back to throw behind you.','foe'],
- ['back','BACK ATTACK',()=>'An enemy is behind you! Press '+B('hk')+' to elbow behind.','behind'],
- ['block','BLOCK',()=>'Hold '+B('hp')+' when the enemy swings at you.','angry'],
- ['pickup','PICK UP A WEAPON',()=>'Stand on the pipe and press '+B('mp')+' to pick it up.','pipe'],
+ ['throw','THROW',()=>'Grab again, then press '+B('hp')+' to throw (hold back = behind you). From behind, '+B('lp')+' is a suplex.','foe'],
+ ['back','BACK ATTACK',()=>'An enemy is behind you! Press '+B('lp')+' + '+B('lk')+' together to hit behind you.','behind'],
+ ['block','BLOCK',()=>'Hold '+B('rn')+' when the enemy swings at you.','angry'],
+ ['pickup','PICK UP A WEAPON',()=>'Stand on the pipe and press '+B('lp')+' to pick it up.','pipe'],
  ['wswing','WEAPON ATTACK',()=>'Swing the pipe with '+B('lp')+'.','foe'],
- ['wthrow','THROW THE WEAPON',()=>'Press '+B('mp')+' to throw it.','foe'],
- ['star','POLICE CALL',()=>'Press '+B('sp')+' to call the police. Clears the screen, once per stage.','foe'],
+ ['wthrow','THROW THE WEAPON',()=>'Press '+B('hp')+' to throw it.','foe'],
+ ['star','POLICE CALL',()=>'Press '+B('th')+' to call the police. Clears the screen, once per stage.','foe'],
  ['ko','FINAL TEST',()=>'Knock out both enemies. Food in crates heals you in the real game.','fight'],
 ];
 window.TUT12={steps:STEPS};
