@@ -1,5 +1,5 @@
 {
- "name": "Beat Meat: Tenderize Your Friends",
+ "name": "Beat Meat: Bring a Friend. Leave a Mess.",
  "short_name": "Beat Meat",
  "start_url": "./",
  "scope": "./",
@@ -87,6 +87,6 @@
    "purpose": "any"
   }
  ],
- "description": "An original gory 2D fighter and co-op street brawler. Version 14.0.2. Created by MrCrazy.",
- "version": "14.0.2"
+ "description": "An original gory 2D fighter and co-op street brawler. Version 14.0.3. Created by MrCrazy.",
+ "version": "14.0.3"
 }

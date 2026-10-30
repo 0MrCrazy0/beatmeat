@@ -9,7 +9,7 @@ function srng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const QS=new URLSearchParams(location.search);
 // ---- save ----
-const GAME_VER='v14.0.2';const SAVEK='beatMeat13';
+const GAME_VER='v14.0.3';const SAVEK='beatMeat13';
 // carry saves over from the old name
 try{if(!localStorage.getItem(SAVEK)){const o=localStorage.getItem('splatterCircuit3');if(o)localStorage.setItem(SAVEK,o)}}catch(e){}
 const DEF={opt:{diff:2,gore:1,music:1,sfx:1,mvol:.7,svol:.85,time:60,rounds:3,quality:(matchMedia('(pointer:coarse)').matches?1:2),fps:0,haptic:1,hint:.8,touch:'auto',tlayout:'classic',top:.5,tsize:1,bighead:0,shake:1,vvol:.8,avol:.9,voice:1,announcer:1,fpscap:60,cb:0,simple:0,tsz:1,dz:.25,scrSplat:1,story:'normal',fxq:3},keymap:null,padMaps:[null,null],ach:{},board:[],story:null,seen:{},
