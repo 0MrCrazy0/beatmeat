@@ -1,3 +1,4 @@
+![Beat Meat](assets/og-image.png)
 # BEAT MEAT: Bring a Friend. Leave a Mess. (v15.0)
 
 An original, gory 2D fighter and co-op street brawler. Play it free in your browser, on desktop or phone, and install it as an app.
