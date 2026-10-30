@@ -228,7 +228,7 @@ MENU.splice(Math.max(0,MENU.findIndex(m=>m[0]==='VERSUS'))+1,0,['ONLINE','Invite
 {const j=QS.get('join');if(j){const _b=SCN.boot.update;let done=0;SCN.boot.update=function(s){if(!done&&SC.id==='boot'){const r=_b.apply(this,arguments);if(SC.id!=='boot'){done=1;go('online',{st:'join',code:j.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5),auto:1})}return r}return _b.apply(this,arguments)}}}
 // ---------- online HUD overlay: ping, role, stalls, connection lost
 {const _r2=render2;render2=function(){_r2.apply(this,arguments);if(!NET13.role||!NET13.on&&!NET13.lost)return;X.setTransform(S,0,0,S,0,0);
- const p=NET13.ping,c=p<80?'#6f6':p<150?'#fd4':'#f55';const inF=SC.id==='fight'||SC.id==='story',bx=inF?SAFE.l+6:W-SAFE.r-98,y=inF?H-SAFE.b-10:SAFE.t+8;
+ const p=NET13.ping,c=p<80?'#6f6':p<150?'#fd4':'#f55';const L14=typeof hudPos14==='function'?hudPos14():null,inF=SC.id==='fight'||SC.id==='story',bx=L14?L14.x:inF?SAFE.l+6:W-SAFE.r-98,y=L14?L14.y:inF?H-SAFE.b-10:SAFE.t+8;
  if(!OPT.noPing14){X.fillStyle='rgba(0,0,0,.55)';rrect(X,bx,y-6,58,12,3);X.fill();X.fillStyle=c;for(let i=0;i<4;i++){if(p<[300,150,80,40][i]||i===0)X.fillRect(bx+4+i*3,y+3-i*2-2,2,i*2+2)}
  txt((NET13.role==='host'?'HOST ':'GUEST ')+p+'ms',bx+54,y,{sz:5,al:'right',c:'#fff',lw:.8});}
  if(NET13.phase==='rb'&&RB13.on&&RB13.stallRun>20)txt('WAITING FOR OPPONENT...',W/2,H/2-40,{sz:9,big:1,c:'#fff',lw:1.6});

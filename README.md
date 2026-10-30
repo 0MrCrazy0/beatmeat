@@ -1,4 +1,4 @@
-# BEAT MEAT: Tenderize Your Friends (v14.0.1)
+# BEAT MEAT: Tenderize Your Friends (v14.0.2)
 
 An original, gory 2D fighter and co-op street brawler. Play it free in your browser, on desktop or phone, and install it as an app.
 

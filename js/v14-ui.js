@@ -269,7 +269,7 @@ const GTAP14 = ['select', 'storysel', 'netend'];
     _d.apply(this, arguments);
     const opts = s.story ? ['PLAY AGAIN', 'QUIT'] : ['REMATCH', 'NEW CHARACTERS', 'QUIT'];
     const me = NET13.role === 'guest' ? 1 : 0;
-    opts.forEach((o, i) => { const x = W / 2 + (me ? 80 : -80), y = 120 + i * 18; hitR(x - 60, y - 8, 120, 16, () => { const p = window.TAPP14 ? 1 : 0; if (s.t < 30 || s.v[p] !== null) return; s.i[p] = i; s.v[p] = i; SFX.sel() }) });
+    opts.forEach((o, i) => { const x = W / 2 + (me ? 80 : -80), y = 120 + i * 18; hitR(x - 60, y - 8, 120, 16, () => { const p = window.TAPP14 ? 1 : 0; if (s.t < 30 || s.v[p] !== null) return; s.i[p] = i; s.v[p] = i; SFX.sel() }, 'netend:' + i) });
   };
 }
 // ready / choosing badges for both players while online
@@ -284,14 +284,14 @@ function netBadge14(x, y, ready, who) {
     _d.apply(this, arguments);
     if (typeof NET13 === 'undefined' || !NET13.role || NET13.phase !== 'mirror' && !(NET13.role && s.mode === 'versus' && NET13.on)) return;
     const me = NET13.role === 'guest' ? 1 : 0;
-    [0, 1].forEach(p => netBadge14(p ? W - SAFE.r - 44 : SAFE.l + 44, H - SAFE.b - 10, !!(s.done && s.done[p]), (p ? 'GUEST' : 'HOST') + (p === me ? ' (YOU)' : '')));
+    [0, 1].forEach(p => netBadge14(W / 2 + (p ? 37 : -37), H - SAFE.b - 10, !!(s.done && s.done[p]), (p ? 'GUEST' : 'HOST') + (p === me ? ' (YOU)' : '')));
   };
   const D = SCN.storysel, _sd = D.draw;
   D.draw = function (s) {
     _sd.apply(this, arguments);
     if (typeof NET13 === 'undefined' || !NET13.role || !NET13.on) return;
     const me = NET13.role === 'guest' ? 1 : 0;
-    [0, 1].forEach(p => netBadge14(p ? W - SAFE.r - 44 : SAFE.l + 44, H - SAFE.b - 10, !!(s.ready && s.ready[p]), (p ? 'GUEST' : 'HOST') + (p === me ? ' (YOU)' : '')));
+    [0, 1].forEach(p => netBadge14(W / 2 + (p ? 37 : -37), H - SAFE.b - 10, !!(s.ready && s.ready[p]), (p ? 'GUEST' : 'HOST') + (p === me ? ' (YOU)' : '')));
   };
   // online co-op: the guest is always in, so drop "P2 press start" and give them a hero straight away
   const _su = D.update;

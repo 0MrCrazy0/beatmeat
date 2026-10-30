@@ -161,7 +161,7 @@ SCN.select={enter(s){s.c=[0,4];s.alt=[0,0];s.done=[0,s.mode==='arcade'||s.mode==
   L.forEach((ch,i)=>{const cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh,w=cw-2,h=chh-2;X.fillStyle='#000';rrect(X,cx-.5,cy-.5,w+1,h+1,2);X.fill();
    if(ch&&ch!=='rnd'){X.save();rrect(X,cx,cy,w,h,2);X.clip();drawPort(s.alt[act]&&SAVE.unlock.alts?altCh(ch):ch,cx,cy,w,h,{zoom:.62});X.restore()}else{X.fillStyle='#16141c';rrect(X,cx,cy,w,h,2);X.fill();txt(ch==='rnd'?'?':'\ud83d\udd12',cx+w/2,cy+h/2,{sz:ch==='rnd'?18:10,big:1,c:ch==='rnd'?'#ccc':'#555'})}
    if(ch===null)txt('LOCKED',cx+w/2,cy+h-4,{sz:4,c:'#a66',lw:1});
-   hitR(cx,cy,w,h,()=>{const p=window.TAPP14?1:(typeof NET13!=='undefined'&&NET13.role)?0:s.done[0]?1:0;if(s.done[p])return;if(s.c[p]===i)SCN.select.pick(s,p);else{s.c[p]=i;SFX.move()}})});
+   hitR(cx,cy,w,h,()=>{const p=window.TAPP14?1:(typeof NET13!=='undefined'&&NET13.role)?0:s.done[0]?1:0;if(s.done[p])return;if(s.c[p]===i)SCN.select.pick(s,p);else{s.c[p]=i;SFX.move()}},'select:'+i)});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;const i=s.c[p],cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh;X.strokeStyle=p?'#3af':'#f33';X.lineWidth=1.4;if(!s.done[p]||s.t%8<4){rrect(X,cx-.5+p,cy-.5+p,cw-1-p*2,chh-1-p*2,2);X.stroke()}txt('P'+(p+1),cx+(p?cw-7:5),cy+4,{sz:5,c:p?'#3af':'#f33',lw:1.2})});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;let ch=s.done[p]?s.pick[p]:s.list[s.c[p]];if(!ch||ch==='rnd')return;if(!s.done[p]&&s.alt[p]&&SAVE.unlock.alts)ch=altCh(ch);const x=p?W-SAFE.r-42:SAFE.l+42;
    X.save();X.translate(x,H+4);X.scale(p?-1.25:1.25,1.25);drawFighterV(X,ch,POSE[s.done[p]?'win'+Math.floor(s.t/30)%2:IDLEP(s.t)],{expr:s.done[p]?'grin':'angry',rim:p?'#4af':'#f44',t:s.t});X.restore();
@@ -218,14 +218,16 @@ function setTabs(){return[
 SCN.settings={enter(s){s.tab=s.tab||0;s.i=0},leave(s){persist();if(s.from==='pause'&&s.back){SC=s.back;HITS=[]}else go('menu')},
  update(s){const T=setTabs(),rows=T[s.tab][1],n=rows.length;if(anyP('bl')||(s.i<0&&anyP('l'))){s.tab=(s.tab+T.length-1)%T.length;s.i=Math.min(s.i,0);SFX.move()}if(anyP('rn')||(s.i<0&&anyP('r'))){s.tab=(s.tab+1)%T.length;s.i=Math.min(s.i,0);SFX.move()}
   if(nav('u')){s.i=s.i<=-1?n-1:s.i-1;SFX.move()}if(nav('d')){s.i=s.i>=n-1?-1:s.i+1;SFX.move()}if(anyP('se')||anyP('lk')){SFX.back();SCN.settings.leave(s);return}
-  if(s.i>=0){const r=rows[s.i],d=anyP('r')?1:anyP('l')?-1:(anyP('lp')||anyP('st'))?1:0;if(d){SFX.move();r[2](d);persist()}}},
+  if(s.i>=0){const r=rows[s.i],d=anyP('r')?1:anyP('l')?-1:(anyP('lp')||anyP('st'))?0:null;if(d!==null)optStep14(r,d)}},
  draw(s){if(s.from==='pause'&&F)drawFight();X.fillStyle=s.from==='pause'?'rgba(0,0,0,.82)':'#000';if(s.from!=='pause')bgPattern(s.t,'#06061a','#101030');else X.fillRect(0,0,W,H);backBtn(()=>{SFX.back();SCN.settings.leave(s)});
   txt('SETTINGS',W/2,Math.max(10,SAFE.t+8),{sz:11,big:1,grad:['#fff','#f44'],lw:1.4,it:1});const T=setTabs(),tw=Math.min(62,(W-SAFE.l-SAFE.r-20)/T.length),tx=W/2-tw*T.length/2;
   T.forEach((t,i)=>{const on=i===s.tab,x=tx+i*tw;X.fillStyle=on?'rgba(255,40,70,.75)':'rgba(255,255,255,.07)';rrect(X,x+1,22,tw-2,13,3);X.fill();if(s.i<0&&on){X.strokeStyle='#fff';X.lineWidth=.6;X.stroke()}txt(t[0],x+tw/2,28.5,{sz:5.6,big:1,c:on?'#fff':'#bbb',lw:1});hitR(x,20,tw,16,()=>{s.tab=i;s.i=0;SFX.move()},on?'cur':null)});
   const rows=T[s.tab][1],x0=Math.max(SAFE.l+14,W/2-130),x1=Math.min(W-SAFE.r-14,W/2+130);rows.forEach((r,i)=>{const y=48+(i-(window.__SOFF|0))*17,on=i===s.i;if(y<40||y>H-24)return;X.fillStyle=on?'rgba(255,40,70,.35)':'rgba(255,255,255,.04)';rrect(X,x0,y-7,x1-x0,14,3);X.fill();
-   txt(r[0],x0+6,y,{sz:6.4,big:1,al:'left',c:on?'#fff':'#cab',lw:1});const v=r[1]();txt(v.length>1&&v!=='\u203a'&&v!=='PRESS AGAIN'?'\u25c0  '+v+'  \u25b6':v,x1-6,y,{sz:6,big:1,al:'right',c:'#ffd23a',lw:1});
-   hitR(x0,y-8,(x1-x0)*.6,16,()=>{s.i=i;r[2](-1);persist()});hitR(x0+(x1-x0)*.6,y-8,(x1-x0)*.4,16,()=>{s.i=i;r[2](1);persist()})});
-  hint(TCH.isTouch?'TAP A ROW TO CHANGE  \u2022  LEFT SIDE = DOWN, RIGHT SIDE = UP':'\u2191\u2193 SELECT  \u2022  \u2190\u2192 CHANGE  \u2022  BLOCK/RUN (LB/RB) SWITCH TAB')}};
+   txt(r[0],x0+6,y,{sz:6.4,big:1,al:'left',c:on?'#fff':'#cab',lw:1});const v=r[1](),arw=optArrows14(r,v),vw=Math.min(120,(x1-x0)*.46),vx=x1-vw;
+   if(arw){txt('\u25c0',vx+8,y,{sz:6.4,big:1,c:on?'#fff':'#ffd23a',lw:1});txt('\u25b6',x1-8,y,{sz:6.4,big:1,c:on?'#fff':'#ffd23a',lw:1});txt(v,vx+vw/2,y,{sz:6,big:1,c:'#ffd23a',lw:1});
+    hitR(x0,y-8,vx-x0,16,()=>{s.i=i;SFX.move()});hitR(vx,y-8,22,16,()=>{s.i=i;optStep14(r,-1)});hitR(x1-22,y-8,22,16,()=>{s.i=i;optStep14(r,1)});hitR(vx+22,y-8,vw-44,16,()=>{s.i=i;optStep14(r,0)})}
+   else{txt(v,x1-6,y,{sz:6,big:1,al:'right',c:'#ffd23a',lw:1});hitR(x0,y-8,x1-x0,16,()=>{s.i=i;optStep14(r,0)})}});
+  hint(TCH.isTouch?'TAP \u25c0 \u25b6 TO CHANGE  \u2022  TAP THE VALUE TO CYCLE':'\u2191\u2193 SELECT  \u2022  \u2190\u2192 CHANGE  \u2022  BLOCK/RUN (LB/RB) SWITCH TAB')}};
 // --- touch layout editor ---
 SCN.touchedit={enter(){TCH.edit=1;OPT.tlock=1;TCH.el.classList.add('edit','locked');touchSelect(null)},leave(s){TCH.edit=0;OPT.tlock=1;touchSelect(null);TCH.el.classList.remove('edit','locked');persist();SC=s.back;HITS=[]},
  update(s){if(anyP('lp')){OPT.tlock=OPT.tlock?0:1;SFX.sel()}TCH.el.classList.toggle('locked',!!OPT.tlock);if(anyP('se')||anyP('st')||anyP('lk'))SCN.touchedit.leave(s)},

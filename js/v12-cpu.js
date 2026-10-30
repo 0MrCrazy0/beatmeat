@@ -60,23 +60,24 @@ function aiExpert(f,o){const A=f.ai,dist=Math.abs(o.x-f.x),fw=f.face>0?'r':'l',b
   return _ai.apply(this,arguments)}}
 // ---- CPU BATTLE (watch mode): pick two fighters and CPU levels; EXPERT is the default ----
 const WATCH12={a:-1,b:-1,da:5,db:5,st:-1,loop:1};
+try{if(SAVE.watch12)Object.assign(WATCH12,SAVE.watch12)}catch(e){}
 function watchStart(){const W12=WATCH12,pool=REGULAR;const a=W12.a<0?pick(pool):pool[W12.a];let b=W12.b<0?pick(pool.filter(c=>c!==a)):pool[W12.b];const st=W12.st<0?ri(0,6):W12.st;
  const run=()=>{newFight(a,b,{mode:'cpu',stage:st,cpu1:1,cpu2:1,dif1:W12.da,dif2:W12.db,onEnd:()=>{G.matches++;if(W12.loop)watchStart();else go('watchsel')}});F.watch=1;go('fight')};go('vs',{a,b,stage:st,next:run})}
 SCN.watchsel={enter(s){s.i=6;s.t=0;Music.play('select')},update(s){s.t++;const W12=WATCH12,n=REGULAR.length,NS=7;
   if(nav('u')){s.i=(s.i+NS-1)%NS;SFX.move()}if(nav('d')){s.i=(s.i+1)%NS;SFX.move()}
   const ch=d=>SCN.watchsel.step(s,d);
   if(nav('l'))ch(-1);if(nav('r'))ch(1);if(anyP('lk')||anyP('se')){SFX.back();go('menu');return}
-  if(anyP('lp')||anyP('st')){if(s.i===6||anyP('st')){SFX.sel();watchStart()}else ch(1)}},
+  if(anyP('lp')||anyP('st')){if(s.i===6||anyP('st')){SFX.sel();watchStart()}else SCN.watchsel.step(s,1,1)}},
  draw(s){bgPattern(s.t,'#06080e','#0c1628');const W12=WATCH12;txt('CPU BATTLE',W/2,Math.max(12,SAFE.t+10),{sz:16,big:1,grad:['#fff','#6cf'],lw:2,it:1});txt('Sit back. Two fighters, full move sets, no mercy.',W/2,Math.max(12,SAFE.t+10)+12,{sz:5,c:'#9ab',lw:.8});
   const nm=i=>i<0?'RANDOM':REGULAR[i].name,sty=i=>i<0?'':((STYLE[REGULAR[i].id]||{}).style||''),dn=d=>DIFFN[d]+(d===5?' \u2605':'');
   const rows=[['P1 FIGHTER',nm(W12.a)],['P1 CPU',dn(W12.da)],['P2 FIGHTER',nm(W12.b)],['P2 CPU',dn(W12.db)],['ARENA',W12.st<0?'RANDOM':(STAGES[W12.st]||{}).name||'ARENA '+(W12.st+1)],['MATCHES',W12.loop?'ENDLESS':'ONE MATCH'],['START','\u25b6']];
   const x0=W/2-120,y0=40;rows.forEach((r,i)=>{const y=y0+i*17,on=s.i===i;X.fillStyle=on?'rgba(30,60,110,.9)':'rgba(8,12,22,.75)';rrect(X,x0,y,240,14,3);X.fill();if(on){X.strokeStyle='#6cf';X.lineWidth=1;X.stroke()}
-   txt(r[0],x0+8,y+7.5,{sz:5.6,big:1,al:'left',c:on?'#fff':'#9ab',lw:.8});txt(i<6?'\u25c0 '+r[1]+' \u25b6':r[1]+'  START',x0+232,y+7.5,{sz:6,big:1,al:'right',c:i===6?'#ffd23a':on?'#6cf':'#ddd',lw:.8});
-   if(i===6)hitR(x0,y,240,14,()=>{SFX.sel();watchStart()});else{hitR(x0,y,120,14,()=>{s.i=i;SCN.watchsel.step(s,-1)});hitR(x0+120,y,120,14,()=>{s.i=i;SCN.watchsel.step(s,1)})}});
+   txt(r[0],x0+8,y+7.5,{sz:5.6,big:1,al:'left',c:on?'#fff':'#9ab',lw:.8});const vc=on?'#6cf':'#ddd';if(i<6){txt('\u25c0',x0+128,y+7.5,{sz:6,big:1,c:vc,lw:.8});txt(r[1],x0+180,y+7.5,{sz:6,big:1,c:vc,lw:.8});txt('\u25b6',x0+232,y+7.5,{sz:6,big:1,c:vc,lw:.8})}else txt(r[1]+'  START',x0+232,y+7.5,{sz:6,big:1,al:'right',c:'#ffd23a',lw:.8});
+   if(i===6)hitR(x0,y,240,14,()=>{SFX.sel();watchStart()});else{hitR(x0,y,120,14,()=>{s.i=i;SFX.move()});hitR(x0+120,y,20,14,()=>{s.i=i;SCN.watchsel.step(s,-1)});hitR(x0+220,y,20,14,()=>{s.i=i;SCN.watchsel.step(s,1)});hitR(x0+140,y,80,14,()=>{s.i=i;SCN.watchsel.step(s,1,1)})}});
   [W12.a,W12.b].forEach((ix,k)=>{const x=k?x0+246:x0-66;if(ix>=0&&x>0&&x+60<W){drawPort(REGULAR[ix],x,y0,60,80,{zoom:.5,cx:.5,cy:.24,expr:'grin',flip:k});txt(sty(ix),x+30,y0+88,{sz:4.4,big:1,c:'#9cf',lw:.8})}});
   txt(W12.da===5||W12.db===5?'EXPERT: reads, anti-airs, hit-confirms, juggles, supers, throws, techs and holds \u2014 every fight ends in a finisher.':'Tip: EXPERT is the full show.',W/2,y0+7*17+6,{sz:4.6,c:'#8ab',lw:.6});
-  hint(TCH.isTouch?'TAP A ROW TO CHANGE  \u2022  TAP START':'\u2191\u2193 CHOOSE  \u2022  \u2190\u2192 CHANGE  \u2022  '+glyph(0,'lp')+' CONFIRM  \u2022  '+glyph(0,'lk')+' BACK')},
- step(s,d){const W12=WATCH12,n=REGULAR.length;SFX.move();if(s.i===0)W12.a=(W12.a+1+d+n+1)%(n+1)-1;if(s.i===2)W12.b=(W12.b+1+d+n+1)%(n+1)-1;if(s.i===1)W12.da=(W12.da+d+6)%6;if(s.i===3)W12.db=(W12.db+d+6)%6;if(s.i===4)W12.st=(W12.st+1+d+8)%8-1;if(s.i===5)W12.loop^=1}};
+  hint(TCH.isTouch?'TAP \u25c0 \u25b6 TO CHANGE  \u2022  TAP START':'\u2191\u2193 CHOOSE  \u2022  \u2190\u2192 CHANGE  \u2022  '+glyph(0,'lp')+' CONFIRM  \u2022  '+glyph(0,'lk')+' BACK')},
+ step(s,d,tap){const W12=WATCH12,n=REGULAR.length;if((s.i===1||s.i===3)&&!tap){const v=s.i===1?W12.da:W12.db;if(v+d<0||v+d>5){SFX.back();return}}SFX.move();if(s.i===0)W12.a=(W12.a+1+d+n+1)%(n+1)-1;if(s.i===2)W12.b=(W12.b+1+d+n+1)%(n+1)-1;if(s.i===1)W12.da=(W12.da+d+6)%6;if(s.i===3)W12.db=(W12.db+d+6)%6;if(s.i===4)W12.st=(W12.st+1+d+8)%8-1;if(s.i===5)W12.loop^=1;try{SAVE.watch12={a:W12.a,b:W12.b,da:W12.da,db:W12.db,st:W12.st,loop:W12.loop};persist()}catch(e){}}};
 {const _mp=menuPick;menuPick=function(i){if(MENU[i]&&MENU[i][0]==='CPU BATTLE'){SFX.sel();MENUI=i;go('watchsel');return}return _mp.apply(this,arguments)}}
 // watch-mode banner
 {const _h=drawHUD;drawHUD=function(){const r=_h.apply(this,arguments);if(F&&F.watch&&F.phase!=='fatal'&&!F.rp){const tag=f=>(f.expert?'EXPERT':DIFFN[f.dif])+' \u2022 '+((STYLE[f.ch.id]||{}).style||'');txt(tag(F.p[0]),SAFE.l+8,H-SAFE.b-6,{sz:4.2,big:1,al:'left',c:'#9cf',lw:.7});txt(tag(F.p[1]),W-SAFE.r-8,H-SAFE.b-6,{sz:4.2,big:1,al:'right',c:'#9cf',lw:.7});if(F.phase==='intro')txt('CPU BATTLE',W/2,H-SAFE.b-6,{sz:5,big:1,c:'#ffd23a',lw:.8})}return r}}
