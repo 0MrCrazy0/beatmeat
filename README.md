@@ -1,5 +1,4 @@
-![Beat Meat](assets/og-image.png)
-# BEAT MEAT: Bring a Friend. Leave a Mess. (v15.0)
+# BEAT MEAT: Bring a Friend. Leave a Mess. (v15.0.1)
 
 An original, gory 2D fighter and co-op street brawler. Play it free in your browser, on desktop or phone, and install it as an app.
 
@@ -15,7 +14,7 @@ An original, gory 2D fighter and co-op street brawler. Play it free in your brow
 X / U = 1 left punch, Y / I = 2 right punch, A / J = 3 left kick, B / K = 4 right kick.
 1+2 = throw, 3+4 = signature move, hold back = block. Full move list in PAUSE.
 
-**Blood Vendetta**: X punch, A kick, B or Y jump, LB or RB guard, guard + X special, X + A back elbow, LT police call. Prefer the arcade feel? Turn on **Settings > Controls > CLASSIC DD BUTTONS** (left attack / right attack, both = jump).
+**Blood Vendetta**: X punch, A kick, B or Y jump, LB or RB guard, guard + X special, X + A back elbow. Finish a dazed boss with X. Prefer the arcade feel? Turn on **Settings > Controls > CLASSIC DD BUTTONS** (left attack / right attack, both = jump).
 
 **Take Back the City**: X attack, A jump, Y special, forward + Y rush, X + A back attack, forward forward + X blitz, LB police call. Walk into a thug to grab, then A to vault or X to suplex. **SOR 6-BUTTON** in Settings > Controls puts back attack on B. Hold a thug while your partner hits it for a TEAM SLAM; both press special together for a DOUBLE STRIKE.
 

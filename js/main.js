@@ -150,7 +150,7 @@ function slots(){const l=REGULAR.slice();if(SAVE.unlock.bosses)l.push(BYID.golia
 function selGeom(){const n=12,cols=6,cw=Math.min(36,(W-150)/cols),chh=cw*1.08,gx=W/2-cols*cw/2,gy=24;return{cols,cw,chh,gx,gy}}
 SCN.select={enter(s){s.c=[0,4];s.alt=[0,0];s.done=[0,s.mode==='arcade'||s.mode==='survival'?1:0];s.list=slots();Music.play('select')},
  pick(s,p){let ch=s.list[s.c[p]];if(ch===null){SFX.back();toast('BEAT ARCADE MODE TO UNLOCK');return}if(ch==='rnd')ch=pick(REGULAR);if(s.alt[p]&&SAVE.unlock.alts)ch=altCh(ch);s.pick=s.pick||[];s.pick[p]=ch;s.done[p]=1;SFX.sel();SFX.announce();buzz('light')},
- update(s){const L=s.list,{cols}=selGeom();for(let p=0;p<2;p++){if(s.done[p])continue;const P=(s.mode==='versus'||s.mode==='training')&&p===1&&s.done[0]?{...PAD[0].p,...Object.fromEntries(Object.entries(PAD[1].p).filter(e=>e[1]))}:PAD[p].p;let c=s.c[p];
+ update(s){const L=s.list,{cols}=selGeom(),d0=s.done[0],onl=typeof NET13!=='undefined'&&NET13.on;for(let p=0;p<2;p++){if(s.done[p])continue;const P=(s.mode==='versus'||s.mode==='training')&&p===1&&d0&&!onl?{...PAD[0].p,...Object.fromEntries(Object.entries(PAD[1].p).filter(e=>e[1]))}:PAD[p].p;let c=s.c[p];
    if(P.l)c=(c+L.length-1)%L.length;if(P.r)c=(c+1)%L.length;if(P.u)c=(c+L.length-cols)%L.length;if(P.d)c=(c+cols)%L.length;if(c!==s.c[p]){s.c[p]=c;SFX.move()}
    if(P.hk&&SAVE.unlock.alts){s.alt[p]^=1;SFX.move()}if(P.lp||P.st||P.hp)SCN.select.pick(s,p)}
   if((anyP('se')||PAD[0].p.lk&&!s.done[0])&&!s.wait){SFX.back();go('menu');return}
@@ -161,14 +161,14 @@ SCN.select={enter(s){s.c=[0,4];s.alt=[0,0];s.done=[0,s.mode==='arcade'||s.mode==
   L.forEach((ch,i)=>{const cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh,w=cw-2,h=chh-2;X.fillStyle='#000';rrect(X,cx-.5,cy-.5,w+1,h+1,2);X.fill();
    if(ch&&ch!=='rnd'){X.save();rrect(X,cx,cy,w,h,2);X.clip();drawPort(s.alt[act]&&SAVE.unlock.alts?altCh(ch):ch,cx,cy,w,h,{zoom:.62});X.restore()}else{X.fillStyle='#16141c';rrect(X,cx,cy,w,h,2);X.fill();txt(ch==='rnd'?'?':'\ud83d\udd12',cx+w/2,cy+h/2,{sz:ch==='rnd'?18:10,big:1,c:ch==='rnd'?'#ccc':'#555'})}
    if(ch===null)txt('LOCKED',cx+w/2,cy+h-4,{sz:4,c:'#a66',lw:1});
-   hitR(cx,cy,w,h,()=>{const p=window.TAPP14?1:(typeof NET13!=='undefined'&&NET13.role)?0:s.done[0]?1:0;if(s.done[p])return;if(s.c[p]===i)SCN.select.pick(s,p);else{s.c[p]=i;SFX.move()}},'select:'+i)});
+   hitR(cx,cy,w,h,()=>{const p=window.TAPP14?1:(typeof NET13!=='undefined'&&NET13.role)?0:s.done[0]?1:0;if(s.done[p])return;const tp=s.tap15||(s.tap15=[0,0]);if(s.c[p]===i&&tp[p])SCN.select.pick(s,p);else{s.c[p]=i;tp[p]=1;SFX.move()}},'select:'+i)});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;const i=s.c[p],cx=gx+(i%cols)*cw,cy=gy+Math.floor(i/cols)*chh;X.strokeStyle=p?'#3af':'#f33';X.lineWidth=1.4;if(!s.done[p]||s.t%8<4){rrect(X,cx-.5+p,cy-.5+p,cw-1-p*2,chh-1-p*2,2);X.stroke()}txt('P'+(p+1),cx+(p?cw-7:5),cy+4,{sz:5,c:p?'#3af':'#f33',lw:1.2})});
   [0,1].forEach(p=>{if((s.mode==='arcade'||s.mode==='survival')&&p===1)return;let ch=s.done[p]?s.pick[p]:s.list[s.c[p]];if(!ch||ch==='rnd')return;if(!s.done[p]&&s.alt[p]&&SAVE.unlock.alts)ch=altCh(ch);const x=p?W-SAFE.r-42:SAFE.l+42;
    X.save();X.translate(x,H+4);X.scale(p?-1.25:1.25,1.25);drawFighterV(X,ch,POSE[s.done[p]?'win'+Math.floor(s.t/30)%2:IDLEP(s.t)],{expr:s.done[p]?'grin':'angry',rim:p?'#4af':'#f44',t:s.t});X.restore();
    X.fillStyle=lgr(X,0,H-34,0,H,['rgba(0,0,0,0)','rgba(0,0,0,.8)']);X.fillRect(x-40,H-34,80,34);txt(ch.name,x,H-SAFE.b-16,{sz:9,big:1,c:p?'#9cf':'#f99',lw:1.4,it:1});txt(ch.title,x,H-SAFE.b-8,{sz:4.6,c:'#ddd',lw:1});if(typeof K7!=='undefined'&&K7[ch.id])txt(K7[ch.id].style,x,H-SAFE.b-3.4,{sz:3.6,big:1,c:'#ffd23a',lw:.8})});
   const ch=s.list[s.c[act]];const by=gy+2*chh+6;if(ch&&ch!=='rnd'){wrap(ch.bio,52).forEach((l,i)=>txt(l,W/2,by+i*7,{sz:4.8,c:'#ddd',lw:1,b:0}))}
   if(SAVE.unlock.alts){btnRow([[s.alt[act]?'ALT COSTUME \u2713':'ALT COSTUME',()=>{s.alt[act]^=1;SFX.move()},s.alt[act]]],by+18,{w:58})}
-  if(s.mode==='versus'&&!s.done[1])hint(s.done[0]?'P2: PICK (CONTROLLER 2 / ARROWS, OR P1 PICKS)':'P1 PICKS FIRST',H-SAFE.b-30)}};
+  if(s.mode==='versus'&&!s.done[1]&&!(typeof NET13!=='undefined'&&NET13.on))hint(s.done[0]?'P2: PICK (CONTROLLER 2 / ARROWS, OR P1 PICKS)':'P1 PICKS FIRST',H-SAFE.b-30)}};
 // --- stage select (versus / training) ---
 SCN.stagesel={enter(s){s.i=QS.has('stage')?+QS.get('stage'):ri(0,STAGES.length-2);s.prev=-1},update(s){const n=STAGES.length+1;if(anyP('l')||anyP('u')){s.i=(s.i+n-1)%n;SFX.move()}if(anyP('r')||anyP('d')){s.i=(s.i+1)%n;SFX.move()}
   if(anyP('se')||anyP('lk')){SFX.back();go('select',{mode:s.mode});return}if(anyP('st')||anyP('lp'))SCN.stagesel.ok(s)},

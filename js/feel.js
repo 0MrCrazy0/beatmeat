@@ -85,7 +85,7 @@ moveList=function(ch,pg,sc=0,story){const st=STYLE[ch.id]||{};txt((pg?'P2: ':'P1
  const cm=Object.keys(ch.atk||{}).filter(k=>/^[fb]_/.test(k));cm.forEach(k=>{const c=ch.atk[k];row(c.n||'COMMAND NORMAL',(k[0]==='f'?'F':'B')+'+'+BTNN[k.slice(2)]+(c.oh?'  OVERHEAD':c.low?'  LOW':''))});
  hd('METER (3 BARS)');row('SUPER: '+(st.sup&&st.sup.n||''),'D,F,D,F+HP  or  SP+RUN  (2 bars)');row('X-RAY: '+(st.xr&&st.xr.n||''),'D,B,D,B+HK  or  SP+BLOCK  (3 bars)');if(!story)row('BREAKER','SP+BLOCK while being hit  (1 bar)');
  if(story){const c=ST&&ST.camp&&CAMPS[ST.camp];hd('STREET MOVES ('+(c?c.name:'STORY')+')');
-  row('POLICE CALL','SP  (once per stage)');if(!c||c.van)row('RIOT VAN BACKUP','BLOCK+RUN  (once per life, clears the screen)');
+  if(G.camp!=='vendetta'){row('POLICE CALL','SP  (once per stage)');if(!c||c.van)row('RIOT VAN BACKUP','BLOCK+RUN  (once per life, clears the screen)')}
   row('GRAB','walk into a dizzy enemy');row('  HAIR-GRAB KNEES','while holding: LP x3');row('  ELBOW / RISING KNEE','\u2193+LP  /  \u2191+LK');row('  THROW / BACK THROW','LK or HK  /  \u2190+LK or HK');
   row('BACK ELBOW','\u2190+HP with an enemy right behind you');row('CYCLONE KICK','LK+HK in the air');row('WEAPONS','LP picks up \u2022 attack swings \u2022 HK throws knives');row('ESCAPE A BEAR-HUG','mash buttons + wiggle')}
  else{hd('FINISHERS  (during FINISH THEM!)');(ch.fin||[]).forEach((f,i)=>row(FINLBL3[i]+': '+f.n,motionTxt3(f.m,f.b)+'   [SP+'+['D','U','F'][i]+']'));row('STAGE KILL'+(STAGE_FIN[F&&F.stIdx]!==undefined?'':' (not on this arena)'),'D,D+BLOCK   [SP+B]')}

@@ -402,7 +402,98 @@ const ML15 = {maxY: 0};
 // trials: a cleared trial's "CLEAR" countdown must not wipe progress of the next trial
 {
   const _sd = startDemo12;
-  startDemo12 = function () { TR9.clearT = 0; TR9.lastTr15 = TR9.trial; return _sd.apply(this, arguments) };
+  startDemo12 = function () { TR9.clearT = 0; if (typeof TR12 !== 'undefined') TR12.adv = 0; TR9.lastTr15 = TR9.trial; return _sd.apply(this, arguments) };
   const _tt = trainingTick;
-  trainingTick = function () { if (TR9.lastTr15 !== TR9.trial) { TR9.lastTr15 = TR9.trial; if (TR9.clearT > 0 && !TR9.done) TR9.clearT = 0 } return _tt.apply(this, arguments) };
+  trainingTick = function () { if (TR9.lastTr15 !== TR9.trial) { TR9.lastTr15 = TR9.trial; if (TR9.clearT > 0 && !TR9.done) TR9.clearT = 0; if (typeof TR12 !== 'undefined' && TR12.adv > 0) TR12.adv = 0 } return _tt.apply(this, arguments) };
+}
+// v15.0.1: a negative radius throws and kills the whole frame; clamp every ellipse/arc radius
+{ const P = CanvasRenderingContext2D.prototype, _e = P.ellipse, _a = P.arc;
+  P.ellipse = function (x, y, rx, ry, ...r) { return _e.call(this, x, y, rx > 0 ? rx : 0, ry > 0 ? ry : 0, ...r) };
+  P.arc = function (x, y, rad, ...r) { return _a.call(this, x, y, rad > 0 ? rad : 0, ...r) };
+}
+// v15.0.1 VS balance (from a CPU-vs-CPU EXPERT round-robin). d = damage dealt, t = damage taken. Fights only, never story.
+const BAL15 = {razor:{d:1.03,t:0.98},kira:{d:1.24,t:0.9},okafor:{d:0.81,t:1.12},graves:{d:1.14,t:0.93},mae:{d:0.9,t:1.05},hex:{d:1.26,t:0.88},tusk:{d:0.8,t:1.12},sol:{d:1.27,t:0.87},glitch:{d:1.28,t:0.89},goliath:{d:0.79,t:1.24},warden:{d:0.57,t:1.72}};
+{ const _ah = applyHit;
+  applyHit = function (att, def, a) {
+    if (a && att && def && att.ch && def.ch && !F.story && a.dmg) {
+      const m = (BAL15[att.ch.id] || {d:1}).d * (BAL15[def.ch.id] || {t:1}).t;
+      if (m !== 1) { const b = Object.create(a); b.dmg = a.dmg * m; arguments[2] = b }
+    }
+    return _ah.apply(this, arguments);
+  };
+}
+// v15.0.1 story co-op input path: guest presses are never dropped or merged.
+// host: consume the guest's frames strictly in sequence (wait out a gap for up to 12 frames, it is usually a resend away),
+// presses are counted per button and handed out one per frame, so 3 quick jabs are 3 jabs even if they arrive together.
+// guest: re-sends every input the host has not acked yet; it no longer animates its own attacks locally (that showed
+// attacks the host never ran) - it renders the host's state and only predicts walking between snapshots.
+const NI15 = {cnt: new Array(15).fill(0), gapT: 0};
+netHostInput13 = function (m) {
+  const q = NET13.guestQ || (NET13.guestQ = []), last = NET13.ginSeq || 0;
+  for (let k = 0; k < m.b.length; k++) { const seq = m.n - m.b.length + 1 + k; if (seq > last && !q.some(e => e[0] === seq)) q.push([seq, m.b[k]]) }
+  q.sort((a, b) => a[0] - b[0]);
+};
+netHostPad13 = function () {
+  const q = NET13.guestQ || (NET13.guestQ = []);
+  let held = NET13.gb || 0; const prevHeld = held;
+  let take = q.length > 6 ? 2 : 1;
+  while (take > 0 && q.length) {
+    const want = (NET13.ginSeq || 0) + 1;
+    if (q[0][0] > want && NI15.gapT < 12) { NI15.gapT++; break }
+    NI15.gapT = 0;
+    const e = q.shift(); NET13.ginSeq = e[0]; held = e[1] & 0x7fff;
+    for (let i = 0; i < 15; i++) if (e[1] & (1 << (i + 15))) NI15.cnt[i]++;
+    take--;
+  }
+  let pr = 0; for (let i = 0; i < 15; i++) if (NI15.cnt[i] > 0) { NI15.cnt[i]--; pr |= 1 << (i + 15); NI15.out = (NI15.out || 0) + 1 }
+  NET13.gb = held; PAD[1] = netPad13(held | pr, prevHeld);
+  // a press bit already implies the edge; nsUnpack13 also derives edges from held changes, don't double count those
+  for (let i = 0; i < 15; i++) { const k = NETK[i]; if (k !== 'se') PAD[1].p[k] = !!(pr & (1 << (i + 15))) }
+};
+{ const _s = netSend13;
+  netSend13 = function (m) {
+    if (m && m.t === 'i' && NET13.role === 'guest' && NET13.gin && NET13.gin.length) { const L = NET13.gin.slice(-60); m.n = L[L.length - 1][0]; m.b = L.map(e => e[1]) }
+    return _s.apply(this, arguments);
+  };
+}
+netGuestStep13 = function () { NET13.stats.predict++ }; // authoritative: no local re-simulation in story
+NETC.snapEvery = 2;
+{ const _sm = netSmooth13;
+  netSmooth13 = function (prev) { _sm.apply(this, arguments); try { const P = ST && ST.ps && ST.ps[1], p = prev && prev.find(e => e[0] === 'p1'); if (P && p && p[1] === P.ch) { const dx = p[2] - P.x, dz = (p[4] || 0) - (P.z || 0); if (Math.abs(dx) < 48 && Math.abs(dz) < 30) { P._sx = (P._sx || 0) * .5 + dx; P._sy = P._sy || 0; P._sz = (P._sz || 0) * .5 + dz } } } catch (e) {} };
+}
+// v15.0.1 story anti-stunlock (both campaigns, both players), Streets of Rage / Double Dragon style:
+// 3 hits or 22 damage taken within 75 frames (1.25s) knocks the player down; a downed or knocked-down player can't be hit
+// (no juggles); getting up gives 100 frames (~1.7s) of invulnerability with the blink, like a respawn.
+const SL15 = {win: 75, hits: 3, dmg: 22, inv: 100};
+{ const _h = sHit;
+  sHit = function (a, d, dmg, o = {}) {
+    if (d && d.pl && typeof ST !== 'undefined' && ST && ST.ps && ST.ps.includes(d)) {
+      if (d.st === 'down' || (d.st === 'air' && d.kd15)) return false;
+      if (!(d.inv > 0) && !o.self && !['ko', 'dead', 'wait'].includes(d.st) && !(d.st === 'block' && a && Math.sign(a.x - d.x) === d.face && !o.unb)) {
+        const t = F.tick, L = (d.hw15 = (d.hw15 || []).filter(e => t - e[0] <= SL15.win)); L.push([t, dmg || 0]);
+        const sum = L.reduce((s, e) => s + e[1], 0);
+        if (L.length >= SL15.hits || sum >= SL15.dmg || o.kd) { if (!o.kd) { o = Object.assign({}, o, {kd: 1}); arguments[3] = o } d.kd15 = 1; d.hw15 = [] }
+      }
+    }
+    return _h.apply(this, arguments);
+  };
+  const _t = storyTick;
+  storyTick = function () {
+    const r = _t.apply(this, arguments);
+    try { if (ST && ST.ps) for (const P of ST.ps) { if (!P) continue; const was = P.pst15; P.pst15 = P.st;
+      if ((was === 'down' || (was === 'air' && P.kd15)) && P.st !== 'down' && P.st !== 'air' && P.st !== 'ko' && P.st !== 'dead') { P.il15 = SL15.inv; P.kd15 = 0; P.hw15 = [] }
+      if (P.il15 > 0) { if (P.st === 'ko' || P.st === 'dead' || P.st === 'wait') P.il15 = 0; else { P.inv = Math.max(P.inv || 0, P.il15); P.il15-- } }
+      if (P.st === 'air' && !P.kd15 && P.hp > 0 && was !== 'air') P.kd15 = 1; } } catch (e) {}
+    return r;
+  };
+}
+// v15.0.1 campaign identity: Blood Vendetta is Double Dragon - no police call / riot van, no health-cost specials,
+// a dazed boss is finished with PUNCH. Take Back the City (Streets of Rage) keeps police call, blitz and the health-cost special.
+{ const _a = bzAct;
+  bzAct = function (P, B) {
+    if (G.camp === 'vendetta' && B) { B.star = false; if (ST && ST.bf && P.bfNear && B.atk && P.y === 0) { B.atk = false; B.grab = true } }
+    return _a.apply(this, arguments);
+  };
+  const _s = bzStart;
+  bzStart = function (P, a) { const r = _s.apply(this, arguments); if (G.camp === 'vendetta') { P.bzCost = 0; if (P.atk) P.atk.cost = 0 } return r };
 }

@@ -6,7 +6,7 @@ const RM14 = {
   names: {vs: 'VERSUS & ONLINE', dd: 'BLOOD VENDETTA', sor: 'TAKE BACK THE CITY'},
   acts: {
     vs: [['lp', '1  LEFT PUNCH'], ['mp', '2  RIGHT PUNCH'], ['lk', '3  LEFT KICK'], ['mk', '4  RIGHT KICK'], ['th', 'THROW'], ['bl', 'BLOCK']],
-    dd: [['lp', 'PUNCH'], ['lk', 'KICK'], ['mk', 'JUMP'], ['hp', 'GUARD'], ['sp', 'POLICE CALL'], ['rn', 'RUN']],
+    dd: [['lp', 'PUNCH'], ['lk', 'KICK'], ['mk', 'JUMP'], ['hp', 'GUARD'], ['rn', 'RUN']],
     sor: [['lp', 'ATTACK'], ['lk', 'JUMP'], ['mp', 'SPECIAL'], ['hp', 'GRAB / WEAPON'], ['th', 'POLICE CALL'], ['rn', 'BLOCK'], ['sp', 'RUN']]
   }
 };
@@ -176,7 +176,7 @@ if (typeof NAVSC14 !== 'undefined') NAVSC14.push('remap14');
 // the CONTROLS tables show the live buttons for single-button rows
 {
   const ROWACT = {vs: {'1  LEFT PUNCH': 'lp', '2  RIGHT PUNCH': 'mp', '3  LEFT KICK': 'lk', '4  RIGHT KICK': 'mk'},
-    dd: {PUNCH: 'lp', KICK: 'lk', JUMP: 'mk', 'GUARD / PARRY': 'hp', 'POLICE CALL': 'sp'},
+    dd: {PUNCH: 'lp', KICK: 'lk', JUMP: 'mk', 'GUARD / PARRY': 'hp'},
     sor: {ATTACK: 'lp', JUMP: 'lk', 'SPECIAL (defensive)': 'mp', 'POLICE CALL': 'th', BLOCK: 'rn'}};
   const DEF = JSON.parse(JSON.stringify(CTL14));
   RM14.refreshCtl = () => {

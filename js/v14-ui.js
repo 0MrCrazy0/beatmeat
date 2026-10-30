@@ -248,7 +248,7 @@ const GTAP14 = ['select', 'storysel', 'netend'];
       netSend13({t: 'tap14', sc: SC.id, k, n: HITS.length});
       return {fn() {}};
     }
-    if (h && typeof NET13 !== 'undefined' && NET13.role === 'guest' && NET13.phase === 'mirror' && SC && ['campsel', 'stagesel'].includes(SC.id)) return {fn() { toast('THE HOST PICKS THIS ONE') }};
+    if (h && typeof NET13 !== 'undefined' && NET13.role === 'guest' && NET13.phase === 'mirror' && SC && ['campsel', 'stagesel'].includes(SC.id)) return {fn() { toast('THE HOST PICKS THE CAMPAIGN \u2022 YOU PICK YOUR OWN HERO NEXT') }};
     return h;
   };
   NETH13.tap14 = m => { if (NET13.role === 'host') (NET13.tq14 || (NET13.tq14 = [])).push(m) };
@@ -316,7 +316,7 @@ const CTL14 = {
     ['PUNCH', 'X', 'U', 'PUNCH'], ['KICK', 'A', 'J', 'KICK'], ['JUMP', 'B or Y', 'K', 'JUMP'], ['GUARD / PARRY', 'LB or RB', 'O', 'GUARD'],
     ['SPECIAL', 'GUARD + X', 'O + U', 'GUARD + PUNCH'], ['SIGNATURE', 'GUARD + \u2192 + X', 'O + D + U', 'GUARD + \u2192 + PUNCH'],
     ['BACK ELBOW', 'X + A', 'U + J', 'BACK'], ['RUN', 'double-tap or RT', 'double-tap / E', 'double-tap'],
-    ['GRAB', 'walk into a thug', 'walk in', 'walk in'], ['POLICE CALL', 'LT', 'SPACE', 'CALL'], ['PAUSE', 'MENU', 'ENTER', 'II']]},
+    ['GRAB', 'walk into a thug', 'walk in', 'walk in'], ['FINISH THEM!', 'X by a dazed boss', 'U', 'PUNCH'], ['PAUSE', 'MENU', 'ENTER', 'II']]},
   sor: {t: 'TAKE BACK THE CITY', sub: 'Streets of Rage style \u2022 Jax, Rena, Brick, Kenji', rows: [
     ['ATTACK', 'X', 'U', 'ATTACK'], ['JUMP', 'A', 'J', 'JUMP'], ['SPECIAL (defensive)', 'Y', 'I', 'SPECIAL'], ['SPECIAL (offensive rush)', '\u2192 + Y', 'D + I', '\u2192 + SPECIAL'],
     ['BACK ATTACK', 'X + A', 'U + J', 'BACK'], ['BLITZ', '\u2192 \u2192 + X', '\u2192 \u2192 + U', '\u2192 \u2192 + ATTACK'],

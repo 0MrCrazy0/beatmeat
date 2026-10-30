@@ -277,7 +277,7 @@ function kick14(P) {
 // ---------------------------------------------------------------- 4. labels, touch layouts, help text
 const VS_ACTS14 = [['lp', '1 L.PUNCH'], ['mp', '2 R.PUNCH'], ['lk', '3 L.KICK'], ['mk', '4 R.KICK'], ['th', 'THROW (1+2)'], ['st', 'PAUSE']];
 VS_ACTS.length = 0; VS_ACTS.push(...VS_ACTS14);
-const STORY_DD14 = [['lp', 'PUNCH'], ['lk', 'KICK'], ['mk', 'JUMP'], ['hp', 'GUARD'], ['sp', 'POLICE CALL'], ['rn', 'RUN'], ['st', 'PAUSE']];
+const STORY_DD14 = [['lp', 'PUNCH'], ['lk', 'KICK'], ['mk', 'JUMP'], ['hp', 'GUARD'], ['rn', 'RUN'], ['st', 'PAUSE']];
 const STORY_SOR14 = [['lp', 'ATTACK'], ['lk', 'JUMP'], ['mp', 'SPECIAL'], ['th', 'POLICE CALL'], ['hp', 'GRAB/WEAPON'], ['rn', 'BLOCK'], ['sp', 'RUN'], ['st', 'PAUSE']];
 function storyActs14() { return G.camp === 'vendetta' ? STORY_DD14 : STORY_SOR14 }
 {
@@ -289,7 +289,7 @@ function storyActs14() { return G.camp === 'vendetta' ? STORY_DD14 : STORY_SOR14
 }
 const TLBL14 = {
   vs: {lp: '1', mp: '2', lk: '3', mk: '4', th: 'THROW', bl: 'BLOCK', st: 'TAP', se: '\u2039'},
-  dd: {lp: 'PUNCH', lk: 'KICK', mk: 'JUMP', hp: 'GUARD', sp: 'CALL', bl: 'BACK', rn: 'RUN', st: 'TAP', se: '\u2039'},
+  dd: {lp: 'PUNCH', lk: 'KICK', mk: 'JUMP', hp: 'GUARD', bl: 'BACK', rn: 'RUN', st: 'TAP', se: '\u2039'},
   sor: {lp: 'ATTACK', lk: 'JUMP', mp: 'SPECIAL', th: 'CALL', hp: 'GRAB', bl: 'BACK', rn: 'BLOCK', st: 'TAP', se: '\u2039'}
 };
 {
@@ -316,10 +316,10 @@ function vsTouchDefs() {
 function storyTouch14() {
   const dd = G.camp === 'vendetta';
   const L = dd
-    ? [['lp', 'PUNCH', .790, .64], ['lk', 'KICK', .915, .52], ['mk', 'JUMP', .905, .82], ['hp', 'GUARD', .665, .82], ['bl', 'BACK', .660, .50], ['sp', 'CALL', .925, .22]]
+    ? [['lp', 'PUNCH', .790, .64], ['lk', 'KICK', .915, .52], ['mk', 'JUMP', .905, .82], ['hp', 'GUARD', .665, .82], ['bl', 'BACK', .660, .50]]
     : [['lp', 'ATTACK', .790, .64], ['lk', 'JUMP', .915, .82], ['mp', 'SPECIAL', .915, .50], ['hp', 'GRAB', .665, .82], ['bl', 'BACK', .665, .50], ['th', 'CALL', .925, .20]];
   const LP = dd
-    ? [['lp', 'PUNCH', .74, .36], ['lk', 'KICK', .90, .26], ['mk', 'JUMP', .90, .52], ['hp', 'GUARD', .58, .50], ['bl', 'BACK', .58, .22], ['sp', 'CALL', .86, .80]]
+    ? [['lp', 'PUNCH', .74, .36], ['lk', 'KICK', .90, .26], ['mk', 'JUMP', .90, .52], ['hp', 'GUARD', .58, .50], ['bl', 'BACK', .58, .22]]
     : [['lp', 'ATTACK', .74, .36], ['lk', 'JUMP', .90, .52], ['mp', 'SPECIAL', .90, .24], ['hp', 'GRAB', .58, .50], ['bl', 'BACK', .58, .22], ['th', 'CALL', .86, .80]];
   TL.story.splice(0, TL.story.length, ...L);
   TLP.story.splice(0, TLP.story.length, ...LP);
@@ -366,7 +366,7 @@ function bzHelp14() {
     ['GUARD', 'LB or RB: hold to guard  \u2022  GUARD + PUNCH = spin special  (+ \u2192 = signature move)'],
     ['BACK', 'PUNCH + KICK together = back elbow'],
     ['RUN', 'double-tap or hold RT  \u2022  PUNCH while running = running attack'],
-    ['CALL', 'police call: clears the screen once per stage']);
+    ['FINISH', 'boss dazed: get close and PUNCH (+ \u2193 \u2191 \u2192 or \u2190 picks the execution)']);
   else BZ_HELP.push(
     ['MOVE', 'stick / D-pad \u2014 8 directions, walk into a thug to grab'],
     ['ATTACK', 'combo chain (keep pressing on hit)  \u2022  picks up weapons'],
@@ -412,7 +412,7 @@ function storyMoveList14(ch, pg, sc) {
   row('PICK UP', (dd ? 'PUNCH' : 'ATTACK') + ' while standing on it' + (dd ? '' : ' (or GRAB)'));
   row('THROW IT', dd ? 'KICK while holding it' : 'GRAB while holding it');
   hd('BOSS EXECUTIONS');
-  row('FINISH THEM!', 'boss dazed: get close and press ' + (dd ? 'POLICE CALL' : 'GRAB') + ' (+ \u2193 \u2191 \u2192 or \u2190 picks it)');
+  row('FINISH THEM!', 'boss dazed: get close and press ' + (dd ? 'PUNCH' : 'GRAB') + ' (+ \u2193 \u2191 \u2192 or \u2190 picks it)');
   X.restore();
 }
 var H_ = typeof H !== 'undefined' ? H : 270;
@@ -425,7 +425,7 @@ function storyRows14() {
   if (G.camp === 'vendetta') return [
     ['MOVE', 'mv', 'joystick \u2022 up/down = into the street'], ['PUNCH', 'lp', 'tap fast for a combo chain'], ['KICK', 'lk', 'left, right, spinning heel'],
     ['JUMP', 'mk', 'PUNCH or KICK in the air = jump kick'], ['GUARD', 'hp', 'hold to block'], ['SPECIAL', ['hp', 'lp'], 'GUARD + PUNCH \u2022 + \u2192 = signature'],
-    ['BACK ELBOW', ['lp', 'lk'], 'PUNCH + KICK or BACK: hits behind you'], ['GRAB', ['walk'], 'walk into a dazed thug'], ['POLICE CALL', 'sp', 'clears the screen, once per stage']];
+    ['BACK ELBOW', ['lp', 'lk'], 'PUNCH + KICK or BACK: hits behind you'], ['GRAB', ['walk'], 'walk into a dazed thug']];
   return [
     ['MOVE', 'mv', 'joystick \u2022 up/down = into the street'], ['ATTACK', 'lp', 'tap fast for a combo chain'], ['JUMP', 'lk', 'ATTACK in the air = jump kick'],
     ['SPECIAL', 'mp', 'spin \u2022 \u2192 + SPECIAL = rush'], ['BACK ATTACK', ['lp', 'lk'], 'ATTACK + JUMP or BACK'], ['BLITZ', ['fw2', 'lp'], '\u2192 \u2192 + ATTACK'],
